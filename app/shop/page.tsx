@@ -35,9 +35,14 @@ interface Filters {
   search?: string;
 }
 
+interface Sorting {
+  sortBy?: string;
+}
+
 interface Product {
   title: string;
   inStock: boolean;
+  selCheckbox: boolean;
   priceRange: [number, number]; // Or just a `price` number
   color?: string;
   size?: string;
@@ -91,8 +96,12 @@ const sortProducts = (products: Product[], sortBy: string) => {
 };
 
 const ShopPage = () => {
-  const [filters, setFilters] = useState({});
-  const [sortBy, setSortBy] = useState(shopData.sortOptions[0]);
+  /* const [filters, setFilters] = useState({});
+  // const [sortBy, setSortBy] = useState(shopData.sortOptions[0]);
+  // const [sortBy, setSortBy] = useState({});
+  const [currentPage, setCurrentPage] = useState(1); */
+  const [filters, setFilters] = useState<Filters>({});
+  const [sorting, setSorting] = useState<Sorting>({});
   const [currentPage, setCurrentPage] = useState(1);
 
   const [items, setItems] = useState<any[]>([]);
@@ -100,7 +109,11 @@ const ShopPage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  const fetchItems = async (currentPage: number, filters: Filters) => {
+  const fetchItems = async (
+    currentPage: number,
+    filters: Filters,
+    sortBy: Sorting
+  ) => {
     setLoading(true);
 
     const params = new URLSearchParams({
@@ -121,6 +134,10 @@ const ShopPage = () => {
     if (filters.priceMin) params.append("priceMin", String(filters.priceMin));
     if (filters.priceMax) params.append("priceMax", String(filters.priceMax));
 
+    if (sorting.sortBy) {
+      params.append("sort", sorting.sortBy);
+    }
+
     try {
       const res = await fetch(`/api/items?${params.toString()}`);
       const data = await res.json();
@@ -134,9 +151,8 @@ const ShopPage = () => {
   };
 
   useEffect(() => {
-    fetchItems(page, filters);
-  }, [page, filters]);
-
+    fetchItems(page, filters, sorting);
+  }, [page, filters, sorting]);
 
   return (
     <div>
@@ -161,7 +177,19 @@ const ShopPage = () => {
                 </button>
               </div>
             </div>
-            <ShopSort options={shopData.sortOptions} onSortChange={setSortBy} />
+            <ShopSort
+              options={[
+                "BestSelling",
+                "priceAsc",
+                "priceDesc",
+                "nameAsc",
+                "nameDesc",
+                "dateAsc",
+                "dateDesc",
+              ]}
+              onSortChange={(value) => setSorting({ sortBy: value })}
+            />
+            {/* <ShopSort options={shopData.sortOptions} onSortChange={setSortBy} /> */}
           </div>
           <div className="flex flex-row flex-wrap gap-4 items-center  justify-between mb-6  w-full">
             <ShopFilters
@@ -198,6 +226,7 @@ const ShopPage = () => {
                       ]
                     }
                     inStock={(product?.stockunit ?? 0) > 0}
+                    selCheckbox={false}
                   />
                 ))}
             </div>

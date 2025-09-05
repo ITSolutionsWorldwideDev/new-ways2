@@ -19,6 +19,10 @@ export async function GET(req: NextRequest) {
   const instock = searchParams.get("instock"); // Expect "true" or "false"
   const search = searchParams.get("search");
 
+  const sort = searchParams.get("sort");
+
+  console.log("searchParams === ", searchParams);
+
   let query: string;
 
   if (itemid) {
@@ -92,17 +96,29 @@ export async function GET(req: NextRequest) {
 
     // custitem_ags_item_material
 
+    let sortingOrder = `i.lastmodifieddate DESC`;
+
+    if (sort) {
+      if (sort == "BestSelling" || sort == "priceAsc" || sort == "priceDesc")
+        sortingOrder = `i.lastmodifieddate DESC`;
+      else if (sort == "nameAsc") sortingOrder = `i.displayname ASC`;
+      else if (sort == "nameDesc") sortingOrder = `i.displayname DESC`;
+      else if (sort == "dateAsc") sortingOrder = `i.createddate ASC`;
+      else if (sort == "dateDesc") sortingOrder = `i.createddate DESC`;
+      else sortingOrder = `i.lastmodifieddate DESC`;
+    }
+
     query = `
       SELECT i.id, i.displayname, i.itemid, i.stockunit,i.purchasedescription.i.itemprocessgroup,i.itemprocessfamily,
             i.custitem_shopify_img_1_url,i.custitem_shopify_img_2_url,i.custitem_shopify_img_3_url,i.custitem_shopify_img_4_url,
               i.custitem_shopify_img_5_url,
       FROM item i
       ${whereClause}
-      ORDER BY i.lastmodifieddate DESC
+      ORDER BY ${sortingOrder}
     `;
   }
 
-  console.log('query ==== ',query);
+  // console.log("query ==== ", query);
 
   try {
     const data = await runSuiteQLQuery(query, { limit: pageSize, offset });

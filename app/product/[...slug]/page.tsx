@@ -16,6 +16,7 @@ interface ProductCardProps {
   priceRange?: [number, number];
   variants?: { label: string; value: string }[];
   inStock?: boolean;
+  selCheckbox?: boolean;
 }
 
 const ProductPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
@@ -37,18 +38,6 @@ const ProductPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
     const decreaseQty = () => {
       setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
     };
-  
-    /* const handleAddToCart = () => {
-      addToCart({
-        id,
-        itemid,
-        title,
-        image,
-        priceRange,
-        quantity,
-      });
-      setAddedToCart(true);
-    }; */
 
   const fetchItems = async (id: any) => {
     setLoading(true);

@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 // import { useTheme } from "next-themes";
 
 export const HeroSection = () => {
@@ -10,7 +11,6 @@ export const HeroSection = () => {
   */
   return (
     <section className="relative h-screen overflow-hidden ">
-
       <video
         className="absolute top-0 left-0 w-full h-full object-cover  hidden dark:block"
         autoPlay
@@ -40,9 +40,11 @@ export const HeroSection = () => {
           </p>
 
           <div className="flex gap-4">
-            <Button className="bg-[#0AA854] dark:bg-[#E8FC56] hover:bg-[#d4e600] rounded-full px-8 py-6  shadow-lg  font-poppins font-medium text-[14px] leading-[14px] tracking-[0] text-center align-middle">
-              Explore Now
-            </Button>
+            <Link href="/shop">
+              <Button className="bg-[#0AA854] dark:bg-[#E8FC56] hover:bg-[#d4e600] rounded-full px-8 py-6  shadow-lg  font-poppins font-medium text-[14px] leading-[14px] tracking-[0] text-center align-middle">
+                Explore Now
+              </Button>
+            </Link>
             {/* text-lg font-semibold   */}
             <Button
               variant="outline"

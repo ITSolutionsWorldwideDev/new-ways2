@@ -35,67 +35,28 @@ interface Filters {
   search?: string;
 }
 
+interface Sorting {
+  sortBy?: string;
+}
 interface Product {
   title: string;
   inStock: boolean;
-  priceRange: [number, number]; // Or just a `price` number
+  selCheckbox: boolean;
+  priceRange: [number, number];
   color?: string;
   size?: string;
   brand?: string;
 }
 
-/* const filterProducts = (products: Product[], filters: Filters) => {
-  let filtered = [...products];
-  if (filters.availability) {
-    filtered = filtered.filter((p) =>
-      filters.availability === "In Stock" ? p.inStock : !p.inStock
-    );
-  }
-  if (filters.priceMin) {
-    filtered = filtered.filter(
-      (p) => p.priceRange[0] >= Number(filters.priceMin)
-    );
-  }
-  if (filters.priceMax) {
-    filtered = filtered.filter(
-      (p) => p.priceRange[1] <= Number(filters.priceMax)
-    );
-  }
-  if (filters.color) {
-    // Color filter logic (if color is in product data)
-  }
-  if (filters.size) {
-    // Size filter logic (if size is in product data)
-  }
-  if (filters.brand) {
-    // Brand filter logic (if brand is in product data)
-  }
-  if (filters.search) {
-    filtered = filtered.filter(
-      (p) =>
-        filters.search &&
-        p.title.toLowerCase().includes(filters.search.toLowerCase())
-    );
-  }
-  return filtered;
-};
-
-const sortProducts = (products: Product[], sortBy: string) => {
-  if (sortBy === "Price: Low to High") {
-    return [...products].sort((a, b) => a.priceRange[0] - b.priceRange[0]);
-  }
-  if (sortBy === "Price: High to Low") {
-    return [...products].sort((a, b) => b.priceRange[1] - a.priceRange[1]);
-  }
-  return products;
-}; */
-
 const ShopPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
   const { slug } = use(params); // unwrap params
   const [category] = slug;
 
-  const [filters, setFilters] = useState({});
-  const [sortBy, setSortBy] = useState(shopData.sortOptions[0]);
+  // const [filters, setFilters] = useState({});
+  // const [sortBy, setSortBy] = useState(shopData.sortOptions[0]);
+
+  const [filters, setFilters] = useState<Filters>({});
+  const [sorting, setSorting] = useState<Sorting>({});
   const [currentPage, setCurrentPage] = useState(1);
 
   const [items, setItems] = useState<any[]>([]);
@@ -103,35 +64,11 @@ const ShopPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  // const pageSize = 20;
-
-  /* const fetchItems = async (currentPage: number) => {
-    setLoading(true);
-    try {
-        // /api/items?color=blue&size=M&instock=true&page=1&limit=20
-        // /api/items?page=2&limit=20&instock=true&color=Blue&size=M
-      const res = await fetch(
-        `/api/items?page=${currentPage}&limit=${PRODUCTS_PER_PAGE}`
-      );
-      const data = await res.json();
-      setItems(data.items);
-
-      setTotalPages(data.totalResults);
-    } catch (err) {
-      console.error("Failed to fetch items:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchItems(page);
-  }, [page]); */
-
   const fetchItems = async (
     category: string,
     currentPage: number,
-    filters: Filters
+    filters: Filters,
+    sortBy: Sorting
   ) => {
     setLoading(true);
 
@@ -152,10 +89,14 @@ const ShopPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
     if (filters.color) params.append("color", filters.color);
 
     if (filters.size) params.append("size", filters.size);
-    if (filters.brand) params.append("brand", filters.brand); // Optional, if backend supports
+    if (filters.brand) params.append("brand", filters.brand);
     if (filters.search) params.append("search", filters.search);
     if (filters.priceMin) params.append("priceMin", String(filters.priceMin));
-    if (filters.priceMax) params.append("priceMax", String(filters.priceMax));
+    if (filters.priceMax) params.append("priceMax", String(filters.priceMax));    
+
+    if (sorting.sortBy) {
+      params.append("sort", sorting.sortBy);
+    }
 
     try {
       const res = await fetch(`/api/items?${params.toString()}`);
@@ -169,20 +110,9 @@ const ShopPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
     }
   };
 
-  /* useEffect(() => {
-    fetchItems(page, filters);
-  }, [page, filters]); */
-
   useEffect(() => {
-    fetchItems(category, page, filters);
-  }, [category, page, filters]);
-
-  /* const filtered = filterProducts(shopData.products, filters);
-  const sorted = sortProducts(filtered, sortBy);
-  const paginated = sorted.slice(
-    (currentPage - 1) * PRODUCTS_PER_PAGE,
-    currentPage * PRODUCTS_PER_PAGE
-  ); */
+    fetchItems(category, page, filters, sorting);
+  }, [category, page, filters, sorting]);
 
   return (
     <div>
@@ -207,7 +137,19 @@ const ShopPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
                 </button>
               </div>
             </div>
-            <ShopSort options={shopData.sortOptions} onSortChange={setSortBy} />
+            <ShopSort
+              options={[
+                "BestSelling",
+                "priceAsc",
+                "priceDesc",
+                "nameAsc",
+                "nameDesc",
+                "dateAsc",
+                "dateDesc",
+              ]}
+              onSortChange={(value) => setSorting({ sortBy: value })}
+            />
+            {/* <ShopSort options={shopData.sortOptions} onSortChange={setSortBy} /> */}
           </div>
           <div className="flex flex-row flex-wrap gap-4 items-center  justify-between mb-6  w-full">
             <ShopFilters
@@ -215,17 +157,6 @@ const ShopPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
               onFilterChange={setFilters}
             />
           </div>
-
-          {/* <div className="flex justify-between items-center mb-4">
-            <ShopSort options={shopData.sortOptions} onSortChange={setSortBy} />
-          </div> */}
-
-          {/* 
-        
-          <div className="flex justify-center items-center p-4">
-            <img src="/loader.gif" alt="Loading..." className="w-12 h-12" />
-          </div>
-        */}
 
           {loading ? (
             <Loading />
@@ -254,6 +185,7 @@ const ShopPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
                       ]
                     }
                     inStock={(product?.stockunit ?? 0) > 0}
+                    selCheckbox={false}
                   />
                 ))}
             </div>
@@ -265,17 +197,10 @@ const ShopPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
               totalPages={
                 totalPages ? Math.ceil(totalPages / PRODUCTS_PER_PAGE) : 1 // fallback to at least one page
               }
-              // totalPages={Math.ceil(totalPages / PRODUCTS_PER_PAGE)}
               onPageChange={setPage}
             />
           </div>
         </div>
-
-        {/* <Pagination
-          currentPage={currentPage}
-          totalPages={Math.ceil(sorted.length / PRODUCTS_PER_PAGE)}
-          onPageChange={setCurrentPage}
-        /> */}
       </div>
     </div>
   );

@@ -14,7 +14,7 @@ export const shopData = {
     size: ["1 pcs", "10 pcs"],
     brand: ["Ape Cones"]
   },
-  sortOptions: ["Best Selling", "Price: Low to High", "Price: High to Low"],
+  sortOptions: ["Best Selling", "Price: Low to High", "Price: High to Low", "Alphabetically: A-Z", "Alphabetically: Z-A", "Date, old to new", "Date, new to old"],
   products: [
     {
       id: "GC3500-DIS",

@@ -21,307 +21,342 @@ export default function CartPage() {
     (state: RootState) => state.carts
   ); */
 
-  const cart = useCartStore(state => state.cart);
+  const cart = useCartStore((state) => state.cart);
 
-return (
+  /* return (
   <div>
     {cart.map(item => (
       <div key={item.itemid}>{item.title} x {item.quantity}</div>
     ))}
   </div>
-);
+); */
 
-  /* return (
+  return (
     <>
-    <ShopBanner {...commonData.cartbanner} />
-    <div className="container mx-auto py-8 flex flex-col items-center">
-      <div className="w-full max-w-6xl">
-        <div className="mb-8">
-          <div className="text-center text-lg font-semibold mb-2">
-            Spend $100 more to get{" "}
-            <span className="text-green-600">Free Shipping</span>
-          </div>
-          <div className="relative h-3 bg-muted rounded-full mx-auto max-w-xl">
-            <div className="absolute top-0 left-0 h-3 bg-lemon rounded-full w-full transition-[width] duration-300"></div>
-            <div className="absolute top-1/2 left-[calc(100%*0.99)] -translate-y-1/2 -translate-x-1/2">
-              left-[calc(100%-16px)]
-              <svg
-                className="h-5 w-5 bg-background rounded-full border border-border p-1"
-                viewBox="0 0 24 24"
-              >
-                <path d="M6 6h15l-1.5 9h-13z" fill="currentColor"></path>
-              </svg>
+      <ShopBanner {...commonData.cartbanner} />
+      <div className="container mx-auto py-8 flex flex-col items-center">
+        <div className="w-full max-w-6xl">
+          <div className="mb-8">
+            <div className="text-center text-lg font-semibold mb-2">
+              Spend $100 more to get{" "}
+              <span className="text-green-600">Free Shipping</span>
             </div>
-          </div>
-        </div>
-        <div className="flex gap-8 items-start">
-          <div className="flex-1 bg-background rounded-lg shadow p-6 border border-border">
-            <table className="w-full mb-6">
-              <thead>
-                <tr className="text-left">
-                  <th className="pb-2">Product</th>
-                  <th className="pb-2">Price</th>
-                  <th className="pb-2">Quantity</th>
-                  <th className="pb-2">Total</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-border last:border-none">
-                  <td className="flex items-center gap-2 py-4">
-                    <img
-                      alt="'Rap' Organic Green Hemp - 3 KS Cones"
-                      className="w-16 h-16 object-contain"
-                      src="/dummy/img-product.png"
-                    />
-                    <span className="font-semibold">
-                      'Rap' Organic Green Hemp - 3 KS Cones
-                    </span>
-                  </td>
-                  <td className="pr-8">$8.00</td>
-                  <td className="pr-8">
-                    <div className="flex items-center gap-4">
-                      <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
-                        -
-                      </button>
-                      <input
-                        min="1"
-                        className="w-12 border border-border rounded px-2 py-1 text-center bg-background text-foreground"
-                        type="number"
-                        value="5"
-                      />
-                      <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
-                        +
-                      </button>
-                    </div>
-                  </td>
-                  <td className="pr-8">$40.00</td>
-                  <td>
-                    <button className="text-red-500 text-xs">Remove</button>
-                  </td>
-                </tr>
-                <tr className="border-b border-border last:border-none">
-                  <td className="flex items-center gap-2 py-4">
-                    <img
-                      alt="'Rap' Organic Green Hemp - 3 KS Cones"
-                      className="w-16 h-16 object-contain"
-                      src="/dummy/img-product.png"
-                    />
-                    <span className="font-semibold">
-                      'Rap' Organic Green Hemp - 3 KS Cones
-                    </span>
-                  </td>
-                  <td className="pr-8">$60.00</td>
-                  <td className="pr-8">
-                    <div className="flex items-center gap-4">
-                      <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
-                        -
-                      </button>
-                      <input
-                        min="1"
-                        className="w-12 border border-border rounded px-2 py-1 text-center bg-background text-foreground"
-                        type="number"
-                        value="1"
-                      />
-                      <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
-                        +
-                      </button>
-                    </div>
-                  </td>
-                  <td className="pr-8">$60.00</td>
-                  <td>
-                    <button className="text-red-500 text-xs">Remove</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <div className="flex items-center gap-2 mb-4">
-              <input id="giftwrap" className="accent-lemon" type="checkbox" />
-              <label className="text-sm">
-                Add gift wrap. Only $10.00. (You can choose or not)
-              </label>
-            </div>
-            <div className="flex gap-2 mb-4">
-              <input
-                placeholder="Discount code"
-                className="border border-border rounded px-2 py-1 bg-background text-foreground"
-                type="text"
-              />
-              <button className="border border-border rounded px-4 py-1 bg-background text-foreground">
-                Apply
-              </button>
-            </div>
-            <div className="flex gap-6 justify-center my-6 text-sm">
-              <span className="flex items-center gap-2">
+            <div className="relative h-3 bg-muted rounded-full mx-auto max-w-xl">
+              <div className="absolute top-0 left-0 h-3 bg-lemon rounded-full w-full transition-[width] duration-300"></div>
+              <div className="absolute top-1/2 left-[calc(100%*0.99)] -translate-y-1/2 -translate-x-1/2">
+                {/* left-[calc(100%-16px)] */}
                 <svg
-                  className="h-5 w-5 text-lemon"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
+                  className="h-5 w-5 bg-background rounded-full border border-border p-1"
                   viewBox="0 0 24 24"
                 >
-                  <path d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6"></path>
+                  <path d="M6 6h15l-1.5 9h-13z" fill="currentColor"></path>
                 </svg>
-                FREE SHIPPING
-              </span>
-              <span className="flex items-center gap-2">
-                <svg
-                  className="h-5 w-5 text-lemon"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                >
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <path d="M8 12h4v4"></path>
-                </svg>
-                GIFT PACKAGE
-              </span>
-              <span className="flex items-center gap-2">
-                <svg
-                  className="h-5 w-5 text-lemon"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M5 13l4 4L19 7"></path>
-                </svg>
-                EASY RETURNS
-              </span>
-              <span className="flex items-center gap-2">
-                <svg
-                  className="h-5 w-5 text-lemon"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12 8v4l3 3"></path>
-                </svg>
-                ONE YEAR WARRANTY
-              </span>
-            </div>
-          </div>
-          <div className="w-[400px] max-w-full bg-background rounded-lg shadow p-6 border border-border text-foreground h-fit sticky top-8 flex flex-col gap-4">
-            <label className="font-semibold mb-2">
-              Special instructions for seller
-            </label>
-            <textarea
-              id="note"
-              className="w-full border border-border rounded px-3 py-2 text-sm mb-2 bg-background text-foreground"
-              placeholder="Special instructions for seller"
-            ></textarea>
-            <div className="flex flex-col gap-2 mb-4">
-              <div className="flex justify-between items-center text-lg font-bold">
-                <span>Total:</span>
-                <span>$100.00 USD</span>
               </div>
-              <div className="text-xs text-muted-foreground">
-                Taxes and shipping calculated at checkout
-              </div>
-              <div className="flex items-center gap-2">
-                <input id="agree" className="accent-lemon" type="checkbox" />
-                <label className="text-xs">
-                  I agree with the
-                  <a href="/terms" target="_blank" className="underline">
-                    terms and conditions
-                  </a>
+            </div>
+          </div>
+          <div className="flex gap-8 items-start">
+            <div className="flex-1 bg-background rounded-lg shadow p-6 border border-border">
+              <table className="w-full mb-6">
+                <thead>
+                  <tr className="text-left">
+                    <th className="pb-2">Product</th>
+                    <th className="pb-2">Price</th>
+                    <th className="pb-2">Quantity</th>
+                    <th className="pb-2">Total</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-border last:border-none">
+                    <td className="flex items-center gap-2 py-4">
+                      <img
+                        alt="'Rap' Organic Green Hemp - 3 KS Cones"
+                        className="w-16 h-16 object-contain"
+                        src="/dummy/img-product.png"
+                      />
+                      <span className="font-semibold">
+                        'Rap' Organic Green Hemp - 3 KS Cones
+                      </span>
+                    </td>
+                    <td className="pr-8">$8.00</td>
+                    <td className="pr-8">
+                      <div className="flex items-center gap-4">
+                        <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
+                          -
+                        </button>5
+                        {/* <input
+                          min="1"
+                          className="w-12 border border-border rounded px-2 py-1 text-center bg-background text-foreground"
+                          type="number"
+                          value="5"
+                        /> */}
+                        <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
+                          +
+                        </button>
+                      </div>
+                    </td>
+                    <td className="pr-8">$40.00</td>
+                    <td>
+                      <button className="text-red-500 text-xs">Remove</button>
+                    </td>
+                  </tr>
+                  {/* <tr className="border-b border-border last:border-none">
+                    <td className="flex items-center gap-2 py-4">
+                      <img
+                        alt="'Rap' Organic Green Hemp - 3 KS Cones"
+                        className="w-16 h-16 object-contain"
+                        src="/dummy/img-product.png"
+                      />
+                      <span className="font-semibold">
+                        'Rap' Organic Green Hemp - 3 KS Cones
+                      </span>
+                    </td>
+                    <td className="pr-8">$60.00</td>
+                    <td className="pr-8">
+                      <div className="flex items-center gap-4">
+                        <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
+                          -
+                        </button>
+                        <input
+                          min="1"
+                          className="w-12 border border-border rounded px-2 py-1 text-center bg-background text-foreground"
+                          type="number"
+                          value="1"
+                        />
+                        <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
+                          +
+                        </button>
+                      </div>
+                    </td>
+                    <td className="pr-8">$60.00</td>
+                    <td>
+                      <button className="text-red-500 text-xs">Remove</button>
+                    </td>
+                  </tr> */}
+
+                  {cart.map((item) => (
+                    // <div key={item.itemid}>{item.title} x {item.quantity}</div>
+                    <tr className="border-b border-border last:border-none">
+                      <td className="flex items-center gap-2 py-4">
+                        <img
+                          alt="'Rap' Organic Green Hemp - 3 KS Cones"
+                          className="w-16 h-16 object-contain"
+                          src="/dummy/img-product.png"
+                        />
+                        <span className="font-semibold">{item.title}</span>
+                      </td>
+                      <td className="pr-8">$60.00</td>
+                      <td className="pr-8">
+                        <div className="flex items-center gap-4">
+                          <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
+                            -
+                          </button>
+                          {item.quantity}
+                          {/* <input
+                            min="1"
+                            className="w-12 border border-border rounded px-2 py-1 text-center bg-background text-foreground"
+                            type="number"
+                            value="{item.quantity}"
+                          /> */}
+                          <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
+                            +
+                          </button>
+                        </div>
+                      </td>
+                      <td className="pr-8">$60.00</td>
+                      <td>
+                        <button className="text-red-500 text-xs">Remove</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="flex items-center gap-2 mb-4">
+                <input id="giftwrap" className="accent-lemon" type="checkbox" />
+                <label className="text-sm">
+                  Add gift wrap. Only $10.00. (You can choose or not)
                 </label>
               </div>
+              <div className="flex gap-2 mb-4">
+                <input
+                  placeholder="Discount code"
+                  className="border border-border rounded px-2 py-1 bg-background text-foreground"
+                  type="text"
+                />
+                <button className="border border-border rounded px-4 py-1 bg-background text-foreground">
+                  Apply
+                </button>
+              </div>
+              <div className="flex gap-6 justify-center my-6 text-sm">
+                <span className="flex items-center gap-2">
+                  <svg
+                    className="h-5 w-5 text-lemon"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6"></path>
+                  </svg>
+                  FREE SHIPPING
+                </span>
+                <span className="flex items-center gap-2">
+                  <svg
+                    className="h-5 w-5 text-lemon"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M8 12h4v4"></path>
+                  </svg>
+                  GIFT PACKAGE
+                </span>
+                <span className="flex items-center gap-2">
+                  <svg
+                    className="h-5 w-5 text-lemon"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  EASY RETURNS
+                </span>
+                <span className="flex items-center gap-2">
+                  <svg
+                    className="h-5 w-5 text-lemon"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 8v4l3 3"></path>
+                  </svg>
+                  ONE YEAR WARRANTY
+                </span>
+              </div>
             </div>
-            <Link href="/checkout">
-            <button className="w-full bg-foreground text-background py-2 rounded-full text-base font-semibold">
-              Checkout
-            </button>
-            </Link>
-            <div className="flex gap-2 justify-center mt-2">
-              <img
-                alt="Visa"
-                className="h-6"
-                src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg"
-              />
-              <img
-                alt="Mastercard"
-                className="h-6"
-                src="https://upload.wikimedia.org/wikipedia/commons/4/41/Mastercard-logo.svg"
-              />
-              <img
-                alt="PayPal"
-                className="h-6"
-                src="https://upload.wikimedia.org/wikipedia/commons/6/6b/PayPal.svg"
-              />
+            <div className="w-[400px] max-w-full bg-background rounded-lg shadow p-6 border border-border text-foreground h-fit sticky top-8 flex flex-col gap-4">
+              <label className="font-semibold mb-2">
+                Special instructions for seller
+              </label>
+              <textarea
+                id="note"
+                className="w-full border border-border rounded px-3 py-2 text-sm mb-2 bg-background text-foreground"
+                placeholder="Special instructions for seller"
+              ></textarea>
+              <div className="flex flex-col gap-2 mb-4">
+                <div className="flex justify-between items-center text-lg font-bold">
+                  <span>Total:</span>
+                  <span>$100.00 USD</span>
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  Taxes and shipping calculated at checkout
+                </div>
+                <div className="flex items-center gap-2">
+                  <input id="agree" className="accent-lemon" type="checkbox" />
+                  <label className="text-xs">
+                    I agree with the
+                    <a href="/terms" target="_blank" className="underline">
+                      terms and conditions
+                    </a>
+                  </label>
+                </div>
+              </div>
+              <Link href="/checkout">
+                <button className="w-full bg-foreground text-background py-2 rounded-full text-base font-semibold">
+                  Checkout
+                </button>
+              </Link>
+              <div className="flex gap-2 justify-center mt-2">
+                <img
+                  alt="Visa"
+                  className="h-6"
+                  src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg"
+                />
+                <img
+                  alt="Mastercard"
+                  className="h-6"
+                  src="https://upload.wikimedia.org/wikipedia/commons/4/41/Mastercard-logo.svg"
+                />
+                <img
+                  alt="PayPal"
+                  className="h-6"
+                  src="https://upload.wikimedia.org/wikipedia/commons/6/6b/PayPal.svg"
+                />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="flex justify-end mt-8">
-          <div className="rounded-lg p-6 max-w-md bg-gradient-to-br from-white to-[#FFF700] dark:from-black dark:to-[#FFF700]">
-            <div className="text-2xl mb-2 dark:text-white">★ ★ ★ ★ ★</div>
-            <div className="text-lg font-semibold mb-2 dark:text-white">
-              “Stylish, comfortable, and perfect for any occasion! My new
-              favorite fashion destination.”
-            </div>
-            <div className="text-sm text-gray-900">
-              <span className="dark:text-white">Viera P.</span>
+          <div className="flex justify-end mt-8">
+            <div className="rounded-lg p-6 max-w-md bg-gradient-to-br from-white to-[#FFF700] dark:from-black dark:to-[#FFF700]">
+              <div className="text-2xl mb-2 dark:text-white">★ ★ ★ ★ ★</div>
+              <div className="text-lg font-semibold mb-2 dark:text-white">
+                “Stylish, comfortable, and perfect for any occasion! My new
+                favorite fashion destination.”
+              </div>
+              <div className="text-sm text-gray-900">
+                <span className="dark:text-white">Viera P.</span>
+              </div>
             </div>
           </div>
-          
-        </div>
-        <div className="mt-12">
-          <h3 className="text-2xl font-bold mb-6 text-center">
-            You May Also Like
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="bg-background rounded-lg shadow p-4 flex flex-col items-center border border-border">
-              <img
-                alt="Product"
-                className="w-32 h-32 object-contain mb-2"
-                src="/dummy/img-product.png"
-              />
-              <div className="font-semibold mb-1">
-                'Rap' Organic Green Hemp - 3 KS Cones
+          <div className="mt-12">
+            <h3 className="text-2xl font-bold mb-6 text-center">
+              You May Also Like
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="bg-background rounded-lg shadow p-4 flex flex-col items-center border border-border">
+                <img
+                  alt="Product"
+                  className="w-32 h-32 object-contain mb-2"
+                  src="/dummy/img-product.png"
+                />
+                <div className="font-semibold mb-1">
+                  'Rap' Organic Green Hemp - 3 KS Cones
+                </div>
+                <div className="text-green-600 font-bold mb-1">$55.00</div>
               </div>
-              <div className="text-green-600 font-bold mb-1">$55.00</div>
-            </div>
-            <div className="bg-background rounded-lg shadow p-4 flex flex-col items-center border border-border">
-              <img
-                alt="Product"
-                className="w-32 h-32 object-contain mb-2"
-                src="/dummy/img-product.png"
-              />
-              <div className="font-semibold mb-1">
-                'Rap' Organic Green Hemp - 3 KS Cones
+              <div className="bg-background rounded-lg shadow p-4 flex flex-col items-center border border-border">
+                <img
+                  alt="Product"
+                  className="w-32 h-32 object-contain mb-2"
+                  src="/dummy/img-product.png"
+                />
+                <div className="font-semibold mb-1">
+                  'Rap' Organic Green Hemp - 3 KS Cones
+                </div>
+                <div className="text-green-600 font-bold mb-1">$115.00</div>
               </div>
-              <div className="text-green-600 font-bold mb-1">$115.00</div>
-            </div>
-            <div className="bg-background rounded-lg shadow p-4 flex flex-col items-center border border-border">
-              <img
-                alt="Product"
-                className="w-32 h-32 object-contain mb-2"
-                src="/dummy/img-product.png"
-              />
-              <div className="font-semibold mb-1">
-                'Rap' Organic Green Hemp - 3 KS Cones
+              <div className="bg-background rounded-lg shadow p-4 flex flex-col items-center border border-border">
+                <img
+                  alt="Product"
+                  className="w-32 h-32 object-contain mb-2"
+                  src="/dummy/img-product.png"
+                />
+                <div className="font-semibold mb-1">
+                  'Rap' Organic Green Hemp - 3 KS Cones
+                </div>
+                <div className="text-green-600 font-bold mb-1">$85.00</div>
               </div>
-              <div className="text-green-600 font-bold mb-1">$85.00</div>
-            </div>
-            <div className="bg-background rounded-lg shadow p-4 flex flex-col items-center border border-border">
-              <img
-                alt="Product"
-                className="w-32 h-32 object-contain mb-2"
-                src="/dummy/img-product.png"
-              />
-              <div className="font-semibold mb-1">
-                'Rap' Organic Green Hemp - 3 KS Cones
+              <div className="bg-background rounded-lg shadow p-4 flex flex-col items-center border border-border">
+                <img
+                  alt="Product"
+                  className="w-32 h-32 object-contain mb-2"
+                  src="/dummy/img-product.png"
+                />
+                <div className="font-semibold mb-1">
+                  'Rap' Organic Green Hemp - 3 KS Cones
+                </div>
+                <div className="text-green-600 font-bold mb-1">$85.00</div>
               </div>
-              <div className="text-green-600 font-bold mb-1">$85.00</div>
             </div>
           </div>
         </div>
       </div>
-    </div>
     </>
-  ); */
+  );
 }
 
 /* return (

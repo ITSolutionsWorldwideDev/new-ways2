@@ -11,6 +11,7 @@ interface ProductCardProps {
   priceRange?: [number, number];
   variants?: { label: string; value: string }[];
   inStock?: boolean;
+  selCheckbox?: boolean;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -21,6 +22,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   priceRange = [8, 120],
   variants = [],
   inStock = true,
+  selCheckbox = false,
 }) => {
   const [quantity, setQuantity] = useState<number>(1);
   const [addedToCart, setAddedToCart] = useState<boolean>(false);

@@ -37,6 +37,7 @@ const ShopFilters: React.FC<ShopFiltersProps> = ({
 
   return (
     <div className="flex flex-row flex-wrap gap-2 items-center mb-4 w-full">
+      <label className="flex items-center ml-4 px-3 py-1 font-medium shadow-sm ">Filter: </label>
       <select
         className="rounded-full border border-gray-200 bg-white text-gray-900 px-4 py-2 font-medium shadow-sm focus:outline-none transition-colors dark:bg-background dark:border-border dark:text-white"
         onChange={(e) => handleChange("availability", e.target.value)}
