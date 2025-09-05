@@ -2,16 +2,18 @@
 "use client";
 import ShopBanner from "@/components/shop/ShopBanner";
 import { commonData } from "@/lib/commonData";
-import { useCartStore } from "@/store/cartStore";
+// import { useCartStore } from "@/store/cartStore";
+import { useCartStore } from "@/store/useCartStore";
 
 export default function CheckoutPage() {
-  const { items, total, clearCart } = useCartStore();
+  // const { items, total, clearCart } = useCartStore();
+  const cart = useCartStore(state => state.cart);
 
-  const handleCheckout = async () => {
+  /* const handleCheckout = async () => {
     // Call backend API for payment processing
     alert("Redirecting to payment...");
     clearCart();
-  };
+  }; */
   return (
     <>
       <ShopBanner {...commonData.checkoutbanner} />
