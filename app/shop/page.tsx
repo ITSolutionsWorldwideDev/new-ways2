@@ -100,31 +100,6 @@ const ShopPage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  // const pageSize = 20;
-
-  /* const fetchItems = async (currentPage: number) => {
-    setLoading(true);
-    try {
-        // /api/items?color=blue&size=M&instock=true&page=1&limit=20
-        // /api/items?page=2&limit=20&instock=true&color=Blue&size=M
-      const res = await fetch(
-        `/api/items?page=${currentPage}&limit=${PRODUCTS_PER_PAGE}`
-      );
-      const data = await res.json();
-      setItems(data.items);
-
-      setTotalPages(data.totalResults);
-    } catch (err) {
-      console.error("Failed to fetch items:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchItems(page);
-  }, [page]); */
-
   const fetchItems = async (currentPage: number, filters: Filters) => {
     setLoading(true);
 
@@ -162,12 +137,6 @@ const ShopPage = () => {
     fetchItems(page, filters);
   }, [page, filters]);
 
-  /* const filtered = filterProducts(shopData.products, filters);
-  const sorted = sortProducts(filtered, sortBy);
-  const paginated = sorted.slice(
-    (currentPage - 1) * PRODUCTS_PER_PAGE,
-    currentPage * PRODUCTS_PER_PAGE
-  ); */
 
   return (
     <div>
@@ -202,17 +171,6 @@ const ShopPage = () => {
             />
           </div>
 
-          {/* <div className="flex justify-between items-center mb-4">
-            <ShopSort options={shopData.sortOptions} onSortChange={setSortBy} />
-          </div> */}
-
-          {/* 
-        
-          <div className="flex justify-center items-center p-4">
-            <img src="/loader.gif" alt="Loading..." className="w-12 h-12" />
-          </div>
-        */}
-
           {loading ? (
             <Loading />
           ) : (
@@ -220,11 +178,11 @@ const ShopPage = () => {
               {Array.isArray(items) &&
                 items.map((product: any) => (
                   <ProductCard
-                    key={product.id || product.itemid} // Preferably a unique, stable ID
+                    key={product.id || product.itemid}
                     id={product.id}
                     itemid={product.itemid}
                     title={product.displayname ?? product.itemid ?? "No Name"}
-                    image={product?.image ?? "/dummy/deal-1.png"}
+                    image={product?.image ?? "/dummy/img-product.png"}
                     priceRange={
                       Array.isArray(product?.priceRange)
                         ? [
@@ -249,19 +207,12 @@ const ShopPage = () => {
             <Pagination
               currentPage={page}
               totalPages={
-                totalPages ? Math.ceil(totalPages / PRODUCTS_PER_PAGE) : 1 // fallback to at least one page
+                totalPages ? Math.ceil(totalPages / PRODUCTS_PER_PAGE) : 1
               }
-              // totalPages={Math.ceil(totalPages / PRODUCTS_PER_PAGE)}
               onPageChange={setPage}
             />
           </div>
         </div>
-
-        {/* <Pagination
-          currentPage={currentPage}
-          totalPages={Math.ceil(sorted.length / PRODUCTS_PER_PAGE)}
-          onPageChange={setCurrentPage}
-        /> */}
       </div>
     </div>
   );

@@ -35,7 +35,7 @@ const PhotoSection = ({ data }: { data: Product }) => {
         <div className="flex items-center justify-center bg-[#F0EEED] rounded-[13px] sm:rounded-[20px] w-full sm:w-96 md:w-full mx-auto h-full max-h-[530px] min-h-[330px] lg:min-h-[380px] xl:min-h-[530px] overflow-hidden mb-3 lg:mb-0">
 
           <Image
-            src={selected ?? "/dummy/deal-1.png"}
+            src={selected ?? "/dummy/img-product.png"}
             width={444}
             height={530}
             className="rounded-md w-full h-full object-cover hover:scale-110 transition-all duration-500"

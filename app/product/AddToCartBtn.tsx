@@ -20,7 +20,7 @@ const AddToCartBtn = ({ data }: { data: Product & { quantity: number } }) => {
         dispatch(
           addToCart({
             id: data.id,
-            key: data.itemid,
+            itemid: data.itemid,
             name: data.displayname,
             purchasedescription: data.purchasedescription,
             srcUrl: data.srcUrl,

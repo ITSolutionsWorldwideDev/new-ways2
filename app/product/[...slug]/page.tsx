@@ -1,31 +1,54 @@
 "use client";
 
-import { useCartStore } from "@/store/cartStore";
+import { useCartStore } from "@/store/useCartStore";
 import { use, useEffect, useState } from "react";
 import Image from "next/image";
 import BreadcrumbProduct from "@/components/product/BreadcrumbProduct";
 import ProductDetail from "@/components/product/ProductDetail";
-// import Tabs from "@/components/product/Tabs";
 import { Product } from "@/types/product.types";
+import Loading from "@/components/ui/Loading";
 
-/* type Product = {
-  id: number;
+interface ProductCardProps {
+  id: string;
+  itemid: string;
   title: string;
-  description: string;
-  price: number;
-  image: string;
-};
-
-type ProductPageProps = {
-  params: Promise<{ slug: string[] }>; // ✅ params is a Promise now
-}; */
+  image?: string;
+  priceRange?: [number, number];
+  variants?: { label: string; value: string }[];
+  inStock?: boolean;
+}
 
 const ProductPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
   const { slug } = use(params); // unwrap params
   const [itemid] = slug;
   const [product, setProduct] = useState<any>(null);
-  const addItem = useCartStore((state) => state.addItem);
+  // const addItem = useCartStore((state) => state.addItem);
   const [loading, setLoading] = useState(false);
+
+  const [quantity, setQuantity] = useState<number>(1);
+    const [addedToCart, setAddedToCart] = useState<boolean>(false);
+  
+    const addToCart = useCartStore((state) => state.addToCart);
+  
+    const increaseQty = () => {
+      setQuantity((prev) => prev + 1);
+    };
+  
+    const decreaseQty = () => {
+      setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+    };
+  
+    /* const handleAddToCart = () => {
+      addToCart({
+        id,
+        itemid,
+        title,
+        image,
+        priceRange,
+        quantity,
+      });
+      setAddedToCart(true);
+    }; */
 
   const fetchItems = async (id: any) => {
     setLoading(true);
@@ -47,21 +70,7 @@ const ProductPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
 
   if (!product)
     return (
-      <div>
-        <main className="min-h-screen bg-background">
-          <div className="container mx-auto flex flex-col gap-6">
-            <div className="flex justify-center items-center p-4">
-              <Image
-                src="/loader.gif" // ✅ transparent background GIF in /public
-                alt="Loading..."
-                width={48} // you can adjust size
-                height={48}
-                priority
-              />
-            </div>
-          </div>
-        </main>
-      </div>
+      <Loading />
     );
 
   return (

@@ -238,7 +238,7 @@ const ShopPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
                     id={product.id}
                     itemid={product.itemid}
                     title={product.displayname ?? product.itemid ?? "No Name"}
-                    image={product?.image ?? "/dummy/deal-1.png"}
+                    image={product?.image ?? "/dummy/img-product.png"}
                     priceRange={
                       Array.isArray(product?.priceRange)
                         ? [

@@ -14,13 +14,24 @@ import { useAppSelector } from "@/lib/hooks/redux";
 import Link from "next/link";
 import ShopBanner from "@/components/shop/ShopBanner";
 import { commonData } from "@/lib/commonData";
+import { useCartStore } from "@/store/useCartStore";
 
 export default function CartPage() {
   /* const { cart, totalPrice, adjustedTotalPrice } = useAppSelector(
     (state: RootState) => state.carts
   ); */
 
-  return (
+  const cart = useCartStore(state => state.cart);
+
+return (
+  <div>
+    {cart.map(item => (
+      <div key={item.itemid}>{item.title} x {item.quantity}</div>
+    ))}
+  </div>
+);
+
+  /* return (
     <>
     <ShopBanner {...commonData.cartbanner} />
     <div className="container mx-auto py-8 flex flex-col items-center">
@@ -33,7 +44,7 @@ export default function CartPage() {
           <div className="relative h-3 bg-muted rounded-full mx-auto max-w-xl">
             <div className="absolute top-0 left-0 h-3 bg-lemon rounded-full w-full transition-[width] duration-300"></div>
             <div className="absolute top-1/2 left-[calc(100%*0.99)] -translate-y-1/2 -translate-x-1/2">
-              {/* left-[calc(100%-16px)] */}
+              left-[calc(100%-16px)]
               <svg
                 className="h-5 w-5 bg-background rounded-full border border-border p-1"
                 viewBox="0 0 24 24"
@@ -254,7 +265,7 @@ export default function CartPage() {
               <span className="dark:text-white">Viera P.</span>
             </div>
           </div>
-          {/* style="color: rgb(34, 34, 34)" */}
+          
         </div>
         <div className="mt-12">
           <h3 className="text-2xl font-bold mb-6 text-center">
@@ -310,7 +321,7 @@ export default function CartPage() {
       </div>
     </div>
     </>
-  );
+  ); */
 }
 
 /* return (

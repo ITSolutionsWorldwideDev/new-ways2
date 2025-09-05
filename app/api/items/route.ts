@@ -90,6 +90,8 @@ export async function GET(req: NextRequest) {
       ? `WHERE ${whereClauses.join(" AND ")}`
       : "";
 
+    // custitem_ags_item_material
+
     query = `
       SELECT i.id, i.displayname, i.itemid, i.stockunit,i.purchasedescription.i.itemprocessgroup,i.itemprocessfamily,
             i.custitem_shopify_img_1_url,i.custitem_shopify_img_2_url,i.custitem_shopify_img_3_url,i.custitem_shopify_img_4_url,

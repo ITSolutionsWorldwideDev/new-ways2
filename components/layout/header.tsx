@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import { Search, User, ShoppingCart, Menu, ChevronDown } from "lucide-react";
 import { TopBar } from "./top-bar";
 import { Logo } from "../logo";
 import { ShopMainCategories } from "@/lib/menuData";
+import { useCartStore } from "@/store/useCartStore"; // Adjust path as needed
 
 const categories = [
   "Papers/Tips",
@@ -146,6 +148,8 @@ const categories = [
 ]; */
 
 export function Header() {
+  const cart = useCartStore((state) => state.cart);
+  const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
   /* z-20  */
   return (
     <header className="sticky top-0 left-0 right-0 z-50 bg-background border-b border-border">
@@ -192,9 +196,9 @@ export function Header() {
             {/* {categories.map((category, index) => ( */}
             {ShopMainCategories.map((category, index) => (
               <div key={index} className="relative group">
-                <Link href={`/shop/${category.name.split(" ").join("-")}`} >
-                {/* href="/shop/{category.name}" */}
-                
+                <Link href={`/shop/${category.name.split(" ").join("-")}`}>
+                  {/* href="/shop/{category.name}" */}
+
                   <Button
                     variant="ghost"
                     className="text-base font-medium px-2 lg:px-4"
@@ -220,9 +224,12 @@ export function Header() {
             <Button variant="ghost" size="icon" className="relative">
               <Link href="/cart">
                 <ShoppingCart className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 bg-lemon text-black text-xs w-4 h-4 rounded-full flex items-center justify-center">
-                  0
-                </span>
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-lemon text-black text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+                {/* 0 */}
               </Link>
             </Button>
           </div>
