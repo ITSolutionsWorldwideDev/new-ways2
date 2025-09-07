@@ -198,3 +198,10 @@
     font-family: var(--font-inter);
   }
 }
+
+.inline-stars span {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 4px;
+}

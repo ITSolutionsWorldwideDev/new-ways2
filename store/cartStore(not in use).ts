@@ -7,7 +7,9 @@ type CartItem = {
   itemid: string;
   title: string;
   image?: string;
-  priceRange?: [number, number];
+  // priceRange?: [number, number];
+  priceRange?: number;
+  price?: number;
   quantity: number;
 };
 

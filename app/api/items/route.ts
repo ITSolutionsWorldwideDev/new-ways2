@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
 
   const sort = searchParams.get("sort");
 
-  console.log("searchParams === ", searchParams);
+  // console.log("searchParams === ", searchParams);
 
   let query: string;
 
@@ -99,7 +99,12 @@ export async function GET(req: NextRequest) {
     let sortingOrder = `i.lastmodifieddate DESC`;
 
     if (sort) {
-      if (sort == "BestSelling" || sort == "priceAsc" || sort == "priceDesc")
+      if (
+        sort == "BestSelling" ||
+        sort == "priceAsc" ||
+        sort == "priceDesc" ||
+        sort == "Matchcode"
+      )
         sortingOrder = `i.lastmodifieddate DESC`;
       else if (sort == "nameAsc") sortingOrder = `i.displayname ASC`;
       else if (sort == "nameDesc") sortingOrder = `i.displayname DESC`;
@@ -111,7 +116,7 @@ export async function GET(req: NextRequest) {
     query = `
       SELECT i.id, i.displayname, i.itemid, i.stockunit,i.purchasedescription.i.itemprocessgroup,i.itemprocessfamily,
             i.custitem_shopify_img_1_url,i.custitem_shopify_img_2_url,i.custitem_shopify_img_3_url,i.custitem_shopify_img_4_url,
-              i.custitem_shopify_img_5_url,
+              i.custitem_shopify_img_5_url
       FROM item i
       ${whereClause}
       ORDER BY ${sortingOrder}

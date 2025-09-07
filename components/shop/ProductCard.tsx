@@ -8,10 +8,14 @@ interface ProductCardProps {
   itemid: string;
   title: string;
   image?: string;
-  priceRange?: [number, number];
+  // priceRange?: [number, number];
+  priceRange?: number;
+  price?: number;
   variants?: { label: string; value: string }[];
   inStock?: boolean;
   selCheckbox?: boolean;
+  isSelected: boolean;
+  onSelectChange: (checked: boolean) => void;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -19,10 +23,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
   itemid,
   title,
   image = "/placeholder.png",
-  priceRange = [8, 120],
+  // priceRange = [8, 120],
+  priceRange = 8,
+  price=8,
   variants = [],
   inStock = true,
   selCheckbox = false,
+  isSelected = false,
+  onSelectChange = () => {},
 }) => {
   const [quantity, setQuantity] = useState<number>(1);
   const [addedToCart, setAddedToCart] = useState<boolean>(false);
@@ -44,6 +52,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       title,
       image,
       priceRange,
+      price,
       quantity,
     });
     setAddedToCart(true);
@@ -55,9 +64,16 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <span className="bg-lemon text-black text-xs font-semibold px-3 py-1 rounded-full">
           {itemid}
         </span>
-        <label className="flex items-center ml-4">
-          <input type="checkbox" className="w-5 h-5 bg-lemon" />
-        </label>
+        {selCheckbox && (
+          <label className="flex items-center ml-4">
+            <input
+              type="checkbox"
+              checked={isSelected}
+              onChange={(e) => onSelectChange(e.target.checked)}
+              className="w-5 h-5 bg-lemon"
+            />
+          </label>
+        )}
       </div>
       <Link
         href={`/product/${itemid}`}
@@ -71,9 +87,17 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <h2 className="text-base font-semibold text-center mb-1">{title}</h2>
       </Link>
 
-      {priceRange[0] !== 0 && priceRange[1] !== 0 ? (
+      {/* {priceRange[0] !== 0 && priceRange[1] !== 0 ? (
         <div className="text-green-600 font-bold mb-1">
           € {priceRange[0].toFixed(2)} - € {priceRange[1].toFixed(2)}
+        </div>
+      ) : (
+        <div className="text-gray-500 mb-1">Price not available</div>
+      )} */}
+
+      {price !== 0 ? (
+        <div className="text-green-600 font-bold mb-1">
+          € {price.toFixed(2)}
         </div>
       ) : (
         <div className="text-gray-500 mb-1">Price not available</div>
@@ -88,7 +112,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           {inStock ? "Add to Cart" : "Out of Stock"}
         </button>
 
-        { inStock && addedToCart && (
+        {inStock && addedToCart && (
           <div className="quantity-control flex items-center gap-2 justify-center">
             <button
               className="border border-border rounded-full w-7 h-7 flex items-center justify-center bg-background text-foreground text-base"

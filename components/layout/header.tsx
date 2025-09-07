@@ -9,6 +9,8 @@ import { TopBar } from "./top-bar";
 import { Logo } from "../logo";
 import { ShopMainCategories } from "@/lib/menuData";
 import { useCartStore } from "@/store/useCartStore"; // Adjust path as needed
+import { useState } from "react";
+import CartSidebar from "@/components/cart/CartSidebar";
 
 const categories = [
   "Papers/Tips",
@@ -23,6 +25,10 @@ const categories = [
 export function Header() {
   const cart = useCartStore((state) => state.cart);
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+
+  // Inside your component
+  const [cartOpen, setCartOpen] = useState(false);
+
   /* z-20  */
   return (
     <header className="sticky top-0 left-0 right-0 z-50 bg-background border-b border-border">
@@ -63,9 +69,51 @@ export function Header() {
 
           {/* Desktop Navigation - Hidden on tablet and below */}
           {/* items-center justify-center  */}
-          <nav className="hidden md:flex flex-1 space-x-4 lg:space-x-8 max-w-6xl overflow-auto">
+          <nav className="hidden md:flex flex-1 space-x-4 lg:space-x-8 max-w-6xl">
+            {/* Home Link */}
+            <Link href="/">
+              <Button
+                variant="ghost"
+                className="text-base font-medium px-2 lg:px-4"
+              >
+                Home
+              </Button>
+            </Link>
+
+            {/* All Products Link */}
+            <Link href="/shop">
+              <Button
+                variant="ghost"
+                className="text-base font-medium px-2 lg:px-4"
+              >
+                All Products
+              </Button>
+            </Link>
+            {/* Categories Dropdown */}
+            <div className="relative group">
+              <Button
+                variant="ghost"
+                className="text-base font-medium px-2 lg:px-4"
+              >
+                Categories
+                <ChevronDown className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" />
+              </Button>
+
+              {/* Dropdown Panel */}
+              <div className="absolute left-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                {ShopMainCategories.map((category, index) => (
+                  <Link
+                    key={index}
+                    href={`/shop/${category.name.split(" ").join("-")}`}
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    {category.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
             {/* {categories.map((category, index) => ( */}
-            {ShopMainCategories.map((category, index) => (
+            {/* {ShopMainCategories.map((category, index) => (
               <div key={index} className="relative group">
                 <Link href={`/shop/${category.name.split(" ").join("-")}`}>
 
@@ -77,7 +125,7 @@ export function Header() {
                   </Button>
                 </Link>
               </div>
-            ))}
+            ))} */}
           </nav>
 
           {/* Actions */}
@@ -91,7 +139,21 @@ export function Header() {
                 <User className="h-5 w-5" />
               </Link>
             </Button>
-            <Button variant="ghost" size="icon" className="relative">
+
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative"
+              onClick={() => setCartOpen(true)}
+            >
+              <ShoppingCart className="h-5 w-5" />
+              <span className="absolute -top-1 -right-1 bg-lemon text-black text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                {useCartStore.getState().cart.length}
+              </span>
+            </Button>
+
+            <CartSidebar isOpen={cartOpen} onClose={() => setCartOpen(false)} />
+            {/* <Button variant="ghost" size="icon" className="relative">
               <Link href="/cart">
                 <ShoppingCart className="h-5 w-5" />
                 {cartCount > 0 && (
@@ -99,9 +161,8 @@ export function Header() {
                     {cartCount}
                   </span>
                 )}
-                {/* 0 */}
               </Link>
-            </Button>
+            </Button> */}
           </div>
         </div>
 

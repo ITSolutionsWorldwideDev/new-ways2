@@ -26,6 +26,8 @@ const ShopSort: React.FC<ShopSortProps> = ({ options, onSortChange }) => {
 
 const formatLabel = (key: string) => {
   switch (key) {
+    case "Matchcode":
+      return "Matchcode";
     case "BestSelling":
       return "Best Selling";
     case "priceAsc":

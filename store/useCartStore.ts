@@ -6,7 +6,9 @@ type CartItem = {
   itemid: string;
   title: string;
   image?: string;
-  priceRange?: [number, number];
+  // priceRange?: [number, number];
+  priceRange?: number;
+  price?: number | undefined;
   quantity: number;
 };
 
@@ -55,3 +57,40 @@ export const useCartStore = create<CartStore>()(
     }
   )
 );
+
+/* 
+
+export const useCartStore = create<CartState>()(
+  persist(
+    (set) => ({
+      cart: [],
+      addToCart: (item) =>
+        set((state) => {
+          const existing = state.cart.find((i) => i.itemid === item.itemid);
+          if (existing) {
+            return {
+              cart: state.cart.map((i) =>
+                i.itemid === item.itemid
+                  ? { ...i, quantity: i.quantity + item.quantity }
+                  : i
+              ),
+            };
+          }
+          return { cart: [...state.cart, item] };
+        }),
+      removeFromCart: (itemid) =>
+        set((state) => ({
+          cart: state.cart.filter((item) => item.itemid !== itemid),
+        })),
+      updateQuantity: (itemid, quantity) =>
+        set((state) => ({
+          cart: state.cart.map((item) =>
+            item.itemid === itemid ? { ...item, quantity } : item
+          ),
+        })),
+      clearCart: () => set({ cart: [] }),
+    }),
+    { name: "cart-storage" }
+  )
+);
+*/

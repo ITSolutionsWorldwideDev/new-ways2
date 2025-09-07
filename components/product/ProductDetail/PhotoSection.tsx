@@ -31,9 +31,8 @@ const PhotoSection = ({ data }: { data: Product }) => {
         </div>
       )}
 
-      { (
+      {
         <div className="flex items-center justify-center bg-[#F0EEED] rounded-[13px] sm:rounded-[20px] w-full sm:w-96 md:w-full mx-auto h-full max-h-[530px] min-h-[330px] lg:min-h-[380px] xl:min-h-[530px] overflow-hidden mb-3 lg:mb-0">
-
           <Image
             src={selected ?? "/dummy/img-product.png"}
             width={444}
@@ -44,9 +43,65 @@ const PhotoSection = ({ data }: { data: Product }) => {
             unoptimized
           />
         </div>
-      )}
+      }
     </div>
   );
 };
 
 export default PhotoSection;
+
+/* 
+// ✅ Gallery Section
+        <div className="w-full md:w-1/2">
+          <div className="relative">
+            <img
+              src={images[activeImage]}
+              alt={data.displayname}
+              className="w-full h-auto rounded"
+            />
+            // Arrows
+            {images.length > 1 && (
+              <>
+                <button
+                  onClick={() =>
+                    setActiveImage((prev) =>
+                      prev === 0 ? images.length - 1 : prev - 1
+                    )
+                  }
+                  className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white p-1 rounded-full shadow"
+                >
+                  <ChevronLeft />
+                </button>
+                <button
+                  onClick={() =>
+                    setActiveImage((prev) =>
+                      prev === images.length - 1 ? 0 : prev + 1
+                    )
+                  }
+                  className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white p-1 rounded-full shadow"
+                >
+                  <ChevronRight />
+                </button>
+              </>
+            )}
+          </div>
+
+        // Thumbnails
+          {images.length > 1 && (
+            <div className="flex gap-2 mt-4 overflow-x-auto">
+              {images.map((img, i) => (
+                <img
+                  key={i}
+                  src={img}
+                  alt={`thumb-${i}`}
+                  onClick={() => setActiveImage(i)}
+                  className={`w-16 h-16 object-cover border ${
+                    i === activeImage ? "border-black" : "border-gray-300"
+                  } cursor-pointer rounded`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+*/

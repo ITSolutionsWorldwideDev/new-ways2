@@ -8,10 +8,10 @@ import { cn } from "@/lib/utils";
 import { FaArrowRight } from "react-icons/fa6";
 import { MdOutlineLocalOffer } from "react-icons/md";
 import { TbBasketExclamation } from "react-icons/tb";
-import React from "react";
 import { RootState } from "@/lib/store";
 import { useAppSelector } from "@/lib/hooks/redux";
 import Link from "next/link";
+import React, { useState } from "react";
 import ShopBanner from "@/components/shop/ShopBanner";
 import { commonData } from "@/lib/commonData";
 import { useCartStore } from "@/store/useCartStore";
@@ -22,14 +22,7 @@ export default function CartPage() {
   ); */
 
   const cart = useCartStore((state) => state.cart);
-
-  /* return (
-  <div>
-    {cart.map(item => (
-      <div key={item.itemid}>{item.title} x {item.quantity}</div>
-    ))}
-  </div>
-); */
+  const [agreed, setAgreed] = useState(false);
 
   return (
     <>
@@ -44,7 +37,6 @@ export default function CartPage() {
             <div className="relative h-3 bg-muted rounded-full mx-auto max-w-xl">
               <div className="absolute top-0 left-0 h-3 bg-lemon rounded-full w-full transition-[width] duration-300"></div>
               <div className="absolute top-1/2 left-[calc(100%*0.99)] -translate-y-1/2 -translate-x-1/2">
-                {/* left-[calc(100%-16px)] */}
                 <svg
                   className="h-5 w-5 bg-background rounded-full border border-border p-1"
                   viewBox="0 0 24 24"
@@ -67,7 +59,7 @@ export default function CartPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border-b border-border last:border-none">
+                  {/* <tr className="border-b border-border last:border-none">
                     <td className="flex items-center gap-2 py-4">
                       <img
                         alt="'Rap' Organic Green Hemp - 3 KS Cones"
@@ -83,13 +75,8 @@ export default function CartPage() {
                       <div className="flex items-center gap-4">
                         <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
                           -
-                        </button>5
-                        {/* <input
-                          min="1"
-                          className="w-12 border border-border rounded px-2 py-1 text-center bg-background text-foreground"
-                          type="number"
-                          value="5"
-                        /> */}
+                        </button>
+                        5
                         <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
                           +
                         </button>
@@ -99,7 +86,7 @@ export default function CartPage() {
                     <td>
                       <button className="text-red-500 text-xs">Remove</button>
                     </td>
-                  </tr>
+                  </tr> */}
                   {/* <tr className="border-b border-border last:border-none">
                     <td className="flex items-center gap-2 py-4">
                       <img
@@ -136,7 +123,7 @@ export default function CartPage() {
 
                   {cart.map((item) => (
                     // <div key={item.itemid}>{item.title} x {item.quantity}</div>
-                    <tr className="border-b border-border last:border-none">
+                    <tr key={item.itemid} className="border-b border-border last:border-none">
                       <td className="flex items-center gap-2 py-4">
                         <img
                           alt="'Rap' Organic Green Hemp - 3 KS Cones"
@@ -257,20 +244,40 @@ export default function CartPage() {
                   Taxes and shipping calculated at checkout
                 </div>
                 <div className="flex items-center gap-2">
-                  <input id="agree" className="accent-lemon" type="checkbox" />
+                  <input
+                    id="agree"
+                    className="accent-lemon"
+                    type="checkbox"
+                    checked={agreed}
+                    onChange={() => setAgreed(!agreed)}
+                  />
                   <label className="text-xs">
-                    I agree with the
+                    I agree with the{" "}
                     <a href="/terms" target="_blank" className="underline">
                       terms and conditions
                     </a>
                   </label>
                 </div>
               </div>
+
               <Link href="/checkout">
+                <button
+                  disabled={!agreed}
+                  className={`px-4 py-2 text-white rounded ${
+                    agreed
+                      ? "bg-lemon hover:bg-lemon-dark"
+                      : "bg-gray-300 cursor-not-allowed"
+                  }`}
+                >
+                  Check out
+                </button>
+              </Link>
+
+              {/* <Link href="/checkout">
                 <button className="w-full bg-foreground text-background py-2 rounded-full text-base font-semibold">
                   Checkout
                 </button>
-              </Link>
+              </Link> */}
               <div className="flex gap-2 justify-center mt-2">
                 <img
                   alt="Visa"
@@ -460,7 +467,6 @@ export default function CartPage() {
 
 /* // /app/cart/page.tsx
 "use client";
-import { useCartStore } from "@/store/cartStore";
 import Link from "next/link";
 
 export default function CartPage() {

@@ -2,12 +2,14 @@
 "use client";
 import ShopBanner from "@/components/shop/ShopBanner";
 import { commonData } from "@/lib/commonData";
-// import { useCartStore } from "@/store/cartStore";
 import { useCartStore } from "@/store/useCartStore";
+import Link from "next/link";
+import React, { useState } from "react";
 
 export default function CheckoutPage() {
   // const { items, total, clearCart } = useCartStore();
-  const cart = useCartStore(state => state.cart);
+  const cart = useCartStore((state) => state.cart);
+  const [agreed, setAgreed] = useState(false);
 
   /* const handleCheckout = async () => {
     // Call backend API for payment processing
@@ -191,16 +193,32 @@ export default function CheckoutPage() {
               Taxes and shipping calculated at checkout
             </div>
             <div className="flex items-center gap-2">
-              <input id="agree" className="accent-lemon" type="checkbox" />
+              <input
+                id="agree"
+                className="accent-lemon"
+                type="checkbox"
+                checked={agreed}
+                onChange={() => setAgreed(!agreed)}
+              />
               <label className="text-xs">
-                I agree with the
+                I agree with the{" "}
                 <a href="/terms" target="_blank" className="underline">
                   terms and conditions
                 </a>
               </label>
             </div>
           </div>
-          <button className="w-full bg-foreground text-background py-2 rounded-full text-base font-semibold">
+          {/* <button className="w-full bg-foreground text-background py-2 rounded-full text-base font-semibold">
+            Place Order
+          </button> */}
+          <button
+            disabled={!agreed}
+            className={`w-full bg-foreground text-background py-2 rounded-full text-base font-semibold ${
+              agreed
+                ? "bg-lemon hover:bg-lemon-dark"
+                : "bg-gray-300 cursor-not-allowed"
+            }`}
+          >
             Place Order
           </button>
         </div>
@@ -208,31 +226,3 @@ export default function CheckoutPage() {
     </>
   );
 }
-
-/* return (
-  <div className="p-8">
-    <h1 className="text-2xl mb-4">Checkout</h1>
-    {items.map((item) => (
-      <div key={item.id} className="flex justify-between border-b py-2">
-        <span>{item.name} (x{item.quantity})</span>
-        <span>${item.price * item.quantity}</span>
-      </div>
-    ))}
-    <h2 className="text-xl mt-4">Total: ${total()}</h2>
-
-    <form className="mt-4 grid gap-2">
-      <input className="border p-2" placeholder="Full Name" />
-      <input className="border p-2" placeholder="Address" />
-      <input className="border p-2" placeholder="Email" />
-      <button
-        type="button"
-        onClick={handleCheckout}
-        className="bg-green-600 text-white px-4 py-2 rounded"
-      >
-        Pay Now
-      </button>
-    </form>
-  </div>
-);
-}
-*/

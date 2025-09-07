@@ -1,82 +1,86 @@
-import React from "react";
+import React, { use, useEffect, useState } from "react";
+import { useCartStore } from "@/store/useCartStore";
 import PhotoSection from "./PhotoSection";
 import { Product } from "@/types/product.types";
 // import { integralCF } from "@/styles/fonts";
 import { cn } from "@/lib/utils";
 import Rating from "@/components/ui/Rating";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
 // import ColorSelection from "./ColorSelection";
 // import SizeSelection from "./SizeSelection";
 import AddToCardSection from "./AddToCardSection";
+import Tabs from "@/components/product/Tabs";
 
 const ProductDetail = ({ data }: { data: Product }) => {
+  /* const [quantity, setQuantity] = useState<number>(1);
+  const [addedToCart, setAddedToCart] = useState<boolean>(false);
+
+  const addToCart = useCartStore((state) => state.addToCart);
+
+  const increaseQty = () => {
+    setQuantity((prev) => prev + 1);
+  };
+
+  const decreaseQty = () => {
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  }; */
+
+  const [quantity, setQuantity] = useState<number>(1);
+  const [addedToCart, setAddedToCart] = useState<boolean>(false);
+  const [activeImage, setActiveImage] = useState(0);
+
+  const increaseQty = () => setQuantity((q) => q + 1);
+  const decreaseQty = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
+
+  const images = [data.srcUrl, ...(data.gallery ?? [])];
+
+  const addToCart = useCartStore((state) => state.addToCart);
+
+  const handleAddToCart = () => {
+    addToCart({
+      id: String(data.id),
+      itemid: data.itemid,
+      title: data.displayname,
+      image: data.srcUrl,
+      priceRange: calculateFinalPrice(),
+      price: calculateFinalPrice(),
+      // priceRange: [calculateFinalPrice(), calculateFinalPrice()],
+      quantity,
+    });
+    setAddedToCart(true);
+  };
+
+  const calculateFinalPrice = () => {
+    if (data.discount?.type === "percentage") {
+      return data.price - (data.discount.value / 100) * data.price;
+    } else if (data.discount?.type === "fixed") {
+      return data.price - data.discount.value;
+    }
+    return data.price;
+  };
+
   return (
     <>
       <div className="container mx-auto py-8 mt-[20px]">
         <div className="flex gap-8">
           <div className="w-1/2">
-          <PhotoSection data={data} />
-            {/* <div className="flex flex-row gap-4 items-start h-full w-full">
-              <div className="flex flex-col gap-2">
-                <button className="border rounded w-16 h-16 p-1 bg-background border-foreground">
-                  <img
-                    alt="Thumbnail 1"
-                    className="object-contain w-full h-full"
-                    src="/dummy/img-product.png"
-                  />
-                </button>
-                <button className="border rounded w-16 h-16 p-1 bg-background border-border">
-                  <img
-                    alt="Thumbnail 2"
-                    className="object-contain w-full h-full"
-                    src="/dummy/img-product.png"
-                  />
-                </button>
-                <button className="border rounded w-16 h-16 p-1 bg-background border-border">
-                  <img
-                    alt="Thumbnail 3"
-                    className="object-contain w-full h-full"
-                    src="/dummy/img-product.png"
-                  />
-                </button>
-                <button className="border rounded w-16 h-16 p-1 bg-background border-border">
-                  <img
-                    alt="Thumbnail 4"
-                    className="object-contain w-full h-full"
-                    src="/dummy/img-product.png"
-                  />
-                </button>
-                <div className="flex flex-col gap-2 mt-2">
-                  <button className="px-2 py-1 border border-border rounded bg-background text-foreground">
-                    ↑
-                  </button>
-                  <button className="px-2 py-1 border border-border rounded bg-background text-foreground">
-                    ↓
-                  </button>
-                </div>
-              </div>
-              <div className="flex-1 h-[480px] border border-border rounded flex items-center justify-center bg-background min-w-0">
-                <img
-                  alt="Product image 1"
-                  className="object-contain w-full h-full"
-                  src="/dummy/img-product.png"
-                />
-              </div>
-            </div> */}
+            <PhotoSection data={data} />
           </div>
           <div className="w-1/2 flex flex-col gap-2">
             <div className="flex items-center gap-2 mb-2">
               <span className="bg-muted px-2 py-1 rounded text-xs">
-                {/* CS309-D18  --  */}{data?.itemid}
+                {data?.itemid}
               </span>
             </div>
             <h1 className="text-2xl font-bold mb-2">{data?.displayname}</h1>
-            <div className="flex items-center gap-2 mb-2">
+            {/* <div className="flex items-center gap-2 mb-2">
               <span className="text-yellow-500">★★★★★</span>
               <span className="text-xs text-muted-foreground">(5 reviews)</span>
-            </div>
+            </div> */}
             <div className="flex items-center mb-3 sm:mb-3.5">
               <Rating
-                initialValue={data.rating}
+                initialValue={data?.rating}
                 allowFraction
                 SVGclassName="inline-block"
                 emptyClassName="fill-gray-50"
@@ -89,13 +93,28 @@ const ProductDetail = ({ data }: { data: Product }) => {
               </span>
             </div>
             <div className="flex items-center gap-4 mb-2">
-              <span className="text-2xl font-bold text-foreground">$60.00</span>
-              <span className="line-through text-muted-foreground text-lg">
+              <span className="text-2xl font-bold text-foreground">
+                €{calculateFinalPrice()?.toFixed(2)}
+              </span>
+
+              {data.discount && (
+                <>
+                  <span className="line-through text-gray-400 text-lg ml-2">
+                    €{data.price.toFixed(2)}
+                  </span>
+                  <span className="bg-green-500 text-white px-2 py-1 ml-2 rounded text-xs">
+                    {data.discount.type === "percentage"
+                      ? `${data.discount.value}% OFF`
+                      : `€${data.discount.value} OFF`}
+                  </span>
+                </>
+              )}
+              {/* <span className="line-through text-muted-foreground text-lg">
                 $80.00
               </span>
               <span className="bg-foreground text-background px-2 py-1 rounded text-xs">
                 20% OFF
-              </span>
+              </span> */}
             </div>
             <div className="flex items-center gap-2 mb-2">
               <span className="text-green-600 dark:text-green-400 font-semibold">
@@ -106,22 +125,78 @@ const ProductDetail = ({ data }: { data: Product }) => {
               </span>
             </div>
             <div className="flex items-center gap-2 mb-4">
-              <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
+              <button
+                onClick={decreaseQty}
+                className="border border-border px-2 py-1 rounded bg-background text-foreground"
+              >
                 -
               </button>
-              <span>1</span>
-              <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
+              <span>{quantity}</span>
+              <button
+                onClick={increaseQty}
+                className="border border-border px-2 py-1 rounded bg-background text-foreground"
+              >
                 +
               </button>
             </div>
             <div className="flex gap-4 mb-4">
-              <button className="bg-muted text-foreground px-4 py-2 rounded border border-border">
-                Add to cart
+              <button
+                onClick={handleAddToCart}
+                className="bg-muted text-foreground px-4 py-2 rounded border border-border"
+              >
+                {addedToCart ? "Added!" : "Add to Cart"}
               </button>
               <button className="bg-foreground text-background px-4 py-2 rounded">
                 Buy it now
               </button>
             </div>
+          </div>
+
+          {/* <p className="mt-6 text-gray-700">{data.purchasedescription}</p> */}
+        </div>
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="border border-border rounded-lg p-6 bg-background">
+            <div className="font-semibold mb-4 text-foreground">
+              Frequently Bought Together
+            </div>
+            <div className="flex gap-4 items-center mb-4">
+              <img
+                className="w-20 h-20 object-contain"
+                src="/dummy/img-product.png"
+              />
+              <span className="text-2xl font-bold text-foreground">+</span>
+              <img
+                className="w-20 h-20 object-contain"
+                src="/dummy/img-product.png"
+              />
+              <span className="text-2xl font-bold text-foreground">+</span>
+              <img
+                className="w-20 h-20 object-contain"
+                src="/dummy/img-product.png"
+              />
+            </div>
+            <ul className="mb-4">
+              <li className="text-foreground">
+                Single Breasted Blazer{" "}
+                <span className="float-right">$130.00</span>
+              </li>
+              <li className="text-foreground">
+                Single Breasted Blazer{" "}
+                <span className="float-right">$130.00</span>
+              </li>
+              <li className="text-foreground">
+                Single Breasted Blazer{" "}
+                <span className="float-right">$130.00</span>
+              </li>
+            </ul>
+            <div className="font-bold mb-4 text-foreground">
+              Total Price: $240.00
+            </div>
+            <button className="w-full bg-foreground text-background py-2 rounded">
+              Add selected to Cart
+            </button>
+          </div>
+          <div className="border border-border rounded-lg p-6 bg-background">
             <div className="flex gap-4 text-sm mb-4">
               <button className="underline text-muted-foreground">
                 Ask a question
@@ -170,166 +245,8 @@ const ProductDetail = ({ data }: { data: Product }) => {
             </div>
           </div>
         </div>
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="border border-border rounded-lg p-6 bg-background">
-            <div className="font-semibold mb-4 text-foreground">
-              Frequently Bought Together
-            </div>
-            <div className="flex gap-4 items-center mb-4">
-              <img
-                className="w-20 h-20 object-contain"
-                src="/dummy/img-product.png"
-              />
-              <span className="text-2xl font-bold text-foreground">+</span>
-              <img
-                className="w-20 h-20 object-contain"
-                src="/dummy/img-product.png"
-              />
-              <span className="text-2xl font-bold text-foreground">+</span>
-              <img
-                className="w-20 h-20 object-contain"
-                src="/dummy/img-product.png"
-              />
-            </div>
-            <ul className="mb-4">
-              <li className="text-foreground">
-                Single Breasted Blazer{" "}
-                <span className="float-right">$130.00</span>
-              </li>
-              <li className="text-foreground">
-                Single Breasted Blazer{" "}
-                <span className="float-right">$130.00</span>
-              </li>
-              <li className="text-foreground">
-                Single Breasted Blazer{" "}
-                <span className="float-right">$130.00</span>
-              </li>
-            </ul>
-            <div className="font-bold mb-4 text-foreground">
-              Total Price: $240.00
-            </div>
-            <button className="w-full bg-foreground text-background py-2 rounded">
-              Add selected to Cart
-            </button>
-          </div>
-          <div className="border border-border rounded-lg p-6 bg-background">
-            <div className="font-semibold mb-4 text-foreground">
-              Customer review
-            </div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-yellow-500">★★★★☆</span>
-              <span className="text-xs text-muted-foreground">(23)</span>
-              <span className="ml-2 text-foreground">4.5/5.0</span>
-            </div>
-            <div className="mb-4">
-              <div className="flex items-center gap-2 text-xs">
-                <span>5★</span>
-                <span className="w-24 bg-muted h-2 rounded">
-                  <span className="block bg-foreground h-2 rounded w-[80%]"></span>
-                </span>
-                <span>10</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs">
-                <span>4★</span>
-                <span className="w-24 bg-muted h-2 rounded">
-                  <span className="block bg-foreground h-2 rounded w-[50%]"></span>
-                </span>
-                <span>5</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs">
-                <span>3★</span>
-                <span className="w-24 bg-muted h-2 rounded">
-                  <span className="block bg-foreground h-2 rounded  w-[30%]"></span>
-                </span>
-                <span>3</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs">
-                <span>2★</span>
-                <span className="w-24 bg-muted h-2 rounded">
-                  <span className="block bg-foreground h-2 rounded  w-[10%]"></span>
-                </span>
-                <span>3</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs">
-                <span>1★</span>
-                <span className="w-24 bg-muted h-2 rounded">
-                  <span className="block bg-foreground h-2 rounded  w-[10%]"></span>
-                </span>
-                <span>3</span>
-              </div>
-            </div>
-            <button className="bg-foreground text-background px-4 py-2 rounded mb-4">
-              Write a review
-            </button>
-            <div className="mb-4">
-              <div className="mb-2 font-semibold text-foreground">
-                Emily R.
-                <span className="text-xs text-muted-foreground ml-2">
-                  Mar 3rd, 2025
-                </span>
-                <span className="text-yellow-500">★★★★★</span>
-              </div>
-              <div className="text-sm text-muted-foreground mb-2">
-                Great seller, everything was as expected even threw in a free
-                gift, which was a nice touch already reordered
-              </div>
-              <div className="mb-2 font-semibold text-foreground">
-                James L.
-                <span className="text-xs text-muted-foreground ml-2">
-                  Mar 3rd, 2025
-                </span>
-                <span className="text-yellow-500">★★★★★</span>
-              </div>
-              <div className="text-sm text-muted-foreground mb-2">
-                Great seller, everything was as expected even threw in a free
-                gift, which was a nice touch already reordered
-              </div>
-              <div className="mb-2 font-semibold text-foreground">
-                Sophia M.
-                <span className="text-xs text-muted-foreground ml-2">
-                  Mar 3rd, 2025
-                </span>
-                <span className="text-yellow-500">★★★★★</span>
-              </div>
-              <div className="text-sm text-muted-foreground mb-2">
-                Great seller, everything was as expected even threw in a free
-                gift, which was a nice touch already reordered
-              </div>
-            </div>
-            <div className="mt-4">
-              <div className="font-semibold mb-2 text-foreground">
-                Write a review
-              </div>
-              <form className="flex flex-col gap-2">
-                <div className="flex gap-2 items-center">
-                  <span className="text-foreground">Your rating</span>
-                  <span className="text-yellow-500">☆☆☆☆☆</span>
-                </div>
-                <input
-                  placeholder="Name *"
-                  className="border border-border rounded px-2 py-1 bg-background text-foreground"
-                  type="text"
-                />
-                <input
-                  placeholder="Email *"
-                  className="border border-border rounded px-2 py-1 bg-background text-foreground"
-                  type="email"
-                />
-                <textarea
-                  placeholder="Your review *"
-                  className="border border-border rounded px-2 py-1 bg-background text-foreground"
-                ></textarea>
-                <label className="flex items-center gap-2 text-xs text-foreground">
-                  <input type="checkbox" /> Save my name, email, and website in
-                  this browser for the next time I comment.
-                </label>
-                <button className="bg-foreground text-background px-4 py-2 rounded mt-2">
-                  Submit
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
+
+       <Tabs rating={data.rating} reviewData={{}} />
         <div className="mt-12">
           <div className="font-semibold text-xl mb-4 text-foreground">
             Related Products

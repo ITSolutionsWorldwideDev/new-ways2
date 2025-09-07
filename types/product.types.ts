@@ -3,7 +3,7 @@ export type Discount = {
   percentage: number;
 };
 
-export type Product = {
+/* export type Product = {
   id: number;
   itemid: string;
   displayname: string;
@@ -12,5 +12,20 @@ export type Product = {
   gallery?: string[];
   price: number;
   discount: Discount;
+  rating: number;
+}; */
+
+export type Product = {
+  id: number;
+  itemid: string;
+  displayname: string;
+  purchasedescription: string;
+  srcUrl: string;
+  gallery?: string[];
+  price: number;
+  discount: {
+    type: "percentage" | "fixed";
+    value: number;
+  };
   rating: number;
 };

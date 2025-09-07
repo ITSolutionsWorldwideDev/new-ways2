@@ -5,42 +5,30 @@ import { use, useEffect, useState } from "react";
 import Image from "next/image";
 import BreadcrumbProduct from "@/components/product/BreadcrumbProduct";
 import ProductDetail from "@/components/product/ProductDetail";
-import { Product } from "@/types/product.types";
+
 import Loading from "@/components/ui/Loading";
 
-interface ProductCardProps {
+/* interface ProductCardProps {
   id: string;
   itemid: string;
   title: string;
   image?: string;
-  priceRange?: [number, number];
+  // priceRange?: [number, number];
+  priceRange?: number;
+  price?: number;
   variants?: { label: string; value: string }[];
   inStock?: boolean;
   selCheckbox?: boolean;
-}
+} */
 
 const ProductPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
   const { slug } = use(params); // unwrap params
   const [itemid] = slug;
   const [product, setProduct] = useState<any>(null);
-  // const addItem = useCartStore((state) => state.addItem);
-  const [loading, setLoading] = useState(false);
 
-  const [quantity, setQuantity] = useState<number>(1);
-    const [addedToCart, setAddedToCart] = useState<boolean>(false);
-  
-    const addToCart = useCartStore((state) => state.addToCart);
-  
-    const increaseQty = () => {
-      setQuantity((prev) => prev + 1);
-    };
-  
-    const decreaseQty = () => {
-      setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
-    };
 
   const fetchItems = async (id: any) => {
-    setLoading(true);
+    // setLoading(true);
     try {
       const res = await fetch(`/api/items?id=${itemid}`);
       const data = await res.json();
@@ -49,7 +37,7 @@ const ProductPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
     } catch (err) {
       console.error("Failed to fetch items:", err);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
@@ -96,27 +84,20 @@ const ProductPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
 
         <div className="container mx-auto flex flex-col gap-6">
           <div className="flex items-center">
-            <div className="max-w-frame mx-auto px-4 xl:px-0">
+            {/* max-w-frame */}
+            <div className="w-full mx-auto px-4 xl:px-0">
               <hr className="h-[1px] border-t-black/10 mb-5 sm:mb-6" />
               <BreadcrumbProduct title={product?.displayname ?? "product"} />
               <section className="mb-11">
                 <ProductDetail data={product} />
               </section>
-              {/* <Tabs /> */}
             </div>
-            {/* <div className="mb-[50px] sm:mb-20">
-          <ProductListSec
-            title="You might also like"
-            data={relatedProductData}
-          />
-        </div> */}
           </div>
         </div>
       </main>
     </div>
   );
 
-  //   return <div>Product ID: {id}</div>;
 };
 
 export default ProductPage;
