@@ -69,7 +69,7 @@ export function Header() {
 
           {/* Desktop Navigation - Hidden on tablet and below */}
           {/* items-center justify-center  */}
-          <nav className="hidden md:flex flex-1 space-x-4 lg:space-x-8 max-w-6xl">
+          <nav className="hidden md:flex flex-1 space-x-4 lg:space-x-8 max-w-6xl justify-center">
             {/* Home Link */}
             <Link href="/">
               <Button
