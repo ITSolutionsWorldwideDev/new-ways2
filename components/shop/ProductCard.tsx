@@ -89,7 +89,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
       {/* {priceRange[0] !== 0 && priceRange[1] !== 0 ? (
         <div className="text-green-600 font-bold mb-1">
-          € {priceRange[0].toFixed(2)} - € {priceRange[1].toFixed(2)}
+          $ {priceRange[0].toFixed(2)} - $ {priceRange[1].toFixed(2)}
         </div>
       ) : (
         <div className="text-gray-500 mb-1">Price not available</div>
@@ -97,7 +97,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
       {price !== 0 ? (
         <div className="text-green-600 font-bold mb-1">
-          € {price.toFixed(2)}
+          $ {price.toFixed(2)}
         </div>
       ) : (
         <div className="text-gray-500 mb-1">Price not available</div>
@@ -162,7 +162,7 @@ bg-black text-white px-4 py-1 rounded w-full disabled:opacity-50
 
 
 <div className="text-green-600 font-bold mb-1">
-      € {priceRange[0].toFixed(2)} – € {priceRange[1].toFixed(2)}
+      $ {priceRange[0].toFixed(2)} – $ {priceRange[1].toFixed(2)}
     </div>
     <select className="border rounded px-2 py-1 mb-2 w-full">
       {variants.map((v) => (

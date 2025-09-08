@@ -208,7 +208,7 @@ export default function CartPage() {
                 <div className="flex justify-between items-center text-lg font-bold">
                   <span>Total:</span>
                   {/* <span>$100.00 USD</span> */}
-                  <span>€{total.toFixed(2)}</span>
+                  <span>${total.toFixed(2)}</span>
                 </div>
                 <div className="text-xs text-muted-foreground">
                   Taxes and shipping calculated at checkout

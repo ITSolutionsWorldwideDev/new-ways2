@@ -28,8 +28,16 @@ async function startPayment(amount?: number, customerEmail?: string) {
   }
 }
 
+const countries = [
+  { id: "NL", refName: "Netherlands" },
+  { id: "DE", refName: "Germany" },
+  { id: "FR", refName: "France" },
+  { id: "BE", refName: "Belgium" },
+  { id: "UK", refName: "United Kingdom" },
+  // Add more as needed
+];
+
 export default function CheckoutPage() {
-  // const { items, total, clearCart } = useCartStore();
   const cart = useCartStore((state) => state.cart);
   const [agreed, setAgreed] = useState(false);
 
@@ -46,7 +54,8 @@ export default function CheckoutPage() {
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
-    country: "",
+    country: { id: "NL", refName: "Netherlands" }, // Default to NL
+    // country: "",
     address: "",
     city: "",
     zip: "",
@@ -72,6 +81,10 @@ export default function CheckoutPage() {
     const errs: Record<string, string> = {};
     if (!form.firstName) errs.firstName = "First name is required";
     if (!form.lastName) errs.lastName = "Last name is required";
+
+    if (!form.country?.id) {
+      errs.country = "Country is required";
+    }
 
     if (!form.email.trim()) {
       errs.email = "Email is required";
@@ -196,14 +209,39 @@ export default function CheckoutPage() {
                 )}
               </div>
             </div>
-            <input
+            {/* <input
               name="country"
               placeholder="Country"
               className="border border-border rounded px-4 py-2 w-full bg-background text-foreground"
               type="text"
               value={form.country}
               onChange={handleChange}
-            />
+            /> */}
+
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              Country *
+            </label>
+            <select
+              name="country"
+              value={form.country.id}
+              onChange={(e) => {
+                const selected = countries.find((c) => c.id === e.target.value);
+                if (selected) {
+                  setForm({ ...form, country: selected });
+                }
+              }}
+              className="w-full border border-gray-300 rounded px-3 py-2"
+            >
+              {countries.map((country) => (
+                <option key={country.id} value={country.id}>
+                  {country.refName}
+                </option>
+              ))}
+            </select>
+            {errors.country && (
+              <p className="text-red-500 text-sm">{errors.country}</p>
+            )}
+
             <input
               name="address"
               placeholder="Address"

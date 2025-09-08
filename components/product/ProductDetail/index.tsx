@@ -94,18 +94,18 @@ const ProductDetail = ({ data }: { data: Product }) => {
             </div>
             <div className="flex items-center gap-4 mb-2">
               <span className="text-2xl font-bold text-foreground">
-                €{calculateFinalPrice()?.toFixed(2)}
+                ${calculateFinalPrice()?.toFixed(2)}
               </span>
 
               {data.discount && (
                 <>
                   <span className="line-through text-gray-400 text-lg ml-2">
-                    €{data.price.toFixed(2)}
+                    ${data.price.toFixed(2)}
                   </span>
                   <span className="bg-green-500 text-white px-2 py-1 ml-2 rounded text-xs">
                     {data.discount.type === "percentage"
                       ? `${data.discount.value}% OFF`
-                      : `€${data.discount.value} OFF`}
+                      : `$${data.discount.value} OFF`}
                   </span>
                 </>
               )}

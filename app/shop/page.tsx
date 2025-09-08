@@ -261,8 +261,8 @@ const ShopPage = () => {
                     price= {product?.price}
                     variants={
                       product?.variants ?? [
-                        { label: "8.00 € | 1 pcs", value: "1" },
-                        { label: "120.00 € | 10 pcs", value: "10" },
+                        { label: "8.00 $ | 1 pcs", value: "1" },
+                        { label: "120.00 $ | 10 pcs", value: "10" },
                       ]
                     }
                     inStock={(product?.stockunit ?? 0) > 0}

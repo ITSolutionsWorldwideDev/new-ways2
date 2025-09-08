@@ -68,7 +68,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
                     </div>
                     <div className="flex gap-2 items-center font-medium text-[14px] align-middle">
                       <span className="text-green-600 font-bold">
-                        {/* €{item.price?item.price:8} x {item.quantity} */}€
+                        {/* ${item.price?item.price:8} x {item.quantity} */}$
                         {item.price ? item.price : 8 * item.quantity}
                       </span>
                     </div>
@@ -113,7 +113,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
               <div className="flex flex-col gap-2 mb-4">
                 <div className="flex justify-between items-center text-lg font-bold">
                   <span>Total:</span>
-                  <span>€{total.toFixed(2)}</span>
+                  <span>${total.toFixed(2)}</span>
                 </div>
                 <div className="text-xs text-gray-500">
                   Taxes and shipping calculated at checkout
@@ -174,7 +174,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
                             <div className="flex-1">
                                 <h4 className="text-sm font-medium">{item.title}</h4>
                                 <p className="text-xs text-gray-500">
-                                    €{item.priceRange} x {item.quantity}
+                                    ${item.priceRange} x {item.quantity}
                                 </p>
                             </div>
                             <div className="flex items-center gap-1">
@@ -207,7 +207,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
                 <div className="p-4 border-t">
                     <div className="flex justify-between font-semibold text-sm mb-2">
                         <span>Total:</span>
-                        <span>€{total.toFixed(2)}</span>
+                        <span>${total.toFixed(2)}</span>
                     </div>
                     <Link href="/checkout">
                         <button className="w-full bg-black text-white py-2 text-sm rounded">

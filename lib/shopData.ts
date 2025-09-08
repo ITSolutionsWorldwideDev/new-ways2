@@ -44,8 +44,8 @@ export const shopData = {
       image: "/dummy/deal-1.png",
       priceRange: [8, 120],
       variants: [
-        { label: "8.00 € | 1 pcs", value: "1" },
-        { label: "120.00 € | 10 pcs", value: "10" },
+        { label: "8.00 $ | 1 pcs", value: "1" },
+        { label: "120.00 $ | 10 pcs", value: "10" },
       ],
       inStock: true,
     },
@@ -56,8 +56,8 @@ export const shopData = {
       image: "/dummy/deal-1.png",
       priceRange: [8, 120],
       variants: [
-        { label: "8.00 € | 1 pcs", value: "1" },
-        { label: "120.00 € | 10 pcs", value: "10" },
+        { label: "8.00 $ | 1 pcs", value: "1" },
+        { label: "120.00 $ | 10 pcs", value: "10" },
       ],
       inStock: true,
     },
@@ -68,8 +68,8 @@ export const shopData = {
       image: "/dummy/deal-1.png",
       priceRange: [8, 120],
       variants: [
-        { label: "8.00 € | 1 pcs", value: "1" },
-        { label: "120.00 € | 10 pcs", value: "10" },
+        { label: "8.00 $ | 1 pcs", value: "1" },
+        { label: "120.00 $ | 10 pcs", value: "10" },
       ],
       inStock: true,
     },
