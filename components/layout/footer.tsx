@@ -13,7 +13,7 @@ export default function Footer() {
             <a href="/faq" className="hover:text-white">
               FAQ
             </a>
-            <a href="#" className="hover:text-white">
+            <a href="/terms" className="hover:text-white">
               Terms of Service
             </a>
             <a href="#" className="hover:text-white">

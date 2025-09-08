@@ -9,8 +9,11 @@ import { TopBar } from "./top-bar";
 import { Logo } from "../logo";
 import { ShopMainCategories } from "@/lib/menuData";
 import { useCartStore } from "@/store/useCartStore"; // Adjust path as needed
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CartSidebar from "@/components/cart/CartSidebar";
+
+// import { useRouter } from "next/router";
+// import { useRouter } from "next/navigation"; 
 
 const categories = [
   "Papers/Tips",
@@ -28,6 +31,24 @@ export function Header() {
 
   // Inside your component
   const [cartOpen, setCartOpen] = useState(false);
+
+  // const router = useRouter();
+
+  // To open cart
+  const openCart = () => setCartOpen(true);
+
+  // To close cart
+  const closeCart = () => setCartOpen(false);
+
+  // Close cart on route change
+  // useEffect(() => {
+  //   const handleRouteChange = () => {
+  //     setCartOpen(false);
+  //   };
+
+  //   router.events.on("routeChangeStart", handleRouteChange);
+  //   return () => router.events.off("routeChangeStart", handleRouteChange);
+  // }, [router]);
 
   /* z-20  */
   return (

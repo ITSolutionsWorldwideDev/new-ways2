@@ -22,5 +22,11 @@ export const commonData = {
     image: "/default-header.png",
     breadcrumb: ["Home", "FAQ"],
     description: ""
+  },
+  termsbanner: {
+    title: "Terms of service",
+    image: "/default-header.png",
+    breadcrumb: ["Home", "Terms"],
+    description: ""
   }
 }

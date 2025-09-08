@@ -16,7 +16,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
 
   const [agreed, setAgreed] = useState(false);
 
-  console.log(cart);
+  //   console.log(cart);
   // item.priceRange?item.priceRange:
 
   const total = cart.reduce(
@@ -30,7 +30,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
         isOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >
-        {/*   sm:max-w-sm */}
+      {/*   sm:max-w-sm */}
       <div className="fixed z-50 gap-4 right-0 bg-background p-6 shadow-lg transition ease-in-out w-full h-full">
         <div className="flex items-start justify-between px-4 py-3">
           <h2 className="text-foreground text-lg font-bold mb-4">
@@ -48,57 +48,59 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
         <div>
-          {cart.length === 0 ? (
-            <p className="text-gray-500">Cart is empty</p>
-          ) : (
-            cart.map((item) => (
-              <div
-                key={item.itemid}
-                className="flex items-center gap-2 mb-4 border-b pb-4"
-              >
-                <img
-                  src={item.image ?? "/dummy/img-product.png"}
-                  alt={item.title}
-                  className="w-16 h-16 object-contain"
-                />
-                <div className="flex-1">
-                  <div className="font-medium text-[14px] align-middle">
-                    {item.title}
+          <div className="max-h-96 mb-4 overflow-y-auto">
+            {cart.length === 0 ? (
+              <p className="text-gray-500">Cart is empty</p>
+            ) : (
+              cart.map((item) => (
+                <div
+                  key={item.itemid}
+                  className="flex items-center gap-2 mb-4 border-b pb-4"
+                >
+                  <img
+                    src={item.image ?? "/dummy/img-product.png"}
+                    alt={item.title}
+                    className="w-16 h-16 object-contain"
+                  />
+                  <div className="flex-1">
+                    <div className="font-medium text-[14px] align-middle">
+                      <Link href={`/product/${item.itemid}`}>{item.title}</Link>
+                    </div>
+                    <div className="flex gap-2 items-center font-medium text-[14px] align-middle">
+                      <span className="text-green-600 font-bold">
+                        {/* €{item.price?item.price:8} x {item.quantity} */}€
+                        {item.price ? item.price : 8 * item.quantity}
+                      </span>
+                    </div>
+                    <button
+                      className="mr-2 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground w-6 h-6"
+                      onClick={() =>
+                        updateQuantity(item.itemid, item.quantity - 1)
+                      }
+                    >
+                      −
+                    </button>
+                    <span>{item.quantity}</span>
+                    <button
+                      onClick={() =>
+                        updateQuantity(item.itemid, item.quantity + 1)
+                      }
+                      className="ml-2 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground w-6 h-6"
+                    >
+                      +
+                    </button>
                   </div>
-                  <div className="flex gap-2 items-center font-medium text-[14px] align-middle">
-                    <span className="text-green-600 font-bold">
-                      {/* €{item.price?item.price:8} x {item.quantity} */}€
-                      {item.price ? item.price : 8 * item.quantity}
-                    </span>
-                  </div>
+
                   <button
-                    className="mr-2 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground w-6 h-6"
-                    onClick={() =>
-                      updateQuantity(item.itemid, item.quantity - 1)
-                    }
+                    onClick={() => removeFromCart(item.itemid)}
+                    className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-10 w-10 text-red-500"
                   >
-                    −
-                  </button>
-                  <span>{item.quantity}</span>
-                  <button
-                    onClick={() =>
-                      updateQuantity(item.itemid, item.quantity + 1)
-                    }
-                    className="ml-2 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground w-6 h-6"
-                  >
-                    +
+                    ×
                   </button>
                 </div>
-
-                <button
-                  onClick={() => removeFromCart(item.itemid)}
-                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-10 w-10 text-red-500"
-                >
-                  ×
-                </button>
-              </div>
-            ))
-          )}
+              ))
+            )}
+          </div>
 
           <div className="mb-4">
             <textarea
@@ -125,7 +127,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
                     onChange={() => setAgreed(!agreed)}
                   />
                   <label className="text-xs">
-                    I agree with the{' '}
+                    I agree with the{" "}
                     <a href="/terms" target="_blank" className="underline">
                       terms and conditions
                     </a>
@@ -137,10 +139,10 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
                 <Link href="/checkout">
                   <button
                     disabled={!agreed}
-                    className={`px-4 py-2 text-white rounded ${
+                    className={`px-4 py-2 border rounded-full  ${
                       agreed
-                        ? "bg-lemon hover:bg-lemon-dark"
-                        : "bg-gray-300 cursor-not-allowed"
+                        ? "bg-lemon hover:bg-lemon-dark border border-gray-300 text-black"
+                        : "cursor-not-allowed"
                     }`}
                   >
                     {/* className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 flex-1 text-base py-2 rounded-full" */}

@@ -24,6 +24,13 @@ export default function CartPage() {
   const cart = useCartStore((state) => state.cart);
   const [agreed, setAgreed] = useState(false);
 
+  const { removeFromCart, updateQuantity } = useCartStore();
+
+  const total = cart.reduce(
+    (sum, item) => sum + (item.price ? item.price : 8) * item.quantity,
+    0
+  );
+
   return (
     <>
       <ShopBanner {...commonData.cartbanner} />
@@ -59,83 +66,33 @@ export default function CartPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {/* <tr className="border-b border-border last:border-none">
-                    <td className="flex items-center gap-2 py-4">
-                      <img
-                        alt="'Rap' Organic Green Hemp - 3 KS Cones"
-                        className="w-16 h-16 object-contain"
-                        src="/dummy/img-product.png"
-                      />
-                      <span className="font-semibold">
-                        'Rap' Organic Green Hemp - 3 KS Cones
-                      </span>
-                    </td>
-                    <td className="pr-8">$8.00</td>
-                    <td className="pr-8">
-                      <div className="flex items-center gap-4">
-                        <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
-                          -
-                        </button>
-                        5
-                        <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
-                          +
-                        </button>
-                      </div>
-                    </td>
-                    <td className="pr-8">$40.00</td>
-                    <td>
-                      <button className="text-red-500 text-xs">Remove</button>
-                    </td>
-                  </tr> */}
-                  {/* <tr className="border-b border-border last:border-none">
-                    <td className="flex items-center gap-2 py-4">
-                      <img
-                        alt="'Rap' Organic Green Hemp - 3 KS Cones"
-                        className="w-16 h-16 object-contain"
-                        src="/dummy/img-product.png"
-                      />
-                      <span className="font-semibold">
-                        'Rap' Organic Green Hemp - 3 KS Cones
-                      </span>
-                    </td>
-                    <td className="pr-8">$60.00</td>
-                    <td className="pr-8">
-                      <div className="flex items-center gap-4">
-                        <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
-                          -
-                        </button>
-                        <input
-                          min="1"
-                          className="w-12 border border-border rounded px-2 py-1 text-center bg-background text-foreground"
-                          type="number"
-                          value="1"
-                        />
-                        <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
-                          +
-                        </button>
-                      </div>
-                    </td>
-                    <td className="pr-8">$60.00</td>
-                    <td>
-                      <button className="text-red-500 text-xs">Remove</button>
-                    </td>
-                  </tr> */}
-
                   {cart.map((item) => (
                     // <div key={item.itemid}>{item.title} x {item.quantity}</div>
-                    <tr key={item.itemid} className="border-b border-border last:border-none">
+                    <tr
+                      key={item.itemid}
+                      className="border-b border-border last:border-none"
+                    >
                       <td className="flex items-center gap-2 py-4">
                         <img
-                          alt="'Rap' Organic Green Hemp - 3 KS Cones"
+                          src={item.image ?? "/dummy/img-product.png"}
+                          alt={item.title}
                           className="w-16 h-16 object-contain"
-                          src="/dummy/img-product.png"
                         />
-                        <span className="font-semibold">{item.title}</span>
+                        <span className="font-medium text-[14px] align-middle">
+                          <Link href={`/product/${item.itemid}`}>
+                            {item.title}
+                          </Link>
+                        </span>
                       </td>
-                      <td className="pr-8">$60.00</td>
+                      <td className="pr-8">${item.price ? item.price : 8}</td>
                       <td className="pr-8">
                         <div className="flex items-center gap-4">
-                          <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
+                          <button
+                            className="border border-border px-2 py-1 rounded bg-background text-foreground"
+                            onClick={() =>
+                              updateQuantity(item.itemid, item.quantity - 1)
+                            }
+                          >
                             -
                           </button>
                           {item.quantity}
@@ -145,14 +102,26 @@ export default function CartPage() {
                             type="number"
                             value="{item.quantity}"
                           /> */}
-                          <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
+                          <button
+                            className="border border-border px-2 py-1 rounded bg-background text-foreground"
+                            onClick={() =>
+                              updateQuantity(item.itemid, item.quantity + 1)
+                            }
+                          >
                             +
                           </button>
                         </div>
                       </td>
-                      <td className="pr-8">$60.00</td>
+                      <td className="pr-8">
+                        ${(item.price ? item.price : 8) * item.quantity}
+                      </td>
                       <td>
-                        <button className="text-red-500 text-xs">Remove</button>
+                        <button
+                          onClick={() => removeFromCart(item.itemid)}
+                          className="text-red-500 text-xs"
+                        >
+                          Remove
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -180,7 +149,7 @@ export default function CartPage() {
                     className="h-5 w-5 text-lemon"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
+                    strokeWidth="2"
                     viewBox="0 0 24 24"
                   >
                     <path d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6"></path>
@@ -192,7 +161,7 @@ export default function CartPage() {
                     className="h-5 w-5 text-lemon"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
+                    strokeWidth="2"
                     viewBox="0 0 24 24"
                   >
                     <circle cx="12" cy="12" r="10"></circle>
@@ -205,7 +174,7 @@ export default function CartPage() {
                     className="h-5 w-5 text-lemon"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
+                    strokeWidth="2"
                     viewBox="0 0 24 24"
                   >
                     <path d="M5 13l4 4L19 7"></path>
@@ -217,7 +186,7 @@ export default function CartPage() {
                     className="h-5 w-5 text-lemon"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
+                    strokeWidth="2"
                     viewBox="0 0 24 24"
                   >
                     <path d="M12 8v4l3 3"></path>
@@ -238,7 +207,8 @@ export default function CartPage() {
               <div className="flex flex-col gap-2 mb-4">
                 <div className="flex justify-between items-center text-lg font-bold">
                   <span>Total:</span>
-                  <span>$100.00 USD</span>
+                  {/* <span>$100.00 USD</span> */}
+                  <span>€{total.toFixed(2)}</span>
                 </div>
                 <div className="text-xs text-muted-foreground">
                   Taxes and shipping calculated at checkout
@@ -263,10 +233,10 @@ export default function CartPage() {
               <Link href="/checkout">
                 <button
                   disabled={!agreed}
-                  className={`px-4 py-2 text-white rounded ${
+                  className={`px-4 py-2 border rounded-full ${
                     agreed
-                      ? "bg-lemon hover:bg-lemon-dark"
-                      : "bg-gray-300 cursor-not-allowed"
+                      ? "bg-lemon hover:bg-lemon-dark  border-gray-300 text-black"
+                      : "cursor-not-allowed"
                   }`}
                 >
                   Check out
@@ -366,141 +336,68 @@ export default function CartPage() {
   );
 }
 
-/* return (
-    <main className="pb-20">
-      <div className="max-w-frame mx-auto px-4 xl:px-0">
-        {cart && cart.items.length > 0 ? (
-          <>
-            <BreadcrumbCart />
-            <h2
-              className="font-bold text-[32px] md:text-[40px] text-black uppercase mb-5 md:mb-6"
-            >
-              your cart
-            </h2>
-            <div className="flex flex-col lg:flex-row space-y-5 lg:space-y-0 lg:space-x-5 items-start">
-              <div className="w-full p-3.5 md:px-6 flex-col space-y-4 md:space-y-6 rounded-[20px] border border-black/10">
-                {cart?.items.map((product, idx, arr) => (
-                  <React.Fragment key={idx}>
-                    <ProductCard data={product} />
-                    {arr.length - 1 !== idx && (
-                      <hr className="border-t-black/10" />
-                    )}
-                  </React.Fragment>
-                ))}
-              </div>
-              <div className="w-full lg:max-w-[505px] p-5 md:px-6 flex-col space-y-4 md:space-y-6 rounded-[20px] border border-black/10">
-                <h6 className="text-xl md:text-2xl font-bold text-black">
-                  Order Summary
-                </h6>
-                <div className="flex flex-col space-y-5">
-                  <div className="flex items-center justify-between">
-                    <span className="md:text-xl">Subtotal</span>
-                    <span className="md:text-xl font-bold">${totalPrice}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="md:text-xl">
-                      Discount (-
-                      {Math.round(
-                        ((totalPrice - adjustedTotalPrice) / totalPrice) * 100
-                      )}
-                      %)
-                    </span>
-                    <span className="md:text-xl font-bold text-red-600">
-                      -${Math.round(totalPrice - adjustedTotalPrice)}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="md:text-xl">
-                      Delivery Fee
-                    </span>
-                    <span className="md:text-xl font-bold">Free</span>
-                  </div>
-                  <hr className="border-t-black/10" />
-                  <div className="flex items-center justify-between">
-                    <span className="md:text-xl text-black">Total</span>
-                    <span className="text-xl md:text-2xl font-bold">
-                      ${Math.round(adjustedTotalPrice)}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex space-x-3">
-                  <InputGroup className="bg-[#F0F0F0]">
-                    <InputGroup.Text>
-                      <MdOutlineLocalOffer className="text-black/40 text-2xl" />
-                    </InputGroup.Text>
-                    <InputGroup.Input
-                      type="text"
-                      name="code"
-                      placeholder="Add promo code"
-                      className="bg-transparent placeholder:text-black/40"
-                    />
-                  </InputGroup>
-                  <Button
-                    type="button"
-                    className="bg-black rounded-full w-full max-w-[119px] h-[48px]"
-                  >
-                    Apply
-                  </Button>
-                </div>
-                <Button
-                  type="button"
-                  className="text-sm md:text-base font-medium bg-black rounded-full w-full py-4 h-[54px] md:h-[60px] group"
-                >
-                  Go to Checkout{" "}
-                  <FaArrowRight className="text-xl ml-2 group-hover:translate-x-1 transition-all" />
-                </Button>
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="flex items-center flex-col text-gray-300 mt-32">
-            <TbBasketExclamation strokeWidth={1} className="text-6xl" />
-            <span className="block mb-4">Your shopping cart is empty.</span>
-            <Button className="rounded-full w-24" asChild>
-              <Link href="/shop">Shop</Link>
-            </Button>
-          </div>
-        )}
-      </div>
-    </main>
-  ); */
-
-/* // /app/cart/page.tsx
-"use client";
-import Link from "next/link";
-
-export default function CartPage() {
-  const { items, removeItem, updateQuantity, total } = useCartStore();
-
-  return (
-    <div className="p-8">
-      <h1 className="text-2xl mb-4">Your Cart</h1>
-      {items.length === 0 ? (
-        <p>No items in cart</p>
-      ) : (
-        <div>
-          {items.map((item) => (
-            <div key={item.id} className="flex justify-between p-2 border-b">
-              <span>{item.name}</span>
-              <input
-                type="number"
-                value={item.quantity}
-                onChange={(e) => updateQuantity(item.id, +e.target.value)}
-                className="w-16 border"
-              />
-              <span>${item.price * item.quantity}</span>
-              <button onClick={() => removeItem(item.id)}>❌</button>
-            </div>
-          ))}
-          <h2 className="mt-4 text-xl">Total: ${total()}</h2>
-          <Link href="/checkout">
-            <button className="bg-blue-600 text-white px-4 py-2 rounded mt-4">
-              Checkout
-            </button>
-          </Link>
-        </div>
-      )}
-    </div>
-  );
+{
+  /* <tr className="border-b border-border last:border-none">
+                    <td className="flex items-center gap-2 py-4">
+                      <img
+                        alt="'Rap' Organic Green Hemp - 3 KS Cones"
+                        className="w-16 h-16 object-contain"
+                        src="/dummy/img-product.png"
+                      />
+                      <span className="font-semibold">
+                        'Rap' Organic Green Hemp - 3 KS Cones
+                      </span>
+                    </td>
+                    <td className="pr-8">$8.00</td>
+                    <td className="pr-8">
+                      <div className="flex items-center gap-4">
+                        <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
+                          -
+                        </button>
+                        5
+                        <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
+                          +
+                        </button>
+                      </div>
+                    </td>
+                    <td className="pr-8">$40.00</td>
+                    <td>
+                      <button className="text-red-500 text-xs">Remove</button>
+                    </td>
+                  </tr> */
 }
- */
+{
+  /* <tr className="border-b border-border last:border-none">
+                    <td className="flex items-center gap-2 py-4">
+                      <img
+                        alt="'Rap' Organic Green Hemp - 3 KS Cones"
+                        className="w-16 h-16 object-contain"
+                        src="/dummy/img-product.png"
+                      />
+                      <span className="font-semibold">
+                        'Rap' Organic Green Hemp - 3 KS Cones
+                      </span>
+                    </td>
+                    <td className="pr-8">$60.00</td>
+                    <td className="pr-8">
+                      <div className="flex items-center gap-4">
+                        <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
+                          -
+                        </button>
+                        <input
+                          min="1"
+                          className="w-12 border border-border rounded px-2 py-1 text-center bg-background text-foreground"
+                          type="number"
+                          value="1"
+                        />
+                        <button className="border border-border px-2 py-1 rounded bg-background text-foreground">
+                          +
+                        </button>
+                      </div>
+                    </td>
+                    <td className="pr-8">$60.00</td>
+                    <td>
+                      <button className="text-red-500 text-xs">Remove</button>
+                    </td>
+                  </tr> */
+}

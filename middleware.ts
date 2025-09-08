@@ -18,6 +18,8 @@ export async function middleware(request: NextRequest) {
     path.startsWith("/checkout") ||  // ✅ allow checkout page
     path.startsWith("/contact") ||  // ✅ allow checkout page
     path.startsWith("/faq") ||  // ✅ allow checkout page
+
+    path.startsWith("/terms") ||  // ✅ allow checkout page
     
     path.startsWith("/_next") ||
     path.startsWith("/api") ||
