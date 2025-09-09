@@ -12,6 +12,7 @@ export async function middleware(request: NextRequest) {
     path.startsWith("/forgot-password") ||
     path.startsWith("/reset-password") ||
     path.startsWith("/shop") ||
+    path.startsWith("/account") ||
     
     path.startsWith("/product") ||   // ✅ allow product pages
     path.startsWith("/cart") ||      // ✅ allow cart page

@@ -8,7 +8,7 @@ export default function ContactPage() {
     <>
       <ShopBanner {...commonData.contactbanner} />
       <div className="container mx-auto py-12 flex flex-col items-center">
-        <div className="w-full max-w-6xl flex flex-col md:flex-row gap-12">
+        <div className="w-full flex flex-col md:flex-row gap-12">
           <div className="flex-1 bg-background rounded-lg p-8 border border-border text-foreground">
             <h2 className="text-2xl font-bold mb-6">Contact information</h2>
             <div className="space-y-3 text-lg">

@@ -3,6 +3,7 @@
 import ShopBanner from "@/components/shop/ShopBanner";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { commonData } from "@/lib/commonData";
+import Link from "next/link";
 
 export default function ContactPage() {
   const faqs = [
@@ -34,7 +35,7 @@ export default function ContactPage() {
       <div className="container mx-auto py-12 flex flex-col items-center">
         <div className="w-full max-w-6xl flex flex-col md:flex-row gap-12">
           <div className="flex-1 flex items-start justify-center">
-            <div className="rounded-lg p-8 w-full max-w-xs bg-gradient-to-br from-white to-[#FFF700] dark:from-black dark:to-[#FFF700]">
+            <div className="rounded-lg p-8 w-full bg-gradient-to-br from-white to-[#FFF700] dark:from-black dark:to-[#FFF700]">
               <h3 className="text-xl font-bold mb-4 dark:text-white">
                 Contact Us
               </h3>
@@ -46,9 +47,11 @@ export default function ContactPage() {
                 <br />A refund will be issued to your original payment method
                 within 10 business days.
               </p>
+              <Link href={`/contact`}>
               <button className="w-full bg-black text-white py-2 rounded-full font-semibold mb-2">
                 Contact us
               </button>
+              </Link>
               <button className="w-full bg-white text-black py-2 rounded-full font-semibold border border-black dark:bg-black dark:text-white dark:border-white">
                 Chat with us
               </button>
@@ -66,7 +69,7 @@ export default function ContactPage() {
                   <AccordionTrigger className=" font-medium px-0 py-4 hover:bg-white/5 focus:bg-white/10 rounded-none">
                     {faq.question}
                   </AccordionTrigger>
-                  <AccordionContent className="text-gray-300 px-0 pb-4">
+                  <AccordionContent className="text-gray-500 px-0 pb-4">
                     {faq.answer}
                   </AccordionContent>
                 </AccordionItem>

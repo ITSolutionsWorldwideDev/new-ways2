@@ -3,29 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { getNetSuiteAxios } from "@/services/netsuiteAxios";
 
 export async function POST(req: Request) {
-  /* 
-    {
-        "companyName": "John Doe",
-        "email": "john.doe@example.com",
-        "subsidiary": {
-            "id": "1"
-        },
-        "phone": "1234567890",
-        "entityStatus": {
-            "id": "13"   // e.g., "Customer - Active"
-        }
-    } 
-
-    {
-    "id": "1234",
-    "links": [
-        {
-        "rel": "self",
-        "href": "https://<ACCOUNT_ID>.suitetalk.api.netsuite.com/services/rest/record/v1/customer/1234"
-        }
-    ]
-    }
-  */
 
   const body = await req.json();
 
@@ -55,36 +32,12 @@ export async function POST(req: Request) {
 
     // If you later need individual-type customers, you can revisit the isPerson: true path.
 
-    /* const payload = {
-      isPerson: true,
-      companyName: `${firstName} ${lastName}`,
-      email,
-      phone,
-      subsidiary: { id: "1" }, // adjust for your subsidiary
-      entityStatus: { id: "13" }, // "Customer - Active" in your setup
-      addressbook: [
-        {
-          addressbookAddress: {
-            addr1: address,
-            city,
-            zip,
-            country, // e.g. "US"
-          },
-          defaultBilling: true,
-          defaultShipping: true,
-          label: "Primary Address",
-        },
-      ],
-    };
- */
-
     const payload = {
       isPerson: true,
       //   companyName: `${firstName} ${lastName}`, // required
       firstName: `${firstName}`, // required
       lastName: `${lastName}`, // required
       email: email, // required if unique
-      //   phone: phone,
       subsidiary: { id: "6" }, // required in OneWorld
       entityStatus: { id: "13" }, // active status
 
@@ -113,12 +66,7 @@ export async function POST(req: Request) {
       headers: { "Content-Type": "application/json" },
     });
 
-    /* const response = await axiosInstance.post("/record/v1/customer", payload, {
-      headers: {
-        "Content-Type": "application/json",
-        Prefer: "transient",
-      },
-    }); */
+    // Prefer: "transient",
 
     console.log("response ==== ", response);
 
@@ -138,37 +86,3 @@ export async function POST(req: Request) {
     );
   }
 }
-
-/* 
-Sales Order
-
-POST /record/v1/salesOrder
-
-{
-  "entity": {
-    "id": "1234"   // Customer ID from step 2
-  },
-  "subsidiary": {
-    "id": "1"
-  },
-  "location": {
-    "id": "2"
-  },
-  "item": [
-    {
-      "item": {
-        "id": "567"   // Internal ID of the item
-      },
-      "quantity": 2,
-      "rate": 49.99
-    },
-    {
-      "item": {
-        "id": "890"
-      },
-      "quantity": 1,
-      "rate": 19.99
-    }
-  ]
-}
-SELECT id, email FROM customer WHERE email = 'john.doe@example.com' */

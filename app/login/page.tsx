@@ -1,5 +1,7 @@
 import { AuthLayout } from "@/components/layout/auth-layout"
 import LoginSection from "@/components/sections/auth/login/login-section"
+import ShopBanner from "@/components/shop/ShopBanner"
+import { commonData } from "@/lib/commonData"
 import type { Metadata } from "next"
 
 /* export const metadata: Metadata = {
@@ -16,8 +18,16 @@ import type { Metadata } from "next"
 
 export default function SigninPage() {
   return (
-    <AuthLayout>
-      <LoginSection />
-    </AuthLayout>
+    <>
+      {/* <ShopBanner {...commonData.checkoutbanner} /> */}
+      <div className="container mx-auto py-8 flex gap-8 justify-center items-start">
+        <div className="w-full max-w-6xl">
+          <LoginSection />          
+        </div>
+      </div>
+    </>
+    // <AuthLayout>
+    // <LoginSection />
+    // </AuthLayout>
   )
 }

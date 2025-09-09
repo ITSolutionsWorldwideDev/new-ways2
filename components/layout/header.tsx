@@ -13,7 +13,7 @@ import { useState, useEffect } from "react";
 import CartSidebar from "@/components/cart/CartSidebar";
 
 // import { useRouter } from "next/router";
-// import { useRouter } from "next/navigation"; 
+// import { useRouter } from "next/navigation";
 
 const categories = [
   "Papers/Tips",
@@ -121,7 +121,22 @@ export function Header() {
               </Button>
 
               {/* Dropdown Panel */}
-              <div className="absolute left-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+              <div className="absolute left-1/2 -translate-x-1/2  mt-4 bg-background text-foreground border border-gray-200 rounded-md shadow-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all p-2">
+                <div className="columns-2 md:columns-3 lg:columns-4 gap-4">
+                  {ShopMainCategories.map((category, index) => (
+                    <Link
+                      key={index}
+                      href={`/shop/${category.name.split(" ").join("-")}`}
+                      className="block break-inside-avoid"
+                    >
+                      <Button variant="ghost" className="text-base font-medium">
+                        {category.name}
+                      </Button>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              {/* <div className="absolute left-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                 {ShopMainCategories.map((category, index) => (
                   <Link
                     key={index}
@@ -131,7 +146,7 @@ export function Header() {
                     {category.name}
                   </Link>
                 ))}
-              </div>
+              </div> */}
             </div>
             {/* {categories.map((category, index) => ( */}
             {/* {ShopMainCategories.map((category, index) => (
@@ -152,11 +167,11 @@ export function Header() {
           {/* Actions */}
           <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4 flex-shrink-0 justify-end">
             {/* Search icon hidden on mobile, visible on md+ */}
-            <Button variant="ghost" size="icon" className="hidden md:flex">
+            {/* <Button variant="ghost" size="icon" className="hidden md:flex">
               <Search className="h-5 w-5" />
-            </Button>
+            </Button> */}
             <Button variant="ghost" size="icon">
-              <Link href="/login">
+              <Link href="/account">
                 <User className="h-5 w-5" />
               </Link>
             </Button>
