@@ -23,12 +23,12 @@ export function TopBar() {
       <div className="container mx-auto px-2 sm:px-4">
         <div className="flex items-center h-10 gap-2 flex-nowrap md:gap-0">
           {/* Mobile Wholesale Button - Visible on small screens */}
-          <Button
+          {/* <Button
             variant="link"
             className="text-foreground md:hidden flex-shrink-0"
           >
             Wholesale(B2B)
-          </Button>
+          </Button> */}
 
           {/* Announcements - Sliding/Marquee effect, always visible, fixed width */}
           <div className="flex-1 flex justify-center min-w-0">
@@ -52,12 +52,12 @@ export function TopBar() {
           {/* Right Side Actions */}
           <div className="flex items-center space-x-2 flex-shrink-0">
             {/* Wholesale - Hidden on mobile */}
-            <Button
+            {/* <Button
               variant="link"
               className="text-foreground hidden md:inline-flex"
             >
               Wholesale(B2B)
-            </Button>
+            </Button> */}
 
             {/* Theme Toggle */}
             <ThemeToggle />

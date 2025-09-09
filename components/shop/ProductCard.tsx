@@ -25,7 +25,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   image = "/placeholder.png",
   // priceRange = [8, 120],
   priceRange = 8,
-  price=8,
+  price = 8,
   variants = [],
   inStock = true,
   selCheckbox = false,
@@ -59,78 +59,78 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   return (
-    <div className="border rounded-lg p-4 flex flex-col items-center shadow hover:shadow-lg transition">
-      <div className="flex w-full justify-between items-center px-4 mb-4">
-        <span className="bg-lemon text-black text-xs font-semibold px-3 py-1 rounded-full">
-          {itemid}
-        </span>
-        {selCheckbox && (
-          <label className="flex items-center ml-4">
-            <input
-              type="checkbox"
-              checked={isSelected}
-              onChange={(e) => onSelectChange(e.target.checked)}
-              className="w-5 h-5 bg-lemon"
-            />
-          </label>
-        )}
-      </div>
-      <Link
-        href={`/product/${itemid}`}
-        className="justify-between items-center"
-      >
+    <div className="border rounded-t-lg flex flex-col items-left shadow hover:shadow-lg transition bg-white">
+      <div className="bg-[#F1F1F1] min-h-[300px]">
+        <div className="flex w-full justify-between items-center px-2 pb-4 pt-4 ">
+          <span className="bg-lemon text-black text-xs font-semibold px-3 py-1 rounded-full">
+            {itemid}
+          </span>
+          {selCheckbox && (
+            <label className="flex items-center ml-4">
+              <input
+                type="checkbox"
+                checked={isSelected}
+                onChange={(e) => onSelectChange(e.target.checked)}
+                className="w-4 h-4 bg-white focus:ring-green-500 selection:ring-red"
+              />
+            </label>
+          )}
+        </div>
         <img
           src={image}
           alt={title}
-          className="w-32 h-32 object-contain mb-2 items-center mx-auto"
+          className="w-64 h-64 object-contain mb-2 items-center mx-auto hover:scale-110 transition-all duration-500"
         />
-        <h2 className="text-base font-semibold text-center mb-1">{title}</h2>
-      </Link>
 
-      {/* {priceRange[0] !== 0 && priceRange[1] !== 0 ? (
-        <div className="text-green-600 font-bold mb-1">
-          $ {priceRange[0].toFixed(2)} - $ {priceRange[1].toFixed(2)}
-        </div>
-      ) : (
-        <div className="text-gray-500 mb-1">Price not available</div>
-      )} */}
-
-      {price !== 0 ? (
-        <div className="text-green-600 font-bold mb-1">
-          $ {price.toFixed(2)}
-        </div>
-      ) : (
-        <div className="text-gray-500 mb-1">Price not available</div>
-      )}
-
-      <div className="cart-actions">
         <button
           onClick={handleAddToCart}
           disabled={!inStock}
-          className="add-to-cart-btn"
+          className="add-to-cart-btn w-fit text-left border-black bg-black text-white ml-2 mb-4 rounded text-sm py-1 px-3 font-medium text-[12px]"
         >
           {inStock ? "Add to Cart" : "Out of Stock"}
         </button>
+      </div>
 
-        {inStock && addedToCart && (
-          <div className="quantity-control flex items-center gap-2 justify-center">
-            <button
-              className="border border-border rounded-full w-7 h-7 flex items-center justify-center bg-background text-foreground text-base"
-              onClick={decreaseQty}
-            >
-              -
-            </button>
-            <span className="w-7 text-center font-semibold">
-              {String(quantity).padStart(2, "0")}
-            </span>
-            <button
-              className="border border-border rounded-full w-7 h-7 flex items-center justify-center bg-background text-foreground text-base"
-              onClick={increaseQty}
-            >
-              +
-            </button>
-          </div>
-        )}
+      <div className="bg-white w-full px-2 py-4 relative">
+        <Link href={`/product/${itemid}`}>
+          <h2 className="text-base mb-1 text-black font-medium align-middle capitalize">
+            {title}
+          </h2>
+        </Link>
+
+        <div className="flex justify-between bottom-0 ">
+          {price !== 0 ? (
+            <div className="text-green-600 font-bold mb-1">
+              $ {price.toFixed(2)}
+            </div>
+          ) : (
+            <div className="text-gray-500 mb-1">Price not available</div>
+          )}
+
+          {/* <div className="cart-actions"> */}
+
+          {inStock && addedToCart && (
+            <div className="quantity-control flex items-center gap-2 justify-center rounded-full px-2 py-1 bg-[#F1F1F1]">
+              <button
+                className="rounded-full w-7 h-7 flex items-center justify-center  text-base"
+                onClick={decreaseQty}
+              >
+                -
+              </button>
+              <span className="w-7 text-center font-semibold text-[12px]">
+                {/* {String(quantity).padStart(2, "0")} */}
+                {quantity}
+              </span>
+              <button
+                className=" rounded-full w-7 h-7 flex items-center justify-center  text-base"
+                onClick={increaseQty}
+              >
+                +
+              </button>
+            </div>
+          )}
+          {/* </div> */}
+        </div>
       </div>
     </div>
   );

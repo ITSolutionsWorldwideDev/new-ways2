@@ -26,7 +26,7 @@ import { Review } from "@/types/review.types";
     type: "website",
   },
 }; */
-
+/* 
 export const newArrivalsData: Product[] = [
   {
     id: 1,
@@ -248,13 +248,13 @@ export const reviewsData: Review[] = [
     rating: 5,
     date: "August 19, 2023",
   },
-];
+]; */
 
 export default function HomePage() {
   return (
     <main className="min-h-screen">{/*  pt-[120px] */}
       <HeroSection />
-      <PartnersSection />
+      {/* <PartnersSection /> */}
       <DealSection />
       <BundleSection />
       <BundlePromoSection

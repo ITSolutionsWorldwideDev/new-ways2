@@ -51,12 +51,12 @@ export const HeroSection = () => {
               </Button>
             </Link>
             {/* text-lg font-semibold   */}
-            <Button
+            {/* <Button
               variant="outline"
               className="dark:border-[#E8FC56]  hover:bg-[#EBFF00]/10 rounded-full px-8 py-6 border-2 font-poppins font-medium text-[14px] leading-[14px] tracking-[0] text-center align-middle"
             >
               Become a Partner
-            </Button>
+            </Button> */}
           </div>
         </div>
         {/* Images on the right */}

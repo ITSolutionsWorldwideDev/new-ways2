@@ -60,6 +60,8 @@ const ProductDetail = ({ data }: { data: Product }) => {
     return data.price;
   };
 
+  const finalPrice = calculateFinalPrice();
+
   return (
     <>
       <div className="container mx-auto py-8 mt-[20px]">
@@ -94,7 +96,7 @@ const ProductDetail = ({ data }: { data: Product }) => {
             </div>
             <div className="flex items-center gap-4 mb-2">
               <span className="text-2xl font-bold text-foreground">
-                ${calculateFinalPrice()?.toFixed(2)}
+                ${ finalPrice }
               </span>
 
               {data.discount && (
