@@ -205,3 +205,9 @@
   align-items: center;
   gap: 4px;
 }
+
+/* Move the pagination dots lower */
+.swiper-pagination {
+  bottom: -10px !important;
+      z-index: 999999;
+}

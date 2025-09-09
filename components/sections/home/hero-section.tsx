@@ -1,6 +1,11 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 // import { useTheme } from "next-themes";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination } from "swiper/modules";
+import "swiper/css";
 
 export const HeroSection = () => {
   // const { theme } = useTheme();
@@ -75,6 +80,8 @@ export const HeroSection = () => {
 };
 
 export const PartnersSection = () => {
+  const logos = Array(16).fill("/home/radius-logo.png"); // or use real image paths
+
   return (
     <section className="bg-black py-12">
       <div className="container mx-auto flex flex-col items-center px-4 md:px-8">
@@ -85,7 +92,7 @@ export const PartnersSection = () => {
           </span>
         </div>
         <div className="flex gap-8 justify-center">
-          {[1, 2, 3, 4].map((i) => (
+          {[1, 2, 3, 4,].map((i) => (
             <div
               key={i}
               className="bg-black rounded-full p-4 shadow-lg border border-[#222] flex items-center justify-center w-28 h-28"
@@ -97,8 +104,70 @@ export const PartnersSection = () => {
               />
             </div>
           ))}
+
+          {/* <div className="w-full py-6">
+
+          <Swiper
+            modules={[Autoplay]}
+            spaceBetween={20}
+            slidesPerView={4} // Change to 3 or more if needed
+            loop={true}
+            autoplay={{
+              delay: 3000,
+              disableOnInteraction: false,
+            }}
+            breakpoints={{
+              640: { slidesPerView: 4 },
+              768: { slidesPerView: 4 },
+              1024: { slidesPerView: 4 },
+            }}
+          >
+            {logos.map((src, i) => (
+              <SwiperSlide key={i}>
+                <div className="flex justify-center items-center h-24">
+                  <img
+                    src={src}
+                    alt={`Logo ${i + 1}`}
+                    className="w-20 h-20 object-contain"
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+          </div> */}
         </div>
       </div>
     </section>
   );
 };
+
+/* 
+
+
+           {[1, 2, 3, 4, 5, 6, 7, 8].map(
+              (i) => (
+                <SwiperSlide key={i}>
+                  <img
+                    src="/home/radius-logo.png"
+                    alt="Radius Partner Logo"
+                    className="w-20 h-20 object-contain"
+                  />
+                  <img
+                    src="/home/radius-logo.png"
+                    alt="Radius Partner Logo"
+                    className="w-20 h-20 object-contain"
+                  />
+                  <img
+                    src="/home/radius-logo.png"
+                    alt="Radius Partner Logo"
+                    className="w-20 h-20 object-contain"
+                  />
+                  <img
+                    src="/home/radius-logo.png"
+                    alt="Radius Partner Logo"
+                    className="w-20 h-20 object-contain"
+                  />
+                </SwiperSlide>
+              )
+            )}
+*/

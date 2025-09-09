@@ -36,8 +36,8 @@ export const DealCard = ({
   isNew,
 }: DealCardProps) => {
   return (
-    <div className="bg-[#18181B] rounded-2xl flex flex-row min-w-[600px] max-w-[650px] flex-shrink-0 snap-start overflow-hidden shadow-lg border border-[#222]">
-      {/* Left: Product Image */}
+    <div className="bg-[#18181B] rounded-2xl flex flex-row flex-shrink-0 snap-start overflow-hidden shadow-lg border border-[#222]">
+      {/* Left: Product Image   min-w-[600px] max-w-[650px] */}
       {/* bg-[#111] */}
       <div className="flex items-center justify-center p-0 min-w-[260px] ">
         <div className="relative w-[220px] h-[165px] rounded-xl overflow-hidden">
