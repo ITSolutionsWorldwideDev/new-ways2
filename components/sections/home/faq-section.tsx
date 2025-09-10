@@ -30,8 +30,8 @@ export const FAQSection = () => {
   ];
 
   return (
-    <section className="py-16 bg-black ">
-      <div className="max-w-6xl mx-auto px-4 md:px-8 flex flex-col md:flex-row gap-12">
+    <section className="py-16  ">
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-12">
         {/* FAQ Accordion */}
         <div className="flex-1">
           <h2 className="text-3xl font-bold mb-8">FAQ</h2>
@@ -43,7 +43,7 @@ export const FAQSection = () => {
                   value={`item-${index}`}
                   className="border-b border-white/20"
                 >
-                  <AccordionTrigger className=" font-medium px-0 py-4 hover:bg-white/5 focus:bg-white/10 rounded-none">
+                  <AccordionTrigger className=" font-medium px-0 py-4  rounded-none">
                     {faq.question}
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-500 px-0 pb-4">
