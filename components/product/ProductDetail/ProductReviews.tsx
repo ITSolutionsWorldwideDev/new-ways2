@@ -16,7 +16,6 @@ type ProductReviewsProps = {
   review: any;
 };
 
-
 const ProductReviews = ({ rating, review }: ProductReviewsProps) => {
   const [userRating, setUserRating] = useState<number>(0);
   const [reviewText, setReviewText] = useState("");

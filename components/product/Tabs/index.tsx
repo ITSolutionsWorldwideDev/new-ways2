@@ -52,11 +52,11 @@ const tabBtnData: TabBtn[] = [
 ];
 
 export type ProductTabData = {
+  description: string;
   rating: number;
   reviewData: any;
 };
-
-const Tabs = ({ rating, reviewData }: ProductTabData) => {
+const Tabs = ({ description, rating, reviewData }: ProductTabData) => {
   const [active, setActive] = useState<number>(1);
 
   return (
@@ -80,10 +80,8 @@ const Tabs = ({ rating, reviewData }: ProductTabData) => {
         ))}
       </div>
       <div className="mt-2 mb-2 border border-border rounded-lg p-6 w-full">
-        {active === 1 && <ProductDetailsContent />}
-        {active === 5 && (
-          <ProductReviews rating={rating} review={reviewData} />
-        )}
+        {active === 1 && <ProductDetailsContent description={description} />}
+        {active === 5 && <ProductReviews rating={rating} review={reviewData} />}
       </div>
     </div>
   );
@@ -91,10 +89,15 @@ const Tabs = ({ rating, reviewData }: ProductTabData) => {
 
 export default Tabs;
 
-
-        {/* {active === 1 && <ProductDetailsContent />}
+{
+  /* {active === 1 && <ProductDetailsContent />}
         {active === 2 && <ReviewsContent />}
-        {active === 3 && <FaqContent />} */}
-        {/* {active === 2 && <ReviewsContent />} */}
-        {/* {active === 3 && <FaqContent />}
-        {active === 3 && <FaqContent />} */}
+        {active === 3 && <FaqContent />} */
+}
+{
+  /* {active === 2 && <ReviewsContent />} */
+}
+{
+  /* {active === 3 && <FaqContent />}
+        {active === 3 && <FaqContent />} */
+}

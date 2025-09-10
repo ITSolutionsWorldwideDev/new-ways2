@@ -5,7 +5,13 @@ import { Product } from "@/types/product.types";
 // import { integralCF } from "@/styles/fonts";
 import { cn } from "@/lib/utils";
 import Rating from "@/components/ui/Rating";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  MessageCircleQuestion,
+  Share2,
+  Flame
+} from "lucide-react";
 
 // import ColorSelection from "./ColorSelection";
 // import SizeSelection from "./SizeSelection";
@@ -96,7 +102,7 @@ const ProductDetail = ({ data }: { data: Product }) => {
             </div>
             <div className="flex items-center gap-4 mb-2">
               <span className="text-2xl font-bold text-foreground">
-                ${ finalPrice }
+                ${calculateFinalPrice()}
               </span>
 
               {data.discount && (
@@ -144,12 +150,23 @@ const ProductDetail = ({ data }: { data: Product }) => {
             <div className="flex gap-4 mb-4">
               <button
                 onClick={handleAddToCart}
-                className="bg-muted text-foreground px-4 py-2 rounded border border-border"
+                className="bg-muted text-foreground px-4 py-2 rounded-[99px] border border-border w-1/2"
               >
                 {addedToCart ? "Added!" : "Add to Cart"}
               </button>
-              <button className="bg-foreground text-background px-4 py-2 rounded">
+              <button className="bg-foreground text-background px-4 py-2 rounded-[99px] w-1/2">
                 Buy it now
+              </button>
+            </div>
+
+            <div className="flex gap-4 text-sm mb-4">
+              <button className="inline-flex text-muted-foreground">
+                <MessageCircleQuestion size={16} color="currentColor" />
+                &nbsp;&nbsp;Ask a question
+              </button>
+              <button className="inline-flex text-muted-foreground">
+                <Share2 size={16} color="currentColor" />
+                &nbsp;&nbsp;Share
               </button>
             </div>
           </div>
@@ -194,61 +211,95 @@ const ProductDetail = ({ data }: { data: Product }) => {
             <div className="font-bold mb-4 text-foreground">
               Total Price: $240.00
             </div>
-            <button className="w-full bg-foreground text-background py-2 rounded">
+            <button className="w-full bg-foreground text-background py-2 rounded-[99px]">
               Add selected to Cart
             </button>
           </div>
           <div className="border border-border rounded-lg p-6 bg-background">
-            <div className="flex gap-4 text-sm mb-4">
-              <button className="underline text-muted-foreground">
-                Ask a question
-              </button>
-              <button className="underline text-muted-foreground">Share</button>
-            </div>
             <div className="border border-border rounded-lg p-4 mb-4 bg-background">
-              <div className="font-semibold mb-2 text-foreground">
+              <div className="mb-2 text-foreground text-center font-medium text-[24px] align-middle">
                 Buy more, Save more!
               </div>
               <div className="flex flex-col gap-2">
-                <label className="flex items-center gap-2 text-foreground">
-                  <input type="radio" name="bulk" />
-                  Buy from 3 to 5 items for 10% OFF
-                  <span className="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-2 py-1 rounded text-xs">
-                    FREE SHIPPING
-                  </span>
-                  <span className="text-xs text-muted-foreground">$250.00</span>
-                </label>
-                <label className="flex items-center gap-2 text-foreground">
-                  <input type="radio" name="bulk" />
-                  Buy from 6 to 8 items for 15% OFF
-                  <span className="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-2 py-1 rounded text-xs">
-                    FREE SHIPPING
-                  </span>
-                  <span className="text-xs text-muted-foreground">$250.00</span>
-                  <span className="bg-foreground text-background px-2 py-1 rounded text-xs">
-                    Most Popular
-                  </span>
-                </label>
-                <label className="flex items-center gap-2 text-foreground">
-                  <input type="radio" name="bulk" />
-                  Buy from 10+ items for 20% OFF
-                  <span className="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-2 py-1 rounded text-xs">
-                    FREE SHIPPING
-                  </span>
-                  <span className="text-xs text-muted-foreground">$250.00</span>
-                  <span className="bg-muted text-foreground px-2 py-1 rounded text-xs">
-                    Best Value
-                  </span>
-                </label>
+                <div className="border border-border rounded-lg p-4 mb-4 bg-background">
+                  <label className="flex items-center gap-2 text-foreground">
+                    <input type="radio" name="bulk" />
+                    <span>
+                      Buy from 3 to 5 items for 10% OFF
+                      <br />
+                      <span className="font-normal text-[12px] align-middle ">
+                        You save $10
+                      </span>
+                    </span>
+                    <span className="border border-green-400 text-green-400 px-2 py-1 rounded text-xs">
+                      FREE SHIPPING
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      $250.00
+                    </span>
+                    <span className="line-through text-muted-foreground text-xs">
+                      $260.00
+                    </span>
+                  </label>
+                </div>
+                <div className="border border-border rounded-lg p-4 mb-4 bg-background">
+                  <label className="flex items-center gap-2 text-foreground">
+                    <input type="radio" name="bulk" />
+                    <span>
+                      Buy from 6 to 8 items for 15% OFF
+                      <br />
+                      <span className="font-normal text-[12px] align-middle ">
+                        You save $30
+                      </span>
+                    </span>
+                    <span className="border border-green-400 text-green-400 px-2 py-1 rounded text-xs">
+                      FREE SHIPPING
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      $250.00
+                    </span>
+                    <span className="line-through text-muted-foreground text-xs">
+                      $260.00
+                    </span>
+                    <span className="inline-flex bg-foreground text-background px-2 py-1 text-xs rotate-[5.97deg] opacity-100 rounded-[4px]">
+                      <Flame size={16} color="currentColor"/>
+                      Most Popular
+                    </span>
+                  </label>
+                </div>
+                <div className="border border-border rounded-lg p-4 mb-4 bg-background">
+                  <label className="flex items-center gap-2 text-foreground">
+                    <input type="radio" name="bulk" />
+                    <span>
+                      Buy from 10+ items for 20% OFF
+                      <br />
+                      <span className="font-normal text-[12px] align-middle ">
+                        You save $40
+                      </span>
+                    </span>
+                    <span className="border border-green-400 text-green-400  px-2 py-1 rounded text-xs">
+                      FREE SHIPPING
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      $250.00
+                    </span>
+                    <span className="line-through text-muted-foreground text-xs">
+                      $260.00
+                    </span>
+                    <span className="bg-muted text-foreground px-2 py-1 text-xs rotate-[5.97deg] opacity-100 rounded-[4px]">
+                      Best Value
+                    </span>
+                  </label>
+                </div>
               </div>
-              <button className="mt-4 w-full bg-foreground text-background py-2 rounded">
+              <button className="mt-4 w-full bg-foreground text-background py-2 rounded-[99px]">
                 Grab this deal
               </button>
             </div>
           </div>
         </div>
 
-       <Tabs rating={data.rating} reviewData={{}} />
+        <Tabs  description={data.purchasedescription} rating={data.rating} reviewData={{}} />
         <div className="mt-12">
           <div className="font-semibold text-xl mb-4 text-foreground">
             Related Products
