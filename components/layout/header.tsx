@@ -12,8 +12,7 @@ import { useCartStore } from "@/store/useCartStore"; // Adjust path as needed
 import { useState, useEffect } from "react";
 import CartSidebar from "@/components/cart/CartSidebar";
 
-// import { useRouter } from "next/router";
-// import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 const categories = [
   "Papers/Tips",
@@ -32,23 +31,14 @@ export function Header() {
   // Inside your component
   const [cartOpen, setCartOpen] = useState(false);
 
-  // const router = useRouter();
+  const pathname = usePathname();
 
-  // To open cart
   const openCart = () => setCartOpen(true);
-
-  // To close cart
   const closeCart = () => setCartOpen(false);
 
-  // Close cart on route change
-  // useEffect(() => {
-  //   const handleRouteChange = () => {
-  //     setCartOpen(false);
-  //   };
-
-  //   router.events.on("routeChangeStart", handleRouteChange);
-  //   return () => router.events.off("routeChangeStart", handleRouteChange);
-  // }, [router]);
+  useEffect(() => {
+    closeCart();
+  }, [pathname]);
 
   /* z-20  */
   return (
@@ -188,7 +178,7 @@ export function Header() {
               </span>
             </Button>
 
-            <CartSidebar isOpen={cartOpen} onClose={() => setCartOpen(false)} />
+            <CartSidebar isOpen={cartOpen} onClose={closeCart} />
             {/* <Button variant="ghost" size="icon" className="relative">
               <Link href="/cart">
                 <ShoppingCart className="h-5 w-5" />

@@ -7,6 +7,10 @@ import Link from "next/link";
 import React, { useState } from "react";
 
 async function startPayment(amount?: number, customerEmail?: string) {
+
+  console.log("order amount ==== ", amount);
+  console.log("order customerEmail ==== ", customerEmail);
+  
   const res = await fetch("/api/checkout/viva-create-order", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -18,7 +22,7 @@ async function startPayment(amount?: number, customerEmail?: string) {
 
   const order = await res.json();
 
-  console.log("order ==== ", order);
+  console.log("order.orderCode ==== ", order.orderCode);
 
   if (order.orderCode) {
     // Redirect user to Viva Smart Checkout
@@ -46,6 +50,8 @@ export default function CheckoutPage() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const [selectedShipping, setSelectedShipping] = useState("free");
+
   const total = cart.reduce(
     (sum, item) => sum + (item.price ? item.price : 8) * item.quantity,
     0
@@ -66,7 +72,7 @@ export default function CheckoutPage() {
     cvc: "",
     nameOnCard: "",
     billingSameAsShipping: true,
-    paymentMethod: "card", // 'card' or 'viva'
+    paymentMethod: "viva", // 'card' or 'viva'
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -311,6 +317,9 @@ export default function CheckoutPage() {
                       type="radio"
                       name="shipping"
                       className="peer hidden"
+    value="free"
+    checked={selectedShipping === "free"}
+    onChange={() => setSelectedShipping("free")}
                     />
                     {/* Custom radio circle */}
                     <div className="w-4 h-4 rounded-full border border-border peer-checked:border-red-500 flex items-center justify-center">
@@ -324,6 +333,9 @@ export default function CheckoutPage() {
                       type="radio"
                       name="shipping"
                       className="peer hidden"
+    value="express"
+    checked={selectedShipping === "express"}
+    onChange={() => setSelectedShipping("express")}
                     />
                     {/* Custom radio circle */}
                     <div className="w-4 h-4 rounded-full border border-border peer-checked:border-red-500  flex items-center justify-center">
@@ -335,7 +347,7 @@ export default function CheckoutPage() {
                 </div>
                 <h3 className="font-semibold mt-6 mb-2">Payment</h3>
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2">
+                  {/* <label className="flex items-center gap-2">
                     <input
                       type="radio"
                       name="paymentMethod"
@@ -344,7 +356,7 @@ export default function CheckoutPage() {
                       onChange={handleChange}
                     />
                     Credit Card
-                  </label>
+                  </label> */}
                   <label className="flex items-center gap-2">
                     <input
                       type="radio"

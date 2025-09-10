@@ -109,7 +109,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
           {/* <div className="cart-actions"> */}
 
-          {inStock && addedToCart && (
+          {/* addedToCart &&  */}
+
+          {inStock && (
             <div className="quantity-control flex items-center gap-2 justify-center rounded-full px-2 py-1 bg-[#F1F1F1]">
               <button
                 className="rounded-full w-7 h-7 flex items-center justify-center  text-base"

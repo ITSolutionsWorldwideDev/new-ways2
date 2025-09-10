@@ -114,7 +114,7 @@ export const DealSection = () => {
         <h2 className="text-white text-3xl font-bold mb-8">DEAL OF THE WEEK</h2>
         <div className="h-1 w-32 bg-lemon mb-8" />
         <Swiper
-          modules={[Autoplay, Pagination]}
+          modules={[Autoplay]}
           spaceBetween={20}
           slidesPerView={2} // Change to 3 or more if needed
           loop={true}
@@ -122,9 +122,9 @@ export const DealSection = () => {
             delay: 3000,
             disableOnInteraction: false,
           }}
-          pagination={{
-            clickable: true, // 👈 Allows user to click dots
-          }}
+          // pagination={{
+          //   clickable: true, // 👈 Allows user to click dots
+          // }}
           breakpoints={{
             640: { slidesPerView: 2 },
             768: { slidesPerView: 2 },
