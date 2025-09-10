@@ -10,7 +10,7 @@ import {
   ChevronRight,
   MessageCircleQuestion,
   Share2,
-  Flame
+  Flame,
 } from "lucide-react";
 
 // import ColorSelection from "./ColorSelection";
@@ -175,24 +175,30 @@ const ProductDetail = ({ data }: { data: Product }) => {
         </div>
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="border border-border rounded-lg p-6 bg-background">
-            <div className="font-semibold mb-4 text-foreground">
+            <div className="mb-6 text-foreground text-center font-medium text-[24px] align-middle">
               Frequently Bought Together
             </div>
-            <div className="flex gap-4 items-center mb-4">
-              <img
-                className="w-20 h-20 object-contain"
-                src="/dummy/img-product.png"
-              />
-              <span className="text-2xl font-bold text-foreground">+</span>
-              <img
-                className="w-20 h-20 object-contain"
-                src="/dummy/img-product.png"
-              />
-              <span className="text-2xl font-bold text-foreground">+</span>
-              <img
-                className="w-20 h-20 object-contain"
-                src="/dummy/img-product.png"
-              />
+            <div className="grid grid-flow-col justify-items-center gap-4 items-center mb-4">
+              <div className="flex flex-row align-middle content-center">
+                <img
+                  className="w-40 h-40 object-contain hover:scale-110 transition-all duration-500"
+                  src="/dummy/img-product.png"
+                />
+                <span className="text-2xl font-bold text-foreground align-middle content-center">+</span>
+              </div>
+              <div className="flex flex-row align-middle content-center">
+                <img
+                  className="w-40 h-40 object-contain hover:scale-110 transition-all duration-500"
+                  src="/dummy/img-product.png"
+                />
+                <span className="text-2xl font-bold text-foreground align-middle content-center">+</span>
+              </div>
+              <div className="flex flex-row align-middle content-center">
+                <img
+                  className="w-40 h-40 object-contain hover:scale-110 transition-all duration-500"
+                  src="/dummy/img-product.png"
+                />
+              </div>
             </div>
             <ul className="mb-4">
               <li className="text-foreground">
@@ -216,8 +222,8 @@ const ProductDetail = ({ data }: { data: Product }) => {
             </button>
           </div>
           <div className="border border-border rounded-lg p-6 bg-background">
-            <div className="border border-border rounded-lg p-4 mb-4 bg-background">
-              <div className="mb-2 text-foreground text-center font-medium text-[24px] align-middle">
+            <div className="mb-4 bg-background">
+              <div className="mb-6 text-foreground text-center font-medium text-[24px] align-middle">
                 Buy more, Save more!
               </div>
               <div className="flex flex-col gap-2">
@@ -262,7 +268,7 @@ const ProductDetail = ({ data }: { data: Product }) => {
                       $260.00
                     </span>
                     <span className="inline-flex bg-foreground text-background px-2 py-1 text-xs rotate-[5.97deg] opacity-100 rounded-[4px]">
-                      <Flame size={16} color="currentColor"/>
+                      <Flame size={16} color="currentColor" />
                       Most Popular
                     </span>
                   </label>
@@ -299,7 +305,11 @@ const ProductDetail = ({ data }: { data: Product }) => {
           </div>
         </div>
 
-        <Tabs  description={data.purchasedescription} rating={data.rating} reviewData={{}} />
+        <Tabs
+          description={data.purchasedescription}
+          rating={data.rating}
+          reviewData={{}}
+        />
         <div className="mt-12">
           <div className="font-semibold text-xl mb-4 text-foreground">
             Related Products
