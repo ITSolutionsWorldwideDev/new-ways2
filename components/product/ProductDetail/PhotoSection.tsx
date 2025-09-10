@@ -4,24 +4,47 @@ import { Product } from "@/types/product.types";
 import Image from "next/image";
 import React, { useState } from "react";
 
+const defaultGallery = [
+  "/dummy/img-product.png",
+  "https://dummyimage.com/152x167/cccccc/000000&text=1",
+  "/dummy/img-product.png",
+  "https://dummyimage.com/152x167/cccccc/000000&text=2",
+  "/dummy/img-product.png",
+  "https://dummyimage.com/152x167/cccccc/000000&text=3",
+  "/dummy/img-product.png",
+  "https://dummyimage.com/152x167/cccccc/000000&text=4",
+  "/dummy/img-product.png",
+  "https://dummyimage.com/152x167/cccccc/000000&text=5",
+  "/dummy/img-product.png",
+  "https://dummyimage.com/152x167/cccccc/000000&text=6",
+  "/dummy/img-product.png",
+  "https://dummyimage.com/152x167/cccccc/000000&text=7",
+  "/dummy/img-product.png",
+  "https://dummyimage.com/152x167/cccccc/000000&text=8",
+];
+
 const PhotoSection = ({ data }: { data: Product }) => {
+
+  const gallery = data?.gallery?.length ? data.gallery : defaultGallery;
+
   const [selected, setSelected] = useState<string>(data?.srcUrl);
+  
 
   return (
     <div className="flex flex-col-reverse lg:flex-row lg:space-x-3.5">
-      {data?.gallery && data.gallery.length > 0 && (
-        <div className="flex lg:flex-col space-x-3 lg:space-x-0 lg:space-y-3.5 w-full lg:w-fit items-center lg:justify-start justify-center">
-          {data.gallery.map((photo, index) => (
+      {gallery && gallery.length > 0 && (
+        <div className="flex lg:flex-col space-x-3 lg:space-x-0 lg:space-y-3.5 w-full lg:w-fit items-center lg:justify-start justify-center h-full max-h-[530px] min-h-[330px] overflow-y-auto">
+          {gallery.map((photo, index) => (
             <button
               key={index}
               type="button"
-              className="bg-[#F0EEED] rounded-[13px] xl:rounded-[20px] w-full max-w-[111px] xl:max-w-[152px] max-h-[106px] xl:max-h-[167px] xl:min-h-[167px] aspect-square overflow-hidden"
+              className="bg-[#F0EEED] rounded-[13px] xl:rounded-[20px] w-full max-w-[111px] xl:max-w-[120px] max-h-[120px] xl:max-h-[120px] xl:min-h-[120px] aspect-square overflow-hidden"
               onClick={() => setSelected(photo)}
             >
               <Image
                 src={photo}
-                width={152}
-                height={167}
+                width={120}
+                height={120}
                 className="rounded-md w-full h-full object-cover hover:scale-110 transition-all duration-500"
                 alt={data.displayname}
                 priority

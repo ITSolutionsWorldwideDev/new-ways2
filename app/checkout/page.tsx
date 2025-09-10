@@ -306,13 +306,29 @@ export default function CheckoutPage() {
                 )}
                 <h3 className="font-semibold mt-6 mb-2">Shipping Method</h3>
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2 border border-border rounded px-4 py-2 bg-background text-foreground">
-                    <input type="radio" name="shipping" />
+                  <label className="flex items-center gap-2 border border-border rounded px-4 py-2 bg-background text-foreground peer-checked:border-red-500 has-[:checked]:border-red-500">
+                    <input
+                      type="radio"
+                      name="shipping"
+                      className="peer hidden"
+                    />
+                    {/* Custom radio circle */}
+                    <div className="w-4 h-4 rounded-full border border-border peer-checked:border-red-500 flex items-center justify-center">
+                      <div className="w-2 h-2 rounded-full bg-transparent has-[:checked]:border-red-500"></div>
+                    </div>
                     Free Shipping (Estimate in 7/10 - 10/10/2025)
                     <span className="ml-auto">$0.00</span>
                   </label>
-                  <label className="flex items-center gap-2 border border-border rounded px-4 py-2 bg-background text-foreground">
-                    <input type="radio" name="shipping" />
+                  <label className="flex items-center gap-2 border border-border rounded px-4 py-2 bg-background text-foreground peer-checked:border-red-500 has-[:checked]:border-red-500">
+                    <input
+                      type="radio"
+                      name="shipping"
+                      className="peer hidden"
+                    />
+                    {/* Custom radio circle */}
+                    <div className="w-4 h-4 rounded-full border border-border peer-checked:border-red-500  flex items-center justify-center">
+                      <div className="w-2 h-2 rounded-full bg-transparent has-[:checked]:border-red-500"></div>
+                    </div>
                     Express Shipping (Estimate in 4/10 - 5/10/2025){" "}
                     <span className="ml-auto">$16.00</span>
                   </label>

@@ -104,7 +104,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
 
           <div className="mb-4">
             <textarea
-              className="w-full border rounded px-3 py-2 text-sm"
+              className="w-full px-3 py-2 text-sm h-[140px] rotate-0 opacity-100 rounded-[12px] border border-solid"
               placeholder="Add a Note......"
             ></textarea>
           </div>
