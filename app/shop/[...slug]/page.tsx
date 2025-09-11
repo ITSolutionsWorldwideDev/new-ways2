@@ -38,7 +38,6 @@ interface Product {
 }
 
 const ShopPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
-
   const { slug } = use(params);
   const [category] = slug;
 
@@ -50,6 +49,18 @@ const ShopPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+
+  const [bulkQuantity, setBulkQuantity] = useState(1);
+
+  // Increment quantity for all selected
+  const handleIncrement = () => {
+    setBulkQuantity((prev) => prev + 1);
+  };
+
+  // Decrement quantity (min 1)
+  const handleDecrement = () => {
+    setBulkQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  };
 
   const [selectedItems, setSelectedItems] = useState<Record<string, boolean>>(
     {}
@@ -71,22 +82,33 @@ const ShopPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
   };
 
   const addToCart = useCartStore((state) => state.addToCart);
+  const updateQuantity = useCartStore((state) => state.updateQuantity);
 
   const handleBulkAddToCart = () => {
     const selected = items.filter((item) => selectedItems[item.itemid]);
     selected.forEach((item) => {
-      addToCart({
-        id: item.id,
-        itemid: item.itemid,
-        title: item.displayname ?? item.itemid ?? "No Title",
-        image: item?.image ?? "/dummy/img-product.png",
-        priceRange: item?.priceRange,
-        price: item?.price,
-        // priceRange: Array.isArray(item?.priceRange)
-        //   ? [item.priceRange[0] ?? 0, item.priceRange[1] ?? 0]
-        //   : [8, 120],
-        quantity: 1,
-      });
+      const existing = useCartStore
+        .getState()
+        .cart.find((c) => c.itemid === item.itemid);
+
+      if (existing) {
+        // overwrite existing quantity
+        updateQuantity(item.itemid, bulkQuantity);
+      } else {
+        addToCart({
+          id: item.id,
+          itemid: item.itemid,
+          title: item.displayname ?? item.itemid ?? "No Title",
+          image: item?.image ?? "/dummy/img-product.png",
+          priceRange: item?.priceRange,
+          price: item?.price,
+          // priceRange: Array.isArray(item?.priceRange)
+          //   ? [item.priceRange[0] ?? 0, item.priceRange[1] ?? 0]
+          //   : [8, 120],
+          quantity: bulkQuantity,
+          // quantity: 1,
+        });
+      }
     });
   };
 
@@ -156,15 +178,24 @@ const ShopPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
               >
                 Add To Cart
               </button>
-              {/* <div className="flex items-center gap-1 rounded-full border border-gray-200 bg-white px-2 py-1 dark:bg-background dark:border-border dark:text-white">
-                <button className="rounded-full px-2 py-1 font-semibold border border-gray-200 bg-white text-gray-900 dark:bg-background dark:border-border dark:text-white">
+              <div className="flex items-center gap-1 rounded-full border border-gray-200 bg-white px-2 py-1 dark:bg-background dark:border-border dark:text-white">
+                <button
+                  onClick={handleDecrement}
+                  className="rounded-full px-2 py-1 font-semibold border border-gray-200 bg-white text-gray-900 dark:bg-background dark:border-border dark:text-white"
+                >
                   -
                 </button>
-                <span className="mx-2">01</span>
-                <button className="rounded-full px-2 py-1 font-semibold border border-gray-200 bg-white text-gray-900 dark:bg-background dark:border-border dark:text-white">
+                {/* <span className="mx-2">01</span> */}
+                <span className="mx-2">
+                  {bulkQuantity.toString().padStart(2, "0")}
+                </span>
+                <button
+                  onClick={handleIncrement}
+                  className="rounded-full px-2 py-1 font-semibold border border-gray-200 bg-white text-gray-900 dark:bg-background dark:border-border dark:text-white"
+                >
                   +
                 </button>
-              </div> */}
+              </div>
               <label className="flex items-center ml-4 rounded-full border border-gray-200 bg-white px-3 py-1 font-medium shadow-sm dark:bg-background dark:border-border dark:text-white">
                 <input
                   type="checkbox"
@@ -218,8 +249,8 @@ const ShopPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
                     //       ]
                     //     : [8, 120]
                     // }
-                    priceRange= {product?.priceRange}
-                    price= {product?.price}
+                    priceRange={product?.priceRange}
+                    price={product?.price}
                     variants={
                       product?.variants ?? [
                         { label: "8.00 $ | 1 pcs", value: "1" },
