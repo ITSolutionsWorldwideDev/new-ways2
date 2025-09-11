@@ -17,6 +17,7 @@ export async function middleware(request: NextRequest) {
     path.startsWith("/product") ||   // ✅ allow product pages
     path.startsWith("/cart") ||      // ✅ allow cart page
     path.startsWith("/checkout") ||  // ✅ allow checkout page
+    path.startsWith("/checkout/success") ||  // ✅ allow checkout page
     path.startsWith("/contact") ||  // ✅ allow checkout page
     path.startsWith("/faq") ||  // ✅ allow checkout page
 

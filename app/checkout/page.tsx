@@ -7,10 +7,6 @@ import Link from "next/link";
 import React, { useState } from "react";
 
 async function startPayment(amount?: number, customerEmail?: string) {
-
-  console.log("order amount ==== ", amount);
-  console.log("order customerEmail ==== ", customerEmail);
-  
   const res = await fetch("/api/checkout/viva-create-order", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -21,9 +17,6 @@ async function startPayment(amount?: number, customerEmail?: string) {
   });
 
   const order = await res.json();
-
-  console.log("order.orderCode ==== ", order.orderCode);
-
   if (order.orderCode) {
     // Redirect user to Viva Smart Checkout
     window.location.href = `https://demo.vivapayments.com/web2?ref=${order.orderCode}`;
@@ -159,13 +152,22 @@ export default function CheckoutPage() {
 
         if (!paymentRes.ok) throw new Error("Payment failed");
       } else if (form.paymentMethod === "viva") {
+        // inside handlePlaceOrder
+        localStorage.setItem(
+          "pendingOrder",
+          JSON.stringify({
+            customerId: customer.id, // from register-customer API response
+            items: cart, // your cart array
+            total: total, // total price
+          })
+        );
+
         startPayment(total, form.email);
         // For demo purposes only
         // window.location.href = "/viva-payment-redirect";
         // return;
+        // setOrderStatus("✅ Order placed successfully!");
       }
-
-      setOrderStatus("✅ Order placed successfully!");
     } catch (err) {
       setOrderStatus("❌ Something went wrong. Please try again.");
       console.error(err);
@@ -317,9 +319,9 @@ export default function CheckoutPage() {
                       type="radio"
                       name="shipping"
                       className="peer hidden"
-    value="free"
-    checked={selectedShipping === "free"}
-    onChange={() => setSelectedShipping("free")}
+                      value="free"
+                      checked={selectedShipping === "free"}
+                      onChange={() => setSelectedShipping("free")}
                     />
                     {/* Custom radio circle */}
                     <div className="w-4 h-4 rounded-full border border-border peer-checked:border-red-500 flex items-center justify-center">
@@ -333,9 +335,9 @@ export default function CheckoutPage() {
                       type="radio"
                       name="shipping"
                       className="peer hidden"
-    value="express"
-    checked={selectedShipping === "express"}
-    onChange={() => setSelectedShipping("express")}
+                      value="express"
+                      checked={selectedShipping === "express"}
+                      onChange={() => setSelectedShipping("express")}
                     />
                     {/* Custom radio circle */}
                     <div className="w-4 h-4 rounded-full border border-border peer-checked:border-red-500  flex items-center justify-center">
@@ -525,6 +527,15 @@ export default function CheckoutPage() {
               >
                 {loading ? "Placing Order..." : "Place Order"}
               </button>
+
+              {loading && (
+                <div className="fixed inset-0 flex items-center justify-center bg-white/80 z-50">
+                  <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
+                  <p className="ml-4 text-lg font-semibold">
+                    Redirecting to payment...
+                  </p>
+                </div>
+              )}
 
               {orderStatus && (
                 <p className="mt-4 text-sm text-center text-muted-foreground">

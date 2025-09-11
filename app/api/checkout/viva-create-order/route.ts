@@ -41,7 +41,7 @@ export async function POST(req: Request) {
           customer: { email: customerEmail },
           sourceCode: process.env.VIVA_SOURCE_CODE,
           merchantTrns: "MyShop Order #1234",
-          successUrl: `${process.env.VIVA_SOURCE_CODE}/checkout/success`,
+          successUrl: `${process.env.DOMAIN_URL}/checkout/success`,
           failureUrl:  `${process.env.DOMAIN_URL}/checkout/fail`,
         }),
       }
