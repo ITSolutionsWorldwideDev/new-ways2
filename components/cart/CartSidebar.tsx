@@ -5,6 +5,7 @@ import { useCartStore } from "@/store/useCartStore";
 import { X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import * as ScrollArea from "@radix-ui/react-scroll-area";
 
 interface CartSidebarProps {
   isOpen: boolean;
@@ -48,7 +49,73 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
         <div>
-          <div className="max-h-96 mb-4 overflow-y-auto">
+          <ScrollArea.Root className="mb-4 h-24 sm:h-24 md:h-24 lg:h-32 2xl:h-64 w-full overflow-hidden">
+            <ScrollArea.Viewport className="h-full w-full pr-2">
+              {cart.length === 0 ? (
+                <p className="text-gray-500">Cart is empty</p>
+              ) : (
+                cart.map((item) => (
+                  <div
+                    key={item.itemid}
+                    className="flex items-center gap-2 mb-4 border-b pb-4"
+                  >
+                    <img
+                      src={item.image ?? "/dummy/img-product.png"}
+                      alt={item.title}
+                      className="w-16 h-16 object-contain"
+                    />
+                    <div className="flex-1">
+                      <div className="font-medium text-[14px] align-middle">
+                        <Link href={`/product/${item.itemid}`}>
+                          {item.title}
+                        </Link>
+                      </div>
+                      <div className="flex gap-2 items-center font-medium text-[14px] align-middle">
+                        <span className="text-green-600 font-bold">
+                          ${item.price ? item.price : 8 * item.quantity}
+                        </span>
+                      </div>
+                      <button
+                        className="mr-2 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground w-6 h-6"
+                        onClick={() =>
+                          updateQuantity(item.itemid, item.quantity - 1)
+                        }
+                      >
+                        −
+                      </button>
+                      <span>{item.quantity}</span>
+                      <button
+                        onClick={() =>
+                          updateQuantity(item.itemid, item.quantity + 1)
+                        }
+                        className="ml-2 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground w-6 h-6"
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    <button
+                      onClick={() => removeFromCart(item.itemid)}
+                      className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-10 w-10 text-red-500"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))
+              )}
+            </ScrollArea.Viewport>
+
+            <ScrollArea.Scrollbar
+              orientation="vertical"
+              className="flex select-none touch-none p-0.5 bg-gray-200 rounded w-2 transition-colors"
+            >
+              <ScrollArea.Thumb className="flex-1 bg-gray-400 rounded-full" />
+            </ScrollArea.Scrollbar>
+
+            <ScrollArea.Corner />
+          </ScrollArea.Root>
+
+          {/* <div className="max-h-96 mb-4 overflow-y-auto">
             {cart.length === 0 ? (
               <p className="text-gray-500">Cart is empty</p>
             ) : (
@@ -67,9 +134,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
                       <Link href={`/product/${item.itemid}`}>{item.title}</Link>
                     </div>
                     <div className="flex gap-2 items-center font-medium text-[14px] align-middle">
-                      <span className="text-green-600 font-bold">
-                        {/* ${item.price?item.price:8} x {item.quantity} */}$
-                        {item.price ? item.price : 8 * item.quantity}
+                      <span className="text-green-600 font-bold">${item.price ? item.price : 8 * item.quantity}
                       </span>
                     </div>
                     <button
@@ -100,7 +165,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
                 </div>
               ))
             )}
-          </div>
+          </div> */}
 
           <div className="mb-4">
             <textarea

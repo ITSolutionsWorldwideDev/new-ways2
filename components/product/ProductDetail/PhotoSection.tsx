@@ -2,7 +2,8 @@
 
 import { Product } from "@/types/product.types";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import * as ScrollArea from "@radix-ui/react-scroll-area";
 
 const defaultGallery = [
   "/dummy/img-product.png",
@@ -24,33 +25,75 @@ const defaultGallery = [
 ];
 
 const PhotoSection = ({ data }: { data: Product }) => {
-
   const gallery = data?.gallery?.length ? data.gallery : defaultGallery;
 
   const [selected, setSelected] = useState<string>(data?.srcUrl);
-  
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollBy = (amount: number) => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({
+        top: amount,
+        behavior: "smooth",
+      });
+    }
+  };
 
   return (
-    <div className="flex flex-col-reverse lg:flex-row lg:space-x-3.5">
+    <div className="flex flex-col-reverse lg:flex-row lg:space-x-3">
       {gallery && gallery.length > 0 && (
-        <div className="flex lg:flex-col space-x-3 lg:space-x-0 lg:space-y-3.5 w-full lg:w-fit items-center lg:justify-start justify-center h-full max-h-[530px] min-h-[330px] overflow-y-auto">
-          {gallery.map((photo, index) => (
-            <button
-              key={index}
-              type="button"
-              className="bg-[#F0EEED] rounded-[13px] xl:rounded-[20px] w-full max-w-[111px] xl:max-w-[120px] max-h-[120px] xl:max-h-[120px] xl:min-h-[120px] aspect-square overflow-hidden"
-              onClick={() => setSelected(photo)}
+        <div className="flex flex-col items-center lg:w-fit max-h-[530px]">
+          {/* Scroll Up Button */}
+          <button
+            onClick={() => scrollBy(-150)}
+            className="p-1 mb-2 bg-gray-200 hover:bg-gray-300 rounded text-xl"
+          >
+            ⬆
+          </button>
+
+          {/* Radix Scroll Area */}
+          <ScrollArea.Root
+            type="always"
+            className="w-full lg:w-fit h-full overflow-hidden rounded"
+          >
+            <ScrollArea.Viewport ref={scrollRef} className="h-full w-full p-1">
+              <div className="flex flex-row lg:flex-col space-x-3 lg:space-x-0 lg:space-y-3 items-center justify-center">
+                {gallery.map((photo, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => setSelected(photo)}
+                    className="focus:outline-none"
+                  >
+                    <Image
+                      src={photo}
+                      width={100}
+                      height={100}
+                      alt={data.displayname}
+                      className="rounded border border-gray-300 hover:border-black transition"
+                    />
+                  </button>
+                ))}
+              </div>
+            </ScrollArea.Viewport>
+
+            {/* Optional: Custom styled scrollbar */}
+            <ScrollArea.Scrollbar
+              orientation="vertical"
+              className="flex select-none touch-none p-0.5 bg-gray-200 rounded w-2"
             >
-              <Image
-                src={photo}
-                width={120}
-                height={120}
-                className="rounded-md w-full h-full object-cover hover:scale-110 transition-all duration-500"
-                alt={data.displayname}
-                priority
-              />
-            </button>
-          ))}
+              <ScrollArea.Thumb className="flex-1 bg-gray-500 rounded-full" />
+            </ScrollArea.Scrollbar>
+            <ScrollArea.Corner />
+          </ScrollArea.Root>
+
+          <button
+            onClick={() => scrollBy(150)}
+            className="p-1 mt-2 bg-gray-200 hover:bg-gray-300 rounded text-xl"
+          >
+            ⬇
+          </button>
         </div>
       )}
 
@@ -128,3 +171,25 @@ export default PhotoSection;
         </div>
 
 */
+
+/* {gallery && gallery.length > 0 && (
+        <div className="flex lg:flex-col space-x-3 lg:space-x-0 lg:space-y-3.5 w-full lg:w-fit items-center lg:justify-start justify-center h-full max-h-[530px] min-h-[330px] overflow-y-auto">
+          {gallery.map((photo, index) => (
+            <button
+              key={index}
+              type="button"
+              className="bg-[#F0EEED] rounded-[13px] xl:rounded-[20px] w-full max-w-[111px] xl:max-w-[120px] max-h-[120px] xl:max-h-[120px] xl:min-h-[120px] aspect-square overflow-hidden"
+              onClick={() => setSelected(photo)}
+            >
+              <Image
+                src={photo}
+                width={120}
+                height={120}
+                className="rounded-md w-full h-full object-cover hover:scale-110 transition-all duration-500"
+                alt={data.displayname}
+                priority
+              />
+            </button>
+          ))}
+        </div>
+      )} */

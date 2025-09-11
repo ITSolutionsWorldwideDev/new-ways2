@@ -16,6 +16,8 @@ import ShopBanner from "@/components/shop/ShopBanner";
 import { commonData } from "@/lib/commonData";
 import { useCartStore } from "@/store/useCartStore";
 
+import * as ScrollArea from "@radix-ui/react-scroll-area";
+
 export default function CartPage() {
   /* const { cart, totalPrice, adjustedTotalPrice } = useAppSelector(
     (state: RootState) => state.carts
@@ -55,7 +57,98 @@ export default function CartPage() {
           </div>
           <div className="flex gap-8 items-start">
             <div className="flex-1 bg-background rounded-lg shadow p-6 border border-border">
-              <table className="w-full mb-6">
+              <table className="w-full table-fixed">
+                <thead className="bg-gray-100 sticky top-0 z-10">
+                  <tr className="text-left">
+                    <th className="py-2 px-3 sm:w-[250px] lg:w-[300px]">
+                      Product
+                    </th>
+                    <th className="py-2 px-3 w-[100px]">Price</th>
+                    <th className="py-2 px-3 w-[100px]">Quantity</th>
+                    <th className="py-2 px-3 w-[100px]">Total</th>
+                    <th className="py-2 px-3 w-[60px]"></th>
+                  </tr>
+                </thead>
+              </table>
+
+              {/* Scrollable Body with Custom Scrollbar */}
+              <ScrollArea.Root
+                type="always"
+                className="w-full h-auto max-h-[400px] overflow-y-auto"
+              >
+                <ScrollArea.Viewport className="w-full">
+                  <table className="w-full table-fixed">
+                    <tbody>
+                      {cart.map((item) => (
+                        // <div key={item.itemid}>{item.title} x {item.quantity}</div>
+                        <tr
+                          key={item.itemid}
+                          className="border-b border-border last:border-none"
+                        >
+                          <td className="flex items-center gap-2 py-4 sm:w-[250px] lg:w-[300px]">
+                            <img
+                              src={item.image ?? "/dummy/img-product.png"}
+                              alt={item.title}
+                              className="w-16 h-16 object-contain"
+                            />
+                            <span className="font-medium text-[14px] align-middle">
+                              <Link href={`/product/${item.itemid}`}>
+                                {item.title}
+                              </Link>
+                            </span>
+                          </td>
+                          <td className="pr-8 w-[100px] text-right">
+                            ${item.price ? item.price : 8}
+                          </td>
+                          <td className=" w-[100px]">
+                            <div className="flex items-center gap-4">
+                              <button
+                                className="border border-border px-2 py-1 rounded bg-background text-foreground"
+                                onClick={() =>
+                                  updateQuantity(item.itemid, item.quantity - 1)
+                                }
+                              >
+                                -
+                              </button>
+                              {item.quantity}
+                              <button
+                                className="border border-border px-2 py-1 rounded bg-background text-foreground"
+                                onClick={() =>
+                                  updateQuantity(item.itemid, item.quantity + 1)
+                                }
+                              >
+                                +
+                              </button>
+                            </div>
+                          </td>
+                          <td className="pr-8 w-[100px] text-right">
+                            ${(item.price ? item.price : 8) * item.quantity}
+                          </td>
+                          <td className="w-[60px] text-right">
+                            <button
+                              onClick={() => removeFromCart(item.itemid)}
+                              className="text-red-500 text-xs"
+                            >
+                              Remove
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </ScrollArea.Viewport>
+
+                {/* Custom Scrollbar */}
+                <ScrollArea.Scrollbar
+                  orientation="vertical"
+                  className="flex select-none touch-none p-0.5 bg-gray-100 rounded w-2"
+                >
+                  <ScrollArea.Thumb className="flex-1 bg-gray-400 rounded-full" />
+                </ScrollArea.Scrollbar>
+                <ScrollArea.Corner />
+              </ScrollArea.Root>
+
+              {/* <table className="w-full mb-6">
                 <thead>
                   <tr className="text-left">
                     <th className="pb-2">Product</th>
@@ -96,12 +189,12 @@ export default function CartPage() {
                             -
                           </button>
                           {item.quantity}
-                          {/* <input
+                          <input
                             min="1"
                             className="w-12 border border-border rounded px-2 py-1 text-center bg-background text-foreground"
                             type="number"
                             value="{item.quantity}"
-                          /> */}
+                          />
                           <button
                             className="border border-border px-2 py-1 rounded bg-background text-foreground"
                             onClick={() =>
@@ -126,8 +219,8 @@ export default function CartPage() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
-              <div className="flex items-center gap-2 mb-4">
+              </table> */}
+              <div className="flex items-center gap-2 mb-4 mt-4">
                 <input id="giftwrap" className="accent-lemon" type="checkbox" />
                 <label className="text-sm">
                   Add gift wrap. Only $10.00. (You can choose or not)
