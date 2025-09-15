@@ -1,6 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getPendingOrder, clearPendingOrder } from "@/lib/hooks/usePendingOrder";
+import {
+  getPendingOrder,
+  clearPendingOrder,
+} from "@/lib/hooks/usePendingOrder";
 import { useCartStore } from "@/store/useCartStore";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -14,7 +17,7 @@ export default function CheckoutSuccessPage() {
 
     const transaction_id = searchParams.get("t") || searchParams.get("s");
 
-    console.log('transaction_id === ',transaction_id);
+    console.log("transaction_id === ", transaction_id);
 
     async function confirm() {
       if (!transaction_id) {
@@ -22,13 +25,18 @@ export default function CheckoutSuccessPage() {
         return;
       }
 
+      const pendingOrder = getPendingOrder();
+
       const res = await fetch("/api/checkout/viva-confirm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transaction_id }),
+        body: JSON.stringify({
+          transactionId: searchParams.get("t"),
+          pendingOrder, // ✅ send order data to server
+        }),
       });
 
-      console.log('viva-confirm end res === ',res);
+      console.log("viva-confirm end res === ", res);
 
       if (res.ok) {
         setStatus("✅ Payment confirmed! Your order has been placed.");
@@ -52,7 +60,6 @@ export default function CheckoutSuccessPage() {
     </div>
   );
 }
-
 
 /* "use client";
 import { useEffect, useState } from "react";

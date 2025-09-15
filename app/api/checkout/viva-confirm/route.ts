@@ -27,15 +27,15 @@ async function getAccessToken() {
 }
 
 export async function POST(req: NextRequest) {
-  const { transaction_id } = await req.json();
-
+  //   const { transaction_id } = await req.json();
+  const { transaction_id, pendingOrder } = await req.json();
   const { access_token } = await getAccessToken();
 
   console.log("access_token viva confirm ==== ", access_token);
 
   try {
     const res = await fetch(
-    //   `https://demo-api.vivapayments.com/api/orders/${orderCode}`,
+      //   `https://demo-api.vivapayments.com/api/orders/${orderCode}`,
       `https://demo-api.vivapayments.com/checkout/v2/transactions/${transaction_id}`,
       {
         method: "GET",
@@ -59,11 +59,11 @@ export async function POST(req: NextRequest) {
 
     data = await res.json();
 
-    console.log("data.status ==== ", res.json());
+    console.log("Viva transaction response:", data);
 
-    if (data.status === "F") {
+    if (data.statusId === "F") {
       // F = Finished, P = Pending, A = Abandoned
-      const pendingOrder = JSON.parse(
+      /* const pendingOrder = JSON.parse(
         localStorage.getItem("pendingOrder") || "{}"
       );
 
@@ -72,8 +72,14 @@ export async function POST(req: NextRequest) {
           { error: "No pending order found" },
           { status: 400 }
         );
-      }
+      } */
 
+      if (!pendingOrder) {
+        return NextResponse.json(
+          { error: "No pending order found" },
+          { status: 400 }
+        );
+      }
       const { customerId, items, total } = pendingOrder;
 
       // Save order to database
