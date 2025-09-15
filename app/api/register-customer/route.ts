@@ -52,7 +52,7 @@ export async function POST(req: Request) {
         zip,
       ]);
 
-      const userId = result.rows[0].user_id;
+      userId = result.rows[0].user_id;
     }
 
     // 3️⃣ Update cart items — optional step if needed here
