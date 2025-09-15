@@ -32,6 +32,8 @@ export async function POST(req: NextRequest) {
 
   const { access_token } = await getAccessToken();
 
+  console.log('access_token ==== ',access_token);
+
   try {
     const res = await fetch(
       `https://demo-api.vivapayments.com/api/orders/${orderCode}`,
@@ -45,6 +47,8 @@ export async function POST(req: NextRequest) {
     );
 
     const data = await res.json();
+
+    console.log('data.status ==== ',data.status);
 
     if (data.status === "F") {
       // F = Finished, P = Pending, A = Abandoned
