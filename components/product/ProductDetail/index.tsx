@@ -306,7 +306,8 @@ const ProductDetail = ({ data }: { data: Product }) => {
         </div>
 
         <Tabs
-          description={data.purchasedescription}
+          // description={data.purchasedescription}
+          description={data.description}
           rating={data.rating}
           reviewData={{}}
         />

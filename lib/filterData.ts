@@ -14,6 +14,17 @@ export type Brand = {
   name: string;
 };
 
+export type Material = {
+  id: number;
+  name: string;
+};
+
+export type PaperType = {
+  id: number;
+  name: string;
+};
+
+
 export const colorsData: Color[] = [
   {
     id: 1,
@@ -368,3 +379,325 @@ export const sizesData: Size[] = [
     name: "28 x 23 x 5 cm",
   },
 ];
+
+export const materialData: Material[] = [
+  {
+    id: 1,
+    name: "Paper",
+  },
+  {
+    id: 2,
+    name: "Leaf",
+  },
+  {
+    id: 3,
+    name: "Acrylic",
+  },
+  {
+    id: 4,
+    name: "Bamboo",
+  },
+  {
+    id: 5,
+    name: "Metal",
+  },
+  {
+    id: 6,
+    name: "Magnet",
+  },
+  {
+    id: 7,
+    name: "Aluminum",
+  },
+  {
+    id: 8,
+    name: "Glass",
+  },
+  {
+    id: 9,
+    name: "Canvas",
+  },
+];
+
+export const PaperTypeData: PaperType[] = [
+  {
+    id: 1,
+    name: "Unbleached",
+  },
+  {
+    id: 2,
+    name: "Bamboo",
+  },
+  {
+    id: 3,
+    name: "Organic Hemp",
+  },
+  {
+    id: 4,
+    name: "Green Hemp",
+  },
+  {
+    id: 5,
+    name: "Lightly Dyed Blue",
+  },
+  {
+    id: 6,
+    name: "Lightly Dyed Pink",
+  },
+  {
+    id: 7,
+    name: "Medicago Sativa",
+  },
+  {
+    id: 8,
+    name: "Gold",
+  },
+  {
+    id: 9,
+    name: "White",
+  },
+  {
+    id: 10,
+    name: "Spanish Hemp",
+  },
+  {
+    id: 11,
+    name: "USA Hemp Green",
+  },
+  {
+    id: 12,
+    name: "Pineapple",
+  },
+  {
+    id: 13,
+    name: "Mango",
+  },
+  {
+    id: 14,
+    name: "Blueberry",
+  },
+  {
+    id: 15,
+    name: "Rose",
+  },
+  {
+    id: 16,
+    name: "Goji",
+  },
+  {
+    id: 17,
+    name: "Mint",
+  },
+  {
+    id: 18,
+    name: "Herbal Blend",
+  },
+  {
+    id: 19,
+    name: "Tobacco Leaf",
+  },
+];
+
+export const ArtWorkData: PaperType[] = [
+  {
+    id: 1,
+    name: "G-Rollz",
+  },
+]
+
+/* 
+
+2,"Colossal Dream"
+3,"Rap"
+4,"Reggae"
+5,"Mexico"
+6,"Serenade"
+7,"Fabulous Face"
+8,"Rude Copper"
+9,"Torch Boy"
+10,"Sofa"
+11,"Grunge"
+12,"Vintage Faces"
+13,"High Rollers"
+14,"Kissing Coppers"
+15,"Alice"
+16,"Teen"
+17,"London Take Over"
+18,"Blue Spark"
+19,"Thug For Life"
+20,"Lowrider"
+21,"Dr. Whiskerz"
+22,"Soup"
+23,"Flower Thrower"
+24,"Joint Venture"
+25,"Panda Gunnin` - Thug for Life"
+26,"Bandaged Heart - Queen Bowie"
+
+
+27,"Classic"
+28,"Diamond - Fool"
+29,"Vegas - Pop"
+30,"Reggae - Rap"
+31,"Scientist"
+32,"Mushroom Lover"
+33,"Thug for Life - Kissing Girl Cops"
+
+34,"Forest Kiss"
+35,"Eve"
+36,"Mushroom Whisper"
+37,"Sun Flowers"
+38,"Skate Goblin"
+39,"Two Rap"
+40,"Panda Gunnin`"
+41,"The Hustler"
+42,"Livin` the Dream"
+43,"Tour Bus"
+44,"Picnic"
+45,"Praying Boy"
+46,"Hot Rod"
+47,"Kung Fu"
+48,"Tiki Amsterdam"
+49,"Split"
+50,"Mushroom Stairs"
+51,"Lizzie Stardust"
+52,"Bored Ape #3124"
+53,"Bored Ape #3676"
+54,"Bored Ape #9939"
+55,"Bored Ape #1659"
+56,"Bored Ape #761"
+57,"Bored Ape #5125"
+58,"Bored Ape #3720"
+59,"Bored Ape #7016"
+60,"Bored Ape #5526"
+61,"Pop"
+62,"Fruits"
+63,"Shroomie"
+64,"Dali"
+65,"Spy Booth"
+66,"Panda with Guns"
+67,"Blazing Tulips"
+68,"Purple Haze Tour"
+69,"Prayer"
+70,"Grassroot Skeleton"
+71,"Amsterdam Picnic Blue"
+72,"Amsterdam Picnic Green"
+73,"Amsterdam Picnic Candy Pink"
+74,"Amsterdam Picnic Pink"
+75,"Amsterdam Picnic Red"
+76,"Amsterdam Picnic Yellow"
+77,"Umbrella girl"
+78,"Girl Floating"
+79,"Follow"
+80,"Breakfast"
+81,"GG"
+82,"Psychedelic"
+83,"Diamond"
+84,"Raggae"
+85,"Tramp"
+86,"Vegas"
+87,"Serenade The Crowd"
+88,"Purple Haze"
+89,"Auto Parts"
+90,"Queen Bowie"
+91,"Smoke Cloud"
+92,"Greatest Hits"
+93,"Amsterdam Canna Lions"
+94,"Moth Lick"
+95,"Smokey Sisters"
+96,"Fly High"
+97,"Vondel Nymph"
+98,"Canna Bath"
+99,"Amsterdam Picnic Valentines"
+100,"Amsterdam Mad Scientist"
+101,"Roxy"
+102,"Fool"
+103,"Diamonds"
+104,"Kimono Pink"
+105,"Harajuku"
+106,"Retro Tourist"
+107,"Doctor"
+108,"Space"
+109,"Neon Amsterdam"
+110,"Classic Amsterdam"
+111,"Mona Launcher"
+112,"Trippy"
+113,"Kimono"
+114,"Best Hits"
+115,"Pajama Party"
+116,"Avocado"
+117,"Amsterdam Neon Lights"
+118,"Western"
+119,"Brain"
+120,"Amsterdam Picnic"
+121,"Amsterdam Picnic Checked"
+122,"Bulletproof Dove"
+123,"Playing Cards"
+124,"Amsterdam Picnic - Wake n Bake - Colossal Dream - Amsterdam Picnic Valentines"
+125,"Canna Bath - Vondel Nymph - Amsterdam Picnic Checked - Sea Weed"
+126,"Space - Neon Amsterdam"
+127,"School"
+128,"Amsterdam Picnic - Mushroom Lover - Wake n Bake"
+129,"Amsterdam Picnic Checked - Colossal Dream"
+130,"Bong Fiction - Mushroom Lover"
+131,"Canna Bath - Vondel Nymph - Sea Weed"
+132,"Pop - Vegas"
+133,"Roxy - Grunge - Psychedelic"
+134,"Badge - Greatest Hits - Playing Cards"
+135,"Retro Tourist - Classic Amsterdam"
+136,"Amsterdam Picnic - Mushroom Dream - Wake n Bake"
+137,"Amsterdam Picnic Checked - Colossal Dream - Amsterdam Picnic Valentines"
+138,"Lizzie Stardust - Torch Boy - Praying Boy"
+139,"Soldier Being Frisked"
+140,"Bulletproof Dover - Kissing Coppers - Flower Thrower"
+141,"Roxy - Psychedlic - Grunge"
+142,"Badge"
+143,"Best Hits - Classic"
+144,"Kimono Pink - Kimono Red - Pajama party"
+145,"Kimono Red"
+146,"Amsterdam Neon Lights - Classic - Neon Amsterdam"
+147,"Cheerleader"
+148,"Canna Bath - Sea Weed"
+149,"Bong Fiction - Amsterdam Picnic"
+150,"Fantasy - Vondel Nymph"
+151,"Mushroom Dream - Mushroom Lover"
+152,"Wake n Bake - Colossal Dream"
+153,"Bandaged Heart"
+154,"Spy Booth - Soldier Being Frisked"
+155,"Mona Launcha - Paint Roller Rat"
+156,"Paint Roller Rat"
+157,"Hit Dogs"
+158,"Big Doggie"
+159,"Camo"
+160,"Cupido"
+161,"Camden Maid"
+162,"Girl Frisking Soldiering Girl"
+163,"Ikea Punk"
+164,"Snowflake Boy"
+165,"Old Skool"
+166,"Blind Napoleon"
+167,"Fast Food Caveman"
+168,"Retro Classic"
+169,"Speeding Tricycle"
+170,"Lean"
+171,"Smoking Brothers"
+172,"Panda Gunnin"
+173,"Girl Frisking Soldier"
+174,"Balloon Girl"
+175,"Bronx Zoo Leopard"
+176,"Crayon Shooter"
+177,"Pablo`s War"
+178,"King"
+179,"El Patrón"
+180,"Worldwide"
+181,"Truth"
+182,"Escobar Legacy"
+183,"Logo"
+184,"El Patron`s Reserve"
+185,"Medellin Mango"
+186,"Banana Bandit"
+187,"Colombian Cream"
+188,"Blueberry"
+189,"Watermelon Punch"
+190,"Passion Fruit"
+191,"Mix"
+ */

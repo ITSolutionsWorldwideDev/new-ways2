@@ -1,5 +1,55 @@
 "use client";
 import { useEffect, useState } from "react";
+import { getPendingOrder, clearPendingOrder } from "@/lib/hooks/usePendingOrder";
+import { useCartStore } from "@/store/useCartStore";
+import { useRouter, useSearchParams } from "next/navigation";
+
+export default function CheckoutSuccessPage() {
+  const [status, setStatus] = useState("Verifying payment...");
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    const orderCode = searchParams.get("ref");
+
+    async function confirm() {
+      if (!orderCode) {
+        setStatus("❌ Invalid redirect from Viva.");
+        return;
+      }
+
+      const res = await fetch("/api/checkout/viva-confirm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderCode }),
+      });
+
+      if (res.ok) {
+        setStatus("✅ Payment confirmed! Your order has been placed.");
+        clearPendingOrder();
+        useCartStore.getState().clearCart();
+      } else {
+        const err = await res.json();
+        setStatus(`❌ Payment failed: ${err.error}`);
+      }
+    }
+
+    confirm();
+  }, []);
+
+  return (
+    <div className="max-w-2xl mx-auto mt-20 text-center">
+      <h1 className="text-2xl font-bold">{status}</h1>
+      <button onClick={() => router.push("/")} className="mt-4 underline">
+        Back to Shop
+      </button>
+    </div>
+  );
+}
+
+
+/* "use client";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 export default function SuccessPage() {
@@ -53,4 +103,4 @@ export default function SuccessPage() {
   if (status === "pending") return <p>Verifying your payment...</p>;
   if (status === "ok") return <h1>✅ Order created in NetSuite!</h1>;
   return <h1>❌ Payment Failed.</h1>;
-}
+} */

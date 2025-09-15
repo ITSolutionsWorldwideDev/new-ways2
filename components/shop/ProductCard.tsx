@@ -101,7 +101,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <div className="flex justify-between bottom-0 ">
           {price !== 0 ? (
             <div className="text-green-600 font-bold mb-1">
-              $ {price.toFixed(2)}
+              $ {price}
             </div>
           ) : (
             <div className="text-gray-500 mb-1">Price not available</div>

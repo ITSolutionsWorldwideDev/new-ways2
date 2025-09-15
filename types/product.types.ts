@@ -19,6 +19,7 @@ export type Product = {
   id: number;
   itemid: string;
   displayname: string;
+  description: string;
   purchasedescription: string;
   srcUrl: string;
   gallery?: string[];

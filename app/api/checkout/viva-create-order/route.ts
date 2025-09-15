@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { runQuery } from "@/lib/db";
 
 export async function POST(req: Request) {
   try {

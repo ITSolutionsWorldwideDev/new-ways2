@@ -7,12 +7,6 @@ export const ShopMainCategories = [
   },
   {
     description:
-      "General category for all types of bongs used in smoke filtration.",
-    id: "5",
-    name: "BONGS",
-  },
-  {
-    description:
       "Acrylic-based water pipes used for smoking, known for being lightweight and affordable.",
     id: "2",
     name: "Bong Acrylic",
@@ -28,6 +22,12 @@ export const ShopMainCategories = [
       "Attachments and parts designed to complement and enhance glass bongs.",
     id: "4",
     name: "Bong Glass Acc",
+  },
+  {
+    description:
+      "General category for all types of bongs used in smoke filtration.",
+    id: "5",
+    name: "BONGS",
   },
   {
     description:

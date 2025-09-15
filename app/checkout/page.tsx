@@ -5,6 +5,7 @@ import { commonData } from "@/lib/commonData";
 import { useCartStore } from "@/store/useCartStore";
 import Link from "next/link";
 import React, { useState } from "react";
+import { savePendingOrder } from "@/lib/hooks/usePendingOrder";
 
 async function startPayment(amount?: number, customerEmail?: string) {
   const res = await fetch("/api/checkout/viva-create-order", {
@@ -127,6 +128,7 @@ export default function CheckoutPage() {
           city: form.city,
           country: form.country,
           zip: form.zip,
+          cartItems: cart,
         }),
       });
 
@@ -153,14 +155,20 @@ export default function CheckoutPage() {
         if (!paymentRes.ok) throw new Error("Payment failed");
       } else if (form.paymentMethod === "viva") {
         // inside handlePlaceOrder
-        localStorage.setItem(
+        /* localStorage.setItem(
           "pendingOrder",
           JSON.stringify({
             customerId: customer.id, // from register-customer API response
             items: cart, // your cart array
             total: total, // total price
           })
-        );
+        ); */
+
+        savePendingOrder({
+          customerId: customer.id,
+          items: cart,
+          total,
+        });
 
         startPayment(total, form.email);
         // For demo purposes only
