@@ -10,7 +10,11 @@ export default function CheckoutSuccessPage() {
   const router = useRouter();
 
   useEffect(() => {
-    const orderCode = searchParams.get("ref");
+    // const orderCode = searchParams.get("ref");
+
+    const orderCode = searchParams.get("s") || searchParams.get("t");
+
+    console.log('orderCode === ',orderCode);
 
     async function confirm() {
       if (!orderCode) {

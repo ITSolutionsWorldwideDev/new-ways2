@@ -19,6 +19,8 @@ async function startPayment(amount?: number, customerEmail?: string) {
 
   const order = await res.json();
   if (order.orderCode) {
+
+    console.log('order.orderCode ==== ',order.orderCode);
     // Redirect user to Viva Smart Checkout
     window.location.href = `https://demo.vivapayments.com/web2?ref=${order.orderCode}`;
   } else {
