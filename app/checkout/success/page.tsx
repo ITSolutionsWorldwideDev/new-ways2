@@ -28,6 +28,8 @@ export default function CheckoutSuccessPage() {
         body: JSON.stringify({ orderCode }),
       });
 
+      console.log('viva-confirm end res === ',res);
+
       if (res.ok) {
         setStatus("✅ Payment confirmed! Your order has been placed.");
         clearPendingOrder();
