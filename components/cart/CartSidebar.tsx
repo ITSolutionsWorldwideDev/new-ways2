@@ -17,7 +17,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
 
   const [agreed, setAgreed] = useState(false);
 
-  //   console.log(cart);
   // item.priceRange?item.priceRange:
 
   const total = cart.reduce(

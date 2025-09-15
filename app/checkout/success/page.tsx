@@ -17,8 +17,6 @@ export default function CheckoutSuccessPage() {
 
     const transaction_id = searchParams.get("t") || searchParams.get("s");
 
-    console.log("transaction_id === ", transaction_id);
-
     async function confirm() {
       if (!transaction_id) {
         setStatus("❌ Invalid redirect from Viva.");
@@ -31,12 +29,10 @@ export default function CheckoutSuccessPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          transactionId: searchParams.get("t"),
+          transactionId: transaction_id,
           pendingOrder, // ✅ send order data to server
         }),
       });
-
-      console.log("viva-confirm end res === ", res);
 
       if (res.ok) {
         setStatus("✅ Payment confirmed! Your order has been placed.");

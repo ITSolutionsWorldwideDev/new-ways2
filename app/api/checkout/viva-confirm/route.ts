@@ -27,16 +27,15 @@ async function getAccessToken() {
 }
 
 export async function POST(req: NextRequest) {
-  //   const { transaction_id } = await req.json();
-  const { transaction_id, pendingOrder } = await req.json();
+  //   const { transactionId } = await req.json();
+  const { transactionId, pendingOrder } = await req.json();
   const { access_token } = await getAccessToken();
 
-  console.log("access_token viva confirm ==== ", access_token);
 
   try {
     const res = await fetch(
       //   `https://demo-api.vivapayments.com/api/orders/${orderCode}`,
-      `https://demo-api.vivapayments.com/checkout/v2/transactions/${transaction_id}`,
+      `https://demo-api.vivapayments.com/checkout/v2/transactions/${transactionId}`,
       {
         method: "GET",
         headers: {
@@ -58,8 +57,6 @@ export async function POST(req: NextRequest) {
     let data;
 
     data = await res.json();
-
-    console.log("Viva transaction response:", data);
 
     if (data.statusId === "F") {
       // F = Finished, P = Pending, A = Abandoned
@@ -85,19 +82,19 @@ export async function POST(req: NextRequest) {
       // Save order to database
       const orderInsert = await runQuery(
         `
-        INSERT INTO orders (user_id, total_amount, status, payment_reference, created_at)
+        INSERT INTO orders (user_id, total_amount, status, payment_reference, order_date)
         VALUES ($1, $2, $3, $4, NOW())
-        RETURNING id;
+        RETURNING order_id;
       `,
-        [customerId, total, "completed", transaction_id]
+        [customerId, total, "completed", transactionId]
       );
 
-      const orderId = orderInsert.rows[0].id;
+      const orderId = orderInsert.rows[0].order_id;
 
       for (const item of items) {
         await runQuery(
           `
-          INSERT INTO order_items (order_id, product_id, quantity, price, added_at)
+          INSERT INTO order_items (order_id, itemid, quantity, price, added_at)
           VALUES ($1, $2, $3, $4, NOW());
         `,
           [orderId, item.itemid, item.quantity, item.price]

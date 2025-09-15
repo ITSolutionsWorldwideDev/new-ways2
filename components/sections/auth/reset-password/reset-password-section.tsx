@@ -42,8 +42,6 @@ export default function ResetPasswordSection() {
       try {
         const response = await verifyResetToken(token);
 
-        console.log({ response });
-
         if (isActionError(response)) {
           setTokenValid(false);
         } else {

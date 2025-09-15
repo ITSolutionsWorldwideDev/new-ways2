@@ -131,7 +131,6 @@ const ShopPage = () => {
 
   const handleBulkAddToCart = () => {
     const selected = items.filter((item) => selectedItems[item.itemid]);
-    // console.log('bulkQuantity === ', bulkQuantity);
 
     selected.forEach((item) => {
       const existing = useCartStore

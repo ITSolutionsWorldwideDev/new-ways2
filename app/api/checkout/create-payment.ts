@@ -32,7 +32,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     sourceCode: process.env.VIVA_SOURCE_CODE!
                     });
 
-    console.log(order);
 
 
     res.status(200).json(order);

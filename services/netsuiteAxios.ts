@@ -52,9 +52,6 @@ export const getNetSuiteAxios = () => {
         // Add the `realm` manually to the Authorization header
         headers.Authorization += `, realm="${NS_ACCOUNT_ID?.toUpperCase().replace('-', '_')}"`;
 
-        // console.log("Final URL:", request_data.url);
-        // console.log("OAuth Header 344:", headers.Authorization);
-
         config.headers = AxiosHeaders.from({
             ...config.headers,
             ...headers,

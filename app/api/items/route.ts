@@ -23,8 +23,6 @@ export async function GET(req: NextRequest) {
 
   const sort = searchParams.get("sort");
 
-  // console.log("searchParams === ", searchParams);
-
   let query: string;
   let countQuery: string = '';
   
@@ -77,9 +75,6 @@ export async function GET(req: NextRequest) {
 
       const keyword = brand.toLowerCase();
       // const keyword = brand.split("-").join(" ").toLowerCase();
-
-      console.log('brandData  ===== ',brandData);
-      console.log('keyword  ===== ',keyword);
 
       const matchedBrand = brandData.find((b) =>
         b.name?.toLowerCase().includes(keyword)
@@ -230,9 +225,6 @@ export async function GET(req: NextRequest) {
     `;
   } */
 
-  // console.log("query ==== ", query);
-  // console.log("countQuery ==== ", countQuery);
-
   try {
     // const data = await runSuiteQLQuery(query, { limit: pageSize, offset });
 
@@ -265,14 +257,11 @@ export async function GET(req: NextRequest) {
       // Prepare response
       const data: any = {};
       data.items = result.rows;
-
-      // console.log('countResult.rows[0].count  === ',countResult.rows[0].count);
       data.totalResults = parseInt(countResult.rows[0].count, 10);
       data.pageSize = pageSize;
       data.currentPage = Math.floor(offset / pageSize) + 1;      
       data.totalPages = Math.ceil(data.totalResults / pageSize);
       // data.totalPages = data.totalResults;
-      console.log("data ==== ", data);
 
       return NextResponse.json(data);
     }

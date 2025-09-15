@@ -25,8 +25,6 @@ export async function POST(req: Request) {
 
     const { access_token } = await tokenRes.json();
 
-    console.log("access_token viva_create_order === ", access_token);
-
     // 2. Create order
     const orderRes = await fetch(
       "https://demo-api.vivapayments.com/checkout/v2/orders",

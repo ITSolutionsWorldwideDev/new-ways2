@@ -24,15 +24,12 @@ export async function POST(req: Request) {
       }))
     };
 
-    console.log("payload create order====", payload);
 
     const response = await axiosInstance.post("/record/v1/salesOrder", payload, {
       headers: { "Content-Type": "application/json" },
     });
 
     // Prefer: "transient",
-
-    // console.log("response ==== ", response);
 
     return NextResponse.json(
       { existing: false, orders: response.data },

@@ -161,15 +161,12 @@ export async function POST(req: Request) {
         ],
       },
     };
-    // console.log("payload reg-customer==== ", payload);
 
     const response = await axiosInstance.post("/record/v1/customer", payload, {
       headers: { "Content-Type": "application/json" },
     });
 
     // Prefer: "transient",
-
-    // console.log("response ==== ", response);
 
     return NextResponse.json(
       { existing: false, customer: response.data },

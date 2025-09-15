@@ -53,7 +53,6 @@ export async function GET(req: NextRequest) {
     // 2. Get transaction details
     const txData = await getTransaction(transactionId, access_token);
 
-    console.log("txData ===", txData);
 
     // 3. If completed, call your internal /api/salesOrder endpoint
     if (txData.StatusId === "F" || txData.status === "Completed") {
