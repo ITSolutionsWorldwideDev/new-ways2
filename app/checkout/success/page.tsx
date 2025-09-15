@@ -12,12 +12,12 @@ export default function CheckoutSuccessPage() {
   useEffect(() => {
     // const orderCode = searchParams.get("ref");
 
-    const orderCode = searchParams.get("s") || searchParams.get("t");
+    const transaction_id = searchParams.get("t") || searchParams.get("s");
 
-    console.log('orderCode === ',orderCode);
+    console.log('transaction_id === ',transaction_id);
 
     async function confirm() {
-      if (!orderCode) {
+      if (!transaction_id) {
         setStatus("❌ Invalid redirect from Viva.");
         return;
       }
@@ -25,7 +25,7 @@ export default function CheckoutSuccessPage() {
       const res = await fetch("/api/checkout/viva-confirm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderCode }),
+        body: JSON.stringify({ transaction_id }),
       });
 
       console.log('viva-confirm end res === ',res);

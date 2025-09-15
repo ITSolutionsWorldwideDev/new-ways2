@@ -26,17 +26,17 @@ async function getAccessToken() {
   return res.json(); // returns { access_token, expires_in, token_type }
 }
 
-
 export async function POST(req: NextRequest) {
-  const { orderCode } = await req.json();
+  const { transaction_id } = await req.json();
 
   const { access_token } = await getAccessToken();
 
-  console.log('access_token ==== ',access_token);
+  console.log("access_token viva confirm ==== ", access_token);
 
   try {
     const res = await fetch(
-      `https://demo-api.vivapayments.com/api/orders/${orderCode}`,
+    //   `https://demo-api.vivapayments.com/api/orders/${orderCode}`,
+      `https://demo-api.vivapayments.com/checkout/v2/transactions/${transaction_id}`,
       {
         method: "GET",
         headers: {
@@ -46,9 +46,20 @@ export async function POST(req: NextRequest) {
       }
     );
 
-    const data = await res.json();
+    if (!res.ok) {
+      const text = await res.text(); // in case the response is HTML or empty
+      console.error("❌ Viva response not OK:", res.status, text);
+      return NextResponse.json(
+        { error: "Failed to verify order with Viva" },
+        { status: 500 }
+      );
+    }
 
-    console.log('data.status ==== ',data.status);
+    let data;
+
+    data = await res.json();
+
+    console.log("data.status ==== ", res.json());
 
     if (data.status === "F") {
       // F = Finished, P = Pending, A = Abandoned
@@ -72,7 +83,7 @@ export async function POST(req: NextRequest) {
         VALUES ($1, $2, $3, $4, NOW())
         RETURNING id;
       `,
-        [customerId, total, "completed", orderCode]
+        [customerId, total, "completed", transaction_id]
       );
 
       const orderId = orderInsert.rows[0].id;
@@ -89,7 +100,10 @@ export async function POST(req: NextRequest) {
 
       return NextResponse.json({ success: true, orderId });
     } else {
-      return NextResponse.json({ error: "Payment not completed" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Payment not completed" },
+        { status: 400 }
+      );
     }
   } catch (err: any) {
     console.error("Payment confirm error:", err);
