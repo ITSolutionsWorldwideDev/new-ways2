@@ -1,8 +1,36 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runQuery } from "@/lib/db";
 
+async function getAccessToken() {
+  const auth = Buffer.from(
+    `${process.env.VIVA_SMART_CLIENT_ID}:${process.env.VIVA_SMART_CLIENT_SECRET}`
+  ).toString("base64");
+
+  const res = await fetch(
+    "https://demo-accounts.vivapayments.com/connect/token",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${auth}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: "grant_type=client_credentials",
+    }
+  );
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error("Failed to fetch access token: " + errorText);
+  }
+
+  return res.json(); // returns { access_token, expires_in, token_type }
+}
+
+
 export async function POST(req: NextRequest) {
   const { orderCode } = await req.json();
+
+  const { access_token } = await getAccessToken();
 
   try {
     const res = await fetch(
@@ -10,7 +38,7 @@ export async function POST(req: NextRequest) {
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${process.env.VIVA_ACCESS_TOKEN}`,
+          Authorization: `Bearer ${access_token}`,
           "Content-Type": "application/json",
         },
       }
