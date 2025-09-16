@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Rating from "@/components/ui/Rating";
 import { Rating as RatingType } from "react-simple-star-rating";
 
@@ -11,12 +11,18 @@ interface Review {
   date: string;
 }
 
-type ProductReviewsProps = {
+/* type ProductReviewsProps = {
   rating: number;
   review: any;
+}; */
+
+type ProductReviewsProps = {
+  productId: number;
 };
 
-const ProductReviews = ({ rating, review }: ProductReviewsProps) => {
+// rating, review
+
+const ProductReviews = ({ productId }: ProductReviewsProps) => {
   const [userRating, setUserRating] = useState<number>(0);
   const [reviewText, setReviewText] = useState("");
   const [name, setName] = useState("");
@@ -32,19 +38,69 @@ const ProductReviews = ({ rating, review }: ProductReviewsProps) => {
     },
   ]);
 
-  const ratingCounts: any = {
+  /* const ratingCounts: any = {
     5: 10,
     4: 5,
     3: 3,
     2: 3,
     1: 3,
-  };
+  }; */
+
+  const ratingCounts = reviews.reduce(
+    (acc: Record<number, number>, curr: Review) => {
+      acc[curr.rating] = (acc[curr.rating] || 0) + 1;
+      return acc;
+    },
+    {}
+  );
+
+  const totalRatings = reviews.length;
+  const avgRating =
+    reviews.reduce((sum, r) => sum + r.rating, 0) / (reviews.length || 1);
 
   const handleRating = (rate: number) => {
     setUserRating(rate);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const newReview: Review = {
+      name,
+      rating: userRating,
+      review: reviewText,
+      date: new Date().toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      }),
+    };
+
+    const res = await fetch("/api/reviews", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        productId,
+        name,
+        email,
+        rating: userRating,
+        review: reviewText,
+      }),
+    });
+
+    if (res.ok) {
+      setReviews([newReview, ...reviews]);
+      setUserRating(0);
+      setReviewText("");
+      setName("");
+      setEmail("");
+      setSaveInfo(false);
+    } else {
+      alert("Failed to submit review.");
+    }
+  };
+
+  /* const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const newReview: Review = {
@@ -66,7 +122,30 @@ const ProductReviews = ({ rating, review }: ProductReviewsProps) => {
     setName("");
     setEmail("");
     setSaveInfo(false);
-  };
+  }; */
+
+  useEffect(() => {
+    async function fetchReviews() {
+      const res = await fetch(`/api/reviews?productId=${productId}`);
+
+      if (!res.ok) {
+        console.error("Failed to fetch reviews");
+        return;
+      }
+
+      // Check for empty body
+      const text = await res.text();
+      if (!text) {
+        console.warn("Empty response from reviews API");
+        return;
+      }
+
+      const data = JSON.parse(text);
+      setReviews(data);
+    }
+
+    fetchReviews();
+  }, [productId]);
 
   return (
     <>
@@ -81,16 +160,31 @@ const ProductReviews = ({ rating, review }: ProductReviewsProps) => {
             <div className="inline-stars text-yellow-500">
               {/* <Rating initialValue={4.5} readonly size={20} allowFraction /> */}
               <Rating
-                initialValue={rating}
+                initialValue={avgRating}
                 allowFraction
                 SVGclassName="inline-block"
                 emptyClassName="fill-gray-50"
                 size={19}
                 readonly
               />
+              {/* <Rating
+                initialValue={rating}
+                allowFraction
+                SVGclassName="inline-block"
+                emptyClassName="fill-gray-50"
+                size={19}
+                readonly
+              /> */}
             </div>
-            <span className="text-xs text-muted-foreground">(23)</span>
-            <span className="ml-2 text-foreground">4.5/5.0</span>
+            {/* <span className="text-xs text-muted-foreground">(23)</span>
+            <span className="ml-2 text-foreground">4.5/5.0</span> */}
+
+            <span className="text-xs text-muted-foreground">
+              ({reviews.length})
+            </span>
+            <span className="ml-2 text-foreground">
+              {avgRating.toFixed(1)}/5.0
+            </span>
           </div>
 
           {/* Rating Breakdown */}

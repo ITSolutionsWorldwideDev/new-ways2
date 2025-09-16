@@ -18,6 +18,36 @@ import {
 import AddToCardSection from "./AddToCardSection";
 import Tabs from "@/components/product/Tabs";
 
+const bulkDeals = [
+  {
+    label: "Buy from 3 to 5 items for 10% OFF",
+    minQty: 3,
+    maxQty: 5,
+    discount: 0.1,
+    savings: 10,
+    Popularlabel: "",
+    icon: false,
+  },
+  {
+    label: "Buy from 6 to 8 items for 15% OFF",
+    minQty: 6,
+    maxQty: 8,
+    discount: 0.15,
+    savings: 30,
+    Popularlabel: "Most Popular",
+    icon: true,
+  },
+  {
+    label: "Buy from 10+ items for 20% OFF",
+    minQty: 10,
+    maxQty: Infinity,
+    discount: 0.2,
+    savings: 40,
+    Popularlabel: "Best Value",
+    icon: false,
+  },
+];
+
 const ProductDetail = ({ data }: { data: Product }) => {
   /* const [quantity, setQuantity] = useState<number>(1);
   const [addedToCart, setAddedToCart] = useState<boolean>(false);
@@ -36,8 +66,35 @@ const ProductDetail = ({ data }: { data: Product }) => {
   const [addedToCart, setAddedToCart] = useState<boolean>(false);
   const [activeImage, setActiveImage] = useState(0);
 
-  const increaseQty = () => setQuantity((q) => q + 1);
-  const decreaseQty = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
+  const [selectedDealIndex, setSelectedDealIndex] = useState<number | null>(
+    null
+  );
+
+  const updateSelectedDeal = (qty: number) => {
+    const matchedIndex = bulkDeals.findIndex(
+      (deal) => qty >= deal.minQty && qty <= deal.maxQty
+    );
+    setSelectedDealIndex(matchedIndex !== -1 ? matchedIndex : null);
+  };
+
+  // const increaseQty = () => setQuantity((q) => q + 1);
+  // const decreaseQty = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
+
+  const increaseQty = () => {
+    setQuantity((prev) => {
+      const newQty = prev + 1;
+      updateSelectedDeal(newQty);
+      return newQty;
+    });
+  };
+
+  const decreaseQty = () => {
+    setQuantity((prev) => {
+      const newQty = prev > 1 ? prev - 1 : 1;
+      updateSelectedDeal(newQty);
+      return newQty;
+    });
+  };
 
   const images = [data.srcUrl, ...(data.gallery ?? [])];
 
@@ -57,16 +114,57 @@ const ProductDetail = ({ data }: { data: Product }) => {
     setAddedToCart(true);
   };
 
-  const calculateFinalPrice = () => {
+  /* const calculateFinalPrice = () => {
     if (data.discount?.type === "percentage") {
       return data.price - (data.discount.value / 100) * data.price;
     } else if (data.discount?.type === "fixed") {
       return data.price - data.discount.value;
     }
     return data.price;
+  }; */
+
+  const calculateFinalPrice = () => {
+    const basePrice = data.price;
+
+    let finalPrice = basePrice;
+
+    if (selectedDealIndex !== null) {
+      const deal = bulkDeals[selectedDealIndex];
+      finalPrice = basePrice * (1 - deal.discount);
+    } else if (data.discount?.type === "percentage") {
+      finalPrice = basePrice - (data.discount.value / 100) * basePrice;
+    } else if (data.discount?.type === "fixed") {
+      finalPrice = basePrice - data.discount.value;
+    }
+
+    return Math.round(finalPrice * 100) / 100; // rounded to 2 decimals
   };
 
   const finalPrice = calculateFinalPrice();
+
+  const handleDealSelect = (index: number) => {
+    setSelectedDealIndex(index);
+    const deal = bulkDeals[index];
+    setQuantity(deal.minQty); // auto-set min qty of selected deal
+  };
+
+  const handleGrabDeal = () => {
+    if (selectedDealIndex === null) return;
+
+    const deal = bulkDeals[selectedDealIndex];
+
+    addToCart({
+      id: String(data.id),
+      itemid: data.itemid,
+      title: data.displayname,
+      image: data.srcUrl,
+      priceRange: calculateFinalPrice(),
+      price: calculateFinalPrice(),
+      quantity: quantity, // already updated from deal
+    });
+
+    setAddedToCart(true);
+  };
 
   return (
     <>
@@ -184,14 +282,18 @@ const ProductDetail = ({ data }: { data: Product }) => {
                   className="w-40 h-40 object-contain hover:scale-110 transition-all duration-500"
                   src="/dummy/img-product.png"
                 />
-                <span className="text-2xl font-bold text-foreground align-middle content-center">+</span>
+                <span className="text-2xl font-bold text-foreground align-middle content-center">
+                  +
+                </span>
               </div>
               <div className="flex flex-row align-middle content-center">
                 <img
                   className="w-40 h-40 object-contain hover:scale-110 transition-all duration-500"
                   src="/dummy/img-product.png"
                 />
-                <span className="text-2xl font-bold text-foreground align-middle content-center">+</span>
+                <span className="text-2xl font-bold text-foreground align-middle content-center">
+                  +
+                </span>
               </div>
               <div className="flex flex-row align-middle content-center">
                 <img
@@ -226,7 +328,8 @@ const ProductDetail = ({ data }: { data: Product }) => {
               <div className="mb-6 text-foreground text-center font-medium text-[24px] align-middle">
                 Buy more, Save more!
               </div>
-              <div className="flex flex-col gap-2">
+
+              {/* <div className="flex flex-col gap-2">
                 <div className="border border-border rounded-lg p-4 mb-4 bg-background">
                   <label className="flex items-center gap-2 text-foreground">
                     <input type="radio" name="bulk" />
@@ -300,13 +403,71 @@ const ProductDetail = ({ data }: { data: Product }) => {
               </div>
               <button className="mt-4 w-full bg-foreground text-background py-2 rounded-[99px]">
                 Grab this deal
-              </button>
+              </button> */}
+
+              <div className="flex flex-col gap-2">
+                {bulkDeals.map((deal, index) => (
+                  <div
+                    key={index}
+                    className="border border-border rounded-lg p-4 mb-4 bg-background"
+                  >
+                    <label className="flex items-center gap-2 text-foreground">
+                      <input
+                        type="radio"
+                        name="bulk"
+                        checked={selectedDealIndex === index}
+                        // onChange={() => handleDealSelect(index)}
+                        onChange={() => setSelectedDealIndex(index)}
+                      />
+
+                      <span>
+                        {deal.label}
+                        <br />
+                        <span className="font-normal text-[12px] align-middle ">
+                          You save ${deal.savings}
+                        </span>
+                      </span>
+                      <span className="border border-green-400 text-green-400  px-2 py-1 rounded text-xs">
+                        FREE SHIPPING
+                      </span>
+
+                      <span className="text-xs text-muted-foreground">
+                        ${calculateFinalPrice().toFixed(2)}
+                      </span>
+                      <span className="line-through text-muted-foreground text-xs">
+                        $260.00
+                      </span>
+
+                      {deal.Popularlabel && deal.icon && (
+                        <span className="inline-flex bg-foreground text-background px-2 py-1 text-xs rotate-[5.97deg] opacity-100 rounded-[4px]">
+                          <Flame size={16} color="currentColor" />
+                          {deal.Popularlabel}
+                        </span>
+                      )}
+
+                      {deal.Popularlabel && !deal.icon && (
+                        <span className="bg-muted text-foreground px-2 py-1 text-xs rotate-[5.97deg] opacity-100 rounded-[4px]">
+                          {deal.Popularlabel}
+                        </span>
+                      )}
+                    </label>
+                  </div>
+                ))}
+
+                <button
+                  onClick={handleGrabDeal}
+                  className="mt-4 w-full bg-foreground text-background py-2 rounded-[99px]"
+                >
+                  Grab this deal
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
         <Tabs
           // description={data.purchasedescription}
+          id={data.id}
           description={data.description}
           rating={data.rating}
           reviewData={{}}
