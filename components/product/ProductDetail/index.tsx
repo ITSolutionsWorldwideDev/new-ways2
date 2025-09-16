@@ -435,7 +435,8 @@ const ProductDetail = ({ data }: { data: Product }) => {
                         ${calculateFinalPrice().toFixed(2)}
                       </span>
                       <span className="line-through text-muted-foreground text-xs">
-                        $260.00
+                        {/* $260.00 */}
+                        ${data.price}
                       </span>
 
                       {deal.Popularlabel && deal.icon && (

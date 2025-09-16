@@ -1,4 +1,124 @@
 export const ShopMainCategories = [
+
+  /*   
+  16
+6
+7
+21
+1
+
+
+
+9
+
+  */
+  {
+    description:
+      "Accessories used to safely collect ash residue from smoking items.",
+    id: "1",
+    name: "Ashtray",
+  },
+  {
+    description:
+      "Acrylic-based water pipes used for smoking, known for being lightweight and affordable.",
+    id: "2",
+    name: "Filter Tips",
+  },
+  {
+    description:
+      "Premium glass bongs offering better filtration and smooth smoke experience.",
+    id: "3",
+    name: "G-Tubes",
+  },
+  {
+    description:
+      "Attachments and parts designed to complement and enhance glass bongs.",
+    id: "4",
+    name: "Bamboo Trays",
+  },
+  {
+    description:
+      "General category for all types of bongs used in smoke filtration.",
+    id: "5",
+    name: "Bamboo Displays",
+  },
+  {
+    description:
+      "Pre-rolled paper cones used for quick and easy manual filling.",
+    id: "6",
+    name: "Cones",
+  },
+  {
+    description:
+      "Electronic or manual tools that assist with smoking or storage, such as lighters, rollers, or humidifiers.",
+    id: "7",
+    name: "Gadgets",
+  },
+  {
+    description:
+      "Devices used to finely grind herbs or tobacco for better combustion.",
+    id: "8",
+    name: "Rolling Trays",
+  },
+  {
+    description:
+      "Traditional water pipes designed for group smoking using flavored tobacco.",
+    id: "9",
+    name: "Hookah",
+  },
+  {
+    description:
+      "Accessories used with hookahs, including hoses, bowls, and mouthpieces.",
+    id: "10",
+    name: "Magnet Cover",
+  },
+  {
+    description:
+      "Fragrant sticks or cones used to create a pleasant aroma and ambiance.",
+    id: "11",
+    name: "Storage Boxes",
+  },
+  {
+    description: "Flame-producing tools used to ignite smoking items.",
+    id: "12",
+    name: "Smell-proof Bags",
+  },
+  {
+    description:
+      "Items used for brand promotion including posters, stickers, or branded merchandise.",
+    id: "14",
+    name: "Grinders",
+  },
+  {
+    description:
+      "Compact, often handheld devices used for direct smoking of dry herbs.",
+    id: "13",
+    name: "Glass Bongs",
+  },
+  {
+    description:
+      "Equipment and accessories used to roll tobacco or herbs manually.",
+    id: "15",
+    name: "Gift Boxes",
+  },
+  {
+    description: "Thin papers used for hand-rolling cigarettes or joints.",
+    id: "16",
+    name: "Rolling Papers",
+  },
+  {
+    description:
+      "Tobacco or hemp-based sheets used as rolling wrappers for blunts.",
+    id: "17",
+    name: "Wraps",
+  },
+];
+
+
+/*
+
+export const ShopMainCategories = [
+
   {
     description:
       "Accessories used to safely collect ash residue from smoking items.",
@@ -124,3 +244,5 @@ export const ShopMainCategories = [
     name: "Wraps",
   },
 ];
+*/
+
