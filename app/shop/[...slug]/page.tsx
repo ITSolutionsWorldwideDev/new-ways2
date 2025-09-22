@@ -201,7 +201,7 @@ const ShopPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
                   type="checkbox"
                   onChange={(e) => handleSelectAll(e.target.checked)}
                   checked={
-                    items.length > 0 &&
+                    items && items.length > 0 &&
                     items.every((item) => selectedItems[item.itemid])
                   }
                 />

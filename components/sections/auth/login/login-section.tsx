@@ -7,7 +7,9 @@ import { Label } from "@/components/ui/label";
 import { ActionButton } from "@/components/ui/action-button";
 import Link from "next/link";
 import Image from "next/image";
-import { login } from "@/services/auth/login";
+// import login from "@/services/auth/login";
+import { loginUser } from "@/services/auth/login"; // ✅
+
 import { isActionError } from "@/lib/error";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
@@ -52,27 +54,42 @@ export default function LoginSection() {
     setLoading(true);
 
     try {
-      const response = await login({
+      const response = await loginUser({
         email: trimmedEmail,
         password: trimmedPassword,
       });
 
-      if (isActionError(response) && response.message) {
+      // await loginUser({ trimmedEmail, trimmedPassword });
+
+      // console.log('response ===== ',response);
+      // console.log('response ===== ',isActionError(response));
+
+      if (isActionError(response) && response.error) {
         toast({
           title: "Login failed",
-          description: response.message,
+          description: response.error,
           variant: "destructive",
         });
         return;
       }
+
+      /* if (!response || "error" in response || !response.user) {
+        // Handle error case
+        console.error("Login failed:", response?.error);
+        return;
+      } */
+
+      if ("error" in response) {
+        console.error("Login failed:", response.error);
+        return;
+      }
+
       const formattedUser = {
-        id: response.user._id,
+        id: response?.user?.userId,
         firstName: response.user.firstName,
         lastName: response.user.lastName,
         email: response.user.email,
         phone: response.user.phoneNumber,
-        taxOrganizationStatus:
-          response.taxOrganization?.status ?? "not_started",
       };
 
       dispatch(setUserInfo(formattedUser));
@@ -81,11 +98,13 @@ export default function LoginSection() {
         description: "Redirecting to dashboard...",
       });
 
-      if (response.user.isBankAccountConnected) {
+      router.push("/");
+
+      /* if (response.user.isBankAccountConnected) {
         router.push("/bookkeeping");
       } else {
         router.push("/bookkeeping-setup");
-      }
+      } */
     } catch (error: any) {
       toast({
         title: "An error occurred",
@@ -101,18 +120,18 @@ export default function LoginSection() {
     <div className="w-full max-w-4xl bg-white rounded-3xl shadow-lg p-4 sm:p-6 md:p-8 mx-4">
       {/* Welcome Section */}
       <div className="flex flex-col items-center text-center mb-6 sm:mb-8">
-        <Image
+        {/* <Image
           src={"/person-profile.svg"}
           alt="Person"
           width={75}
           height={71}
           className="mb-4"
-        />
+        /> */}
         <h1 className="text-2xl sm:text-3xl font-bold text-heading-dark mb-2 px-2">
           Welcome Back
         </h1>
         <p className="text-gray-600 text-sm sm:text-base px-2">
-          Sign in to Balance Beam Bookkeeping & Tax
+          Sign in to G-Rollz
         </p>
       </div>
 

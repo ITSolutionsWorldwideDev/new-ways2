@@ -6,28 +6,18 @@ import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 
-interface Review {
-  name: string;
-  rating: number;
-  review: string;
-  date: string;
-}
 
-type ProductReviewsProps = {
+type ProductRelatedProps = {
   product_id: number;
 };
 
-const RelatedProducts = ({ product_id }: ProductReviewsProps) => {
+const RelatedProducts = ({ product_id }: ProductRelatedProps) => {
   const [items, setItems] = useState<any[]>([]);
 
   useEffect(() => {
     let ignore = false;
     async function fetchReviews() {
       const res = await fetch(`/api/related-products?product_id=${product_id}`);
-
-      if (!res.ok) {
-        console.error("Failed to fetch related-products");
-      }
 
       // Check for empty body
       const text = await res.text();
@@ -98,20 +88,3 @@ const RelatedProducts = ({ product_id }: ProductReviewsProps) => {
 };
 
 export default RelatedProducts;
-
-/* {Array.isArray(items) &&
-    items.map((product: any) => (
-    <div className="border border-border rounded-lg p-4 flex flex-col items-center bg-background shadow" key={product.id || product.itemid}>
-        <img
-        className="w-32 h-32 object-contain mb-2"
-        src={product.image ?? "/dummy/img-product.png"}
-        alt={product.displayname}
-        />
-        <div className="text-center font-semibold mb-1 text-foreground">
-        {product.displayname}
-        </div>
-        <div className="font-bold mb-1 text-foreground">
-        ${product.price}
-        </div>
-    </div>
-    ))} */

@@ -1,4 +1,47 @@
+// @/lib/errorHandler
 import axios, { AxiosError } from "axios";
+
+interface HandledError {
+  error: string;
+  message: string;
+  statusCode: number;
+}
+
+export const handleApiErrorWithoutException = (error: any): HandledError => {
+  // ✅ Handle Axios errors
+  if (axios.isAxiosError(error)) {
+    const axiosError = error as AxiosError<{ message?: string }>;
+    const message =
+      axiosError.response?.data?.message ||
+      axiosError.message ||
+      "An error occurred";
+    const statusCode = axiosError.response?.status || 500;
+
+    return {
+      error: "AxiosError",
+      message,
+      statusCode,
+    };
+  }
+
+  // ✅ Handle Node.js/Postgres/Runtime Errors
+  if (error instanceof Error) {
+    return {
+      error: error.name || "RuntimeError",
+      message: error.message || "An unknown error occurred",
+      statusCode: 500,
+    };
+  }
+
+  // ✅ Handle fallback unknown error shape
+  return {
+    error: "UnknownError",
+    message: error?.message || "Unexpected error occurred",
+    statusCode: error?.code || 500,
+  };
+};
+
+/* import axios, { AxiosError } from "axios";
 
 export const handleApiErrorWithoutException = (error: any) => {
   if (axios.isAxiosError(error)) {
@@ -30,4 +73,4 @@ export const handleApiErrorWithoutException = (error: any) => {
     };
     // throw new ApiError(error.message, error.code);
   }
-};
+}; */

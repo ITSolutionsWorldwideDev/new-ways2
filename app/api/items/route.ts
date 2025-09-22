@@ -60,10 +60,11 @@ export async function GET(req: NextRequest) {
     }
 
     if (category) {
-      const keyword = category.split("-").join(" ").toLowerCase();
+      // const keyword = category.split("-").join(" ").toLowerCase();
+      const keyword = category.split("-").join("_").toLowerCase();
 
       const matchedCategory = ShopMainCategories.find((cat) =>
-        cat.name?.toLowerCase().includes(keyword)
+        cat.alias?.toLowerCase().includes(keyword)
       );
 
       const category_id = matchedCategory?.id || null;

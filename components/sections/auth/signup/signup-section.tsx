@@ -73,14 +73,21 @@ export default function SignupSection() {
         });
         return;
       }
+
+      if (!response || "error" in response || !response.user) {
+        // Handle error case
+        console.error("Signup failed:", response?.error);
+        return;
+      }
+
       const formattedUser = {
-        id: response.user._id,
+        id: response.user.user_id,
         firstName: response.user.firstName,
         lastName: response.user.lastName,
         email: response.user.email,
         phone: response.user.phoneNumber,
-        taxOrganizationStatus:
-          response.taxOrganization?.status ?? "not_started",
+        // taxOrganizationStatus:
+        //   response.taxOrganization?.status ?? "not_started",
       };
 
       dispatch(setUserInfo(formattedUser));
@@ -90,14 +97,16 @@ export default function SignupSection() {
         description: "Redirecting to dashboard...",
       });
 
-      const hasCompletedSetup = false;
+      router.push("/");
 
-      if (hasCompletedSetup) {
+      // const hasCompletedSetup = false;
+
+      /* if (hasCompletedSetup) {
         router.push("/bookkeeping");
       } else {
         localStorage.setItem("selectedService", "bookkeeping-setup");
         router.push("/bookkeeping-setup");
-      }
+      } */
     } catch (error: any) {
       toast({
         title: "An error occurred",
@@ -110,7 +119,7 @@ export default function SignupSection() {
   };
 
   return (
-    <div className="w-full max-w-4xl bg-white rounded-3xl shadow-lg p-4 sm:p-6 md:p-8 mx-4">
+    <div className="w-full max-w-4xl bg-white rounded-3xl shadow-lg p-4 sm:p-6 md:p-8 mx-auto">
       {/* Setup Section */}
       <div className="text-center mb-6 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-heading-dark mb-3 sm:mb-4 px-2">
@@ -126,13 +135,13 @@ export default function SignupSection() {
       {/* Form Card */}
       <div className="bg-white rounded-3xl shadow-lg p-4 sm:p-6 md:p-8 max-w-2xl mx-auto">
         <div className="flex flex-col items-center text-center mb-6 sm:mb-8">
-          <Image
+          {/* <Image
             src={"/person-profile.svg"}
             alt="Person"
             width={75}
             height={71}
             className="mb-4"
-          />
+          /> */}
           <div className="text-center">
             <h2 className="text-xl sm:text-2xl font-bold text-heading-dark mb-2">
               Your Information

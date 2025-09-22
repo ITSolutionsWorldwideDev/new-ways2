@@ -1,5 +1,5 @@
 // lib/db.ts
-import { Pool } from 'pg';
+import { Pool, QueryResult, QueryResultRow } from "pg";
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -8,15 +8,47 @@ const pool = new Pool({
 export default pool;
 
 // Reusable helper for parameterized queries
-export async function runQuery(query: string, params: any[] = []) {
+// ✅ Make the function generic
+export async function runQuery<T extends QueryResultRow = any>(
+  query: string,
+  params: any[] = []
+): Promise<QueryResult<T>> {
   const client = await pool.connect();
   try {
-    const result = await client.query(query, params);
+    const result = await client.query<T>(query, params);
     return result;
   } catch (error) {
-    console.error('DB Query Error:', error);
+    console.error("DB Query Error:", error);
     throw error;
   } finally {
     client.release();
   }
 }
+/* export async function runQuery(query: string, params: any[] = []) {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(query, params);
+    return result;
+  } catch (error) {
+    console.error("DB Query Error:", error);
+    throw error;
+  } finally {
+    client.release();
+  }
+} */
+
+/* export async function runQuery2<T = any>(
+  query: string,
+  params: any[] = []
+): Promise<QueryResult<T>> {
+  const client = await pool.connect();
+  try {
+    const result = await client.query<T>(query, params);
+    return result;
+  } catch (error) {
+    console.error("DB Query Error:", error);
+    throw error;
+  } finally {
+    client.release();
+  }
+} */

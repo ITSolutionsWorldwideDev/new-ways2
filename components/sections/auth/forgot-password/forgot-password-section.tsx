@@ -137,13 +137,13 @@ export default function ForgotPasswordSection() {
     <div className="w-full max-w-4xl bg-white rounded-3xl shadow-lg p-4 sm:p-6 md:p-8 mx-4">
       {/* Header Section */}
       <div className="flex flex-col items-center text-center mb-6 sm:mb-8">
-        <Image
+        {/* <Image
           src={"/person-profile.svg"}
           alt="Person"
           width={75}
           height={71}
           className="mb-4"
-        />
+        /> */}
         <h1 className="text-2xl sm:text-3xl font-bold text-heading-dark mb-2 px-2">
           Forgot Password?
         </h1>

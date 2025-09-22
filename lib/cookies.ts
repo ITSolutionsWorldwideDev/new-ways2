@@ -1,6 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
 interface Token {
   access: {
@@ -12,7 +13,7 @@ interface Token {
     expires: string;
   };
 }
-const storeTokensInCookies = async (tokens: Token) => {
+/* const storeTokensInCookies = async (tokens: Token) => {
   const cookieStore = await cookies();
 
   cookieStore.set("access-token", JSON.stringify(tokens), {
@@ -21,7 +22,23 @@ const storeTokensInCookies = async (tokens: Token) => {
     path: "/",
     secure: process.env.NODE_ENV === "production",
   });
-};
+}; */
+
+export default function storeTokensInCookies(response: NextResponse, accessToken: string, refreshToken: string) {
+  response.cookies.set("access-token", accessToken, {
+    httpOnly: true,
+    maxAge: 3600,
+    path: "/",
+  });
+
+  response.cookies.set("refresh-token", refreshToken, {
+    httpOnly: true,
+    maxAge: 604800,
+    path: "/",
+  });
+
+  return response;
+}
 
 export const removeTokensFromCookies = async () => {
   (await cookies()).delete("access-token");
@@ -39,4 +56,4 @@ export const getTokensFromCookies = async () => {
   return null;
 };
 
-export default storeTokensInCookies;
+// export default storeTokensInCookies;

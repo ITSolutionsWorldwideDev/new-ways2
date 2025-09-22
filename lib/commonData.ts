@@ -33,6 +33,6 @@ export const commonData = {
     title: "Account",
     image: "/default-header.png",
     breadcrumb: ["Home", "My Account"],
-    description: ""
+    description: "Manage your account details and preferences."
   }
 }

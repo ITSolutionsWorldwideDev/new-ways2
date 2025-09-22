@@ -4,7 +4,14 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Search, User, ShoppingCart, Menu, ChevronDown } from "lucide-react";
+import {
+  Search,
+  User,
+  ShoppingCart,
+  Menu,
+  ChevronDown,
+  LogOut,
+} from "lucide-react";
 import { TopBar } from "./top-bar";
 import { Logo } from "../logo";
 import { ShopMainCategories } from "@/lib/menuData";
@@ -12,9 +19,9 @@ import { useCartStore } from "@/store/useCartStore"; // Adjust path as needed
 import { useState, useEffect } from "react";
 import CartSidebar from "@/components/cart/CartSidebar";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
-const categories = [
+/* const categories = [
   "Papers/Tips",
   "Cones",
   "Wraps",
@@ -22,7 +29,14 @@ const categories = [
   "Storage",
   "Collections",
   "All Products",
-];
+]; */
+
+interface UserSession {
+  firstName: string;
+  lastName: string;
+  email: string;
+  // other fields you store
+}
 
 export function Header() {
   const cart = useCartStore((state) => state.cart);
@@ -32,6 +46,7 @@ export function Header() {
   const [cartOpen, setCartOpen] = useState(false);
 
   const pathname = usePathname();
+  const router = useRouter();
 
   const openCart = () => setCartOpen(true);
   const closeCart = () => setCartOpen(false);
@@ -39,6 +54,61 @@ export function Header() {
   useEffect(() => {
     closeCart();
   }, [pathname]);
+
+  // Session state
+  const [user, setUser] = useState<UserSession | null>(null);
+  const [loadingUser, setLoadingUser] = useState(true);
+
+  useEffect(() => {
+    async function fetchSession() {
+      try {
+        // const res = await fetch("/api/auth/session");
+
+        const res = await fetch("/api/auth/session", {
+          method: "GET",
+          credentials: "include", // ✅ include cookies!
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+
+          console.log("user data ==== ", data);
+          console.log("user data 2222 ==== ", data?.user);
+
+          if (data?.user) {
+            setUser(data.user);
+          } else {
+            setUser(null);
+          }
+        } else {
+          setUser(null);
+        }
+      } catch (err) {
+        console.error("Failed fetching session:", err);
+        setUser(null);
+      } finally {
+        setLoadingUser(false);
+      }
+    }
+
+    fetchSession();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      const res = await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+      if (res.ok) {
+        setUser(null);
+        router.push("/login");
+      } else {
+        console.error("Logout failed");
+      }
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+  };
 
   /* z-20  */
   return (
@@ -126,32 +196,7 @@ export function Header() {
                   ))}
                 </div>
               </div>
-              {/* <div className="absolute left-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-                {ShopMainCategories.map((category, index) => (
-                  <Link
-                    key={index}
-                    href={`/shop/${category.name.split(" ").join("-")}`}
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    {category.name}
-                  </Link>
-                ))}
-              </div> */}
             </div>
-            {/* {categories.map((category, index) => ( */}
-            {/* {ShopMainCategories.map((category, index) => (
-              <div key={index} className="relative group">
-                <Link href={`/shop/${category.name.split(" ").join("-")}`}>
-
-                  <Button
-                    variant="ghost"
-                    className="text-base font-medium px-2 lg:px-4"
-                  >
-                    {category.name}
-                  </Button>
-                </Link>
-              </div>
-            ))} */}
           </nav>
 
           {/* Actions */}
@@ -160,11 +205,51 @@ export function Header() {
             {/* <Button variant="ghost" size="icon" className="hidden md:flex">
               <Search className="h-5 w-5" />
             </Button> */}
-            <Button variant="ghost" size="icon">
+
+            {/* If not loading, show login or user menu */}
+            {!loadingUser && !user && (
+              <>
+                <Link href="/login">
+                  <Button variant="ghost" size="icon" aria-label="Login">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </Link>
+                {/* <Link href="/signup">
+                  <Button variant="ghost" className="px-2 py-1 text-base font-medium">
+                    Sign Up
+                  </Button>
+                </Link> */}
+              </>
+            )}
+
+            {!loadingUser && user && (
+              <div className="relative group inline-flex">
+                <Button variant="ghost" size="icon" aria-label="Account">
+                  {/* perhaps show user initials or icon */}
+                  <User className="h-5 w-5" />
+                </Button>
+                <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                  <Link
+                    href="/account"
+                    className="block px-4 py-2 hover:bg-muted"
+                  >
+                    {`Profile (${user.firstName})`}
+                  </Link>
+                  <Button
+                    onClick={handleLogout}
+                    className="w-full text-left px-4 py-2 hover:bg-muted flex items-center"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" /> Logout
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* <Button variant="ghost" size="icon">
               <Link href="/account">
                 <User className="h-5 w-5" />
               </Link>
-            </Button>
+            </Button> */}
 
             <Button
               variant="ghost"
@@ -179,16 +264,6 @@ export function Header() {
             </Button>
 
             <CartSidebar isOpen={cartOpen} onClose={closeCart} />
-            {/* <Button variant="ghost" size="icon" className="relative">
-              <Link href="/cart">
-                <ShoppingCart className="h-5 w-5" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-lemon text-black text-xs w-4 h-4 rounded-full flex items-center justify-center">
-                    {cartCount}
-                  </span>
-                )}
-              </Link>
-            </Button> */}
           </div>
         </div>
 

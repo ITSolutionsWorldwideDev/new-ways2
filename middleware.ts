@@ -34,7 +34,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (
+  /* if (
     isAuthenticated &&
     (path.startsWith("/login") ||
       path.startsWith("/signup") ||
@@ -53,7 +53,7 @@ export async function middleware(request: NextRequest) {
 
   if (path.startsWith("/tax-organizer") && !isAuthenticated) {
     return NextResponse.redirect(new URL("/login", request.url));
-  }
+  } */
 
   return NextResponse.next();
 }

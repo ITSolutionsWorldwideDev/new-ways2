@@ -23,15 +23,18 @@ async function getProduct(itemid: string) {
   }
 }
 
-export default async function ProductPage({
+/* export default async function ProductPage({
   params,
 }: {
-  // params: { slug: string[] };
-  params: { slug: string[] }
+  params: { slug: any[] }
 }) {
-  const [itemid] = params.slug;
+  const [itemid] = params.slug; */
 
-  console.log("params is Promise:", typeof (params as any).then === "function");
+export default async function ProductPage(props: { params: Promise<{ slug: string[] }> }) {
+  const { slug } = await props.params;
+  const [itemid] = slug;
+
+  // console.log("params is Promise:", typeof (params as any).then === "function");
 
   const product = await getProduct(itemid);
 
