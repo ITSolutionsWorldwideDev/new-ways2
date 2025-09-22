@@ -17,12 +17,12 @@ interface Review {
 }; */
 
 type ProductReviewsProps = {
-  productId: number;
+  product_id: number;
 };
 
 // rating, review
 
-const ProductReviews = ({ productId }: ProductReviewsProps) => {
+const ProductReviews = ({ product_id }: ProductReviewsProps) => {
   const [userRating, setUserRating] = useState<number>(0);
   const [reviewText, setReviewText] = useState("");
   const [name, setName] = useState("");
@@ -80,7 +80,7 @@ const ProductReviews = ({ productId }: ProductReviewsProps) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        productId,
+        product_id,
         name,
         email,
         rating: userRating,
@@ -126,12 +126,12 @@ const ProductReviews = ({ productId }: ProductReviewsProps) => {
 
   useEffect(() => {
     async function fetchReviews() {
-      const res = await fetch(`/api/reviews?productId=${productId}`);
+      const res = await fetch(`/api/reviews?product_id=${product_id}`);
 
-      if (!res.ok) {
+      /* if (!res.ok) {
         console.error("Failed to fetch reviews");
-        return;
-      }
+        // return;
+      } */
 
       // Check for empty body
       const text = await res.text();
@@ -145,7 +145,7 @@ const ProductReviews = ({ productId }: ProductReviewsProps) => {
     }
 
     fetchReviews();
-  }, [productId]);
+  }, [product_id]);
 
   return (
     <>

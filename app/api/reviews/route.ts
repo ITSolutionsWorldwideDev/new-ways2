@@ -4,14 +4,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { runQuery } from "@/lib/db";
 
 export async function GET(req: NextRequest) {
-  const productId = req.nextUrl.searchParams.get("productId");
+  const productId = req.nextUrl.searchParams.get("product_id");
 
   if (!productId) {
     return NextResponse.json({ error: "Missing productId" }, { status: 400 });
   }
 
   const result = await runQuery(
-    `SELECT name, rating, review, created_at FROM product_reviews WHERE product_id = $1 ORDER BY created_at DESC`,
+    `SELECT review_id,comment, name,email, rating, review, created_at FROM product_reviews WHERE product_id = $1 ORDER BY created_at DESC`,
     [productId]
   );
 

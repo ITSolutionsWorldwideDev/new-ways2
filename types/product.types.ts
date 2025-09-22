@@ -17,6 +17,7 @@ export type Discount = {
 
 export type Product = {
   id: number;
+  product_id: number;
   itemid: string;
   displayname: string;
   description: string;

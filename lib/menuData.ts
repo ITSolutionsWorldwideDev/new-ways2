@@ -1,22 +1,9 @@
 export const ShopMainCategories = [
-
-  /*   
-  16
-6
-7
-21
-1
-
-
-
-9
-
-  */
   {
     description:
       "Accessories used to safely collect ash residue from smoking items.",
     id: "1",
-    name: "Ashtray",
+    name: "Ashtrays",
   },
   {
     description:
@@ -46,7 +33,7 @@ export const ShopMainCategories = [
     description:
       "Pre-rolled paper cones used for quick and easy manual filling.",
     id: "6",
-    name: "Cones",
+    name: "Pre-rolled Cones",
   },
   {
     description:
@@ -91,7 +78,8 @@ export const ShopMainCategories = [
   },
   {
     description:
-      "Compact, often handheld devices used for direct smoking of dry herbs.",
+      "Premium glass bongs offering better filtration and smooth smoke experience.",
+    // "Compact, often handheld devices used for direct smoking of dry herbs.",
     id: "13",
     name: "Glass Bongs",
   },
@@ -110,10 +98,37 @@ export const ShopMainCategories = [
     description:
       "Tobacco or hemp-based sheets used as rolling wrappers for blunts.",
     id: "17",
-    name: "Wraps",
+    name: "Blunts & Wraps",
+  },
+  {
+    description: "",
+    id: "18",
+    name: "Ape Cones",
+  },
+  {
+    description: "",
+    id: "19",
+    name: "Canvas",
   },
 ];
 
+export const ShopMainSubCategories = [
+  {
+    description: "",
+    id: "1",
+    name: "Papers",
+  },
+  {
+    description: "",
+    id: "2",
+    name: "Papers + Tips",
+  },
+  {
+    description: "",
+    id: "3",
+    name: "Papers + Tips & Tray",
+  },
+];
 
 /*
 
@@ -245,4 +260,3 @@ export const ShopMainCategories = [
   },
 ];
 */
-

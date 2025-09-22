@@ -1,4 +1,131 @@
-"use client";
+// app/shop/page.tsx
+import { type Metadata } from "next";
+import ShopBanner from "@/components/shop/ShopBanner";
+// import ProductCard from "@/components/shop/ProductCard";
+import Pagination from "@/components/shop/Pagination";
+import InteractiveProductList from "@/components/shop/InteractiveProductList";
+import { shopData } from "@/lib/shopData";
+import { type ResolvingMetadata } from "next";
+// import { type SearchParams } from "next/navigation";
+
+// interface Props {
+//   searchParams: Record<string, string | string[] | undefined>;
+// }
+
+const PRODUCTS_PER_PAGE = 24;
+
+async function getData(searchParams: { [key: string]: string | string[] | undefined }) {
+  const params = new URLSearchParams();
+
+  const getValue = (key: string): string | undefined => {
+    const value = searchParams[key];
+    if (Array.isArray(value)) return value[0];
+    return value;
+  };
+
+  const page = getValue("page") || "1";
+  params.set("page", page);
+  params.set("limit", "24");
+
+  const availability = getValue("availability");
+  if (availability === "In Stock") {
+    params.set("instock", "true");
+  } else if (availability === "Out of Stock") {
+    params.set("instock", "false");
+  }
+
+  const filters = ["color", "size", "brand", "search", "priceMin", "priceMax", "sortBy"];
+  filters.forEach((filter) => {
+    const value = getValue(filter);
+    if (value) params.set(filter, value);
+  });
+
+  const res = await fetch(`${process.env.DOMAIN_URL}/api/items?${params.toString()}`, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch products");
+  }
+
+  return res.json();
+}
+
+
+/* async function getData(searchParams: any) {
+  const params = new URLSearchParams();
+
+  console.log('searchParams ==== ',searchParams);
+
+  if (searchParams.page) {
+    params.set("page", searchParams.page);
+  } else {
+    params.set("page", "1");
+  }
+
+  params.set("limit", PRODUCTS_PER_PAGE.toString());
+
+  if (searchParams.availability === "In Stock") {
+    params.set("instock", "true");
+  } else if (searchParams.availability === "Out of Stock") {
+    params.set("instock", "false");
+  }
+
+  if (searchParams.color) params.set("color", searchParams.color);
+  if (searchParams.size) params.set("size", searchParams.size);
+  if (searchParams.brand) params.set("brand", searchParams.brand);
+  if (searchParams.search) params.set("search", searchParams.search);
+  if (searchParams.priceMin) params.set("priceMin", searchParams.priceMin);
+  if (searchParams.priceMax) params.set("priceMax", searchParams.priceMax);
+  if (searchParams.sortBy) params.set("sort", searchParams.sortBy);
+
+  const res = await fetch(`${process.env.DOMAIN_URL}/api/items?${params.toString()}`, {
+    cache: 'no-store', // ensure SSR
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch products");
+  }
+
+  return res.json();
+} */
+
+export default async function ShopPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  const data = await getData(searchParams);
+
+  // console.log('data === ',data);
+
+  return (
+    <div>
+      <ShopBanner {...shopData.banner} />
+
+      <InteractiveProductList
+        items={data.items}
+        totalResults={data.totalResults}
+        productsPerPage={PRODUCTS_PER_PAGE}
+      />
+    </div>
+  );
+}
+
+/* export default async function ShopPage({ searchParams }: { searchParams: any }) {
+  const data = await getData(searchParams);
+
+  return (
+    <div>
+      <ShopBanner {...shopData.banner} />
+      
+      <InteractiveProductList items={data.items} />
+      <Pagination totalPages={data.totalResults} currentPage={Number(searchParams.page || 1)} />
+    </div>
+  );
+} */
+
+/* "use client";
 import React, { useState, useEffect } from "react";
 import { shopData } from "@/lib/shopData";
 import ShopBanner from "@/components/shop/ShopBanner";
@@ -29,61 +156,12 @@ interface Product {
   title: string;
   inStock: boolean;
   selCheckbox: boolean;
-  // priceRange: [number, number];
   priceRange: number;
   price?: number;
   color?: string;
   size?: string;
   brand?: string;
 }
-
-/* 
-
-const filterProducts = (products: Product[], filters: Filters) => {
-  let filtered = [...products];
-  if (filters.availability) {
-    filtered = filtered.filter((p) =>
-      filters.availability === "In Stock" ? p.inStock : !p.inStock
-    );
-  }
-  if (filters.priceMin) {
-    filtered = filtered.filter(
-      (p) => p.priceRange[0] >= Number(filters.priceMin)
-    );
-  }
-  if (filters.priceMax) {
-    filtered = filtered.filter(
-      (p) => p.priceRange[1] <= Number(filters.priceMax)
-    );
-  }
-  if (filters.color) {
-    // Color filter logic (if color is in product data)
-  }
-  if (filters.size) {
-    // Size filter logic (if size is in product data)
-  }
-  if (filters.brand) {
-    // Brand filter logic (if brand is in product data)
-  }
-  if (filters.search) {
-    filtered = filtered.filter(
-      (p) =>
-        filters.search &&
-        p.title.toLowerCase().includes(filters.search.toLowerCase())
-    );
-  }
-  return filtered;
-};
-
-const sortProducts = (products: Product[], sortBy: string) => {
-  if (sortBy === "Price: Low to High") {
-    return [...products].sort((a, b) => a.priceRange[0] - b.priceRange[0]);
-  }
-  if (sortBy === "Price: High to Low") {
-    return [...products].sort((a, b) => b.priceRange[1] - a.priceRange[1]);
-  }
-  return products;
-}; */
 
 const ShopPage = () => {
   const [filters, setFilters] = useState<Filters>({});
@@ -137,7 +215,6 @@ const ShopPage = () => {
         .getState()
         .cart.find((c) => c.itemid === item.itemid);
       if (existing) {
-        // overwrite existing quantity
         updateQuantity(item.itemid, bulkQuantity);
       } else {
         addToCart({
@@ -147,11 +224,7 @@ const ShopPage = () => {
           image: item?.image ?? "/dummy/img-product.png",
           priceRange: item?.priceRange,
           price: item?.price,
-          // priceRange: Array.isArray(item?.priceRange)
-          //   ? [item.priceRange[0] ?? 0, item.priceRange[1] ?? 0]
-          //   : [8, 120],
           quantity: bulkQuantity,
-          // quantity: 1,
         });
       }
     });
@@ -190,7 +263,7 @@ const ShopPage = () => {
       const res = await fetch(`/api/items?${params.toString()}`);
       const data = await res.json();
       setItems(data.items);
-      setTotalPages(data.totalResults); // or however you're calculating pages
+      setTotalPages(data.totalResults);
     } catch (err) {
       console.error("Failed to fetch items:", err);
     } finally {
@@ -225,7 +298,7 @@ const ShopPage = () => {
                 >
                   -
                 </button>
-                {/* <span className="mx-2">01</span> */}
+                // <span className="mx-2">01</span>
                 <span className="mx-2">
                   {bulkQuantity?.toString().padStart(2, "0")}
                 </span>
@@ -323,4 +396,4 @@ const ShopPage = () => {
   );
 };
 
-export default ShopPage;
+export default ShopPage; */

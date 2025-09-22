@@ -95,6 +95,7 @@ export async function GET(req: NextRequest) {
 
       whereClauses.push(`(
           LOWER(i.displayname) LIKE '%${keyword}%' OR
+          LOWER(i.matchcode) LIKE '%${keyword}%' OR
           LOWER(i.itemid) LIKE '%${keyword}%' OR
           LOWER(i.description) LIKE '%${keyword}%')`);
           // LOWER(i.purchasedescription) LIKE '%${keyword}%')`);

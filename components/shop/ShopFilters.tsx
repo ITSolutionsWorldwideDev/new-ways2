@@ -60,8 +60,18 @@ const ShopFilters: React.FC<ShopFiltersProps> = ({
       search: "",
       selectAll: false,
     };
+
     setSelected(cleared);
-    onFilterChange({});
+    // onFilterChange({});
+
+    // Notify parent to clear from URL
+    onFilterChange({
+      availability: "",
+      color: "",
+      size: "",
+      brand: "",
+      search: "",
+    });
   };
 
   return (

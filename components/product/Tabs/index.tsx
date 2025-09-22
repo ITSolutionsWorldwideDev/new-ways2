@@ -52,12 +52,12 @@ const tabBtnData: TabBtn[] = [
 ];
 
 export type ProductTabData = {
-  id: number;
+  product_id: number;
   description: string;
   rating: number;
   reviewData: any;
 };
-const Tabs = ({ id, description, rating, reviewData }: ProductTabData) => {
+const Tabs = ({ product_id, description, rating, reviewData }: ProductTabData) => {
   const [active, setActive] = useState<number>(1);
 
   return (
@@ -82,7 +82,7 @@ const Tabs = ({ id, description, rating, reviewData }: ProductTabData) => {
       </div>
       <div className="mt-2 mb-2 border border-border rounded-lg p-6 w-full">
         {active === 1 && <ProductDetailsContent description={description} />}
-        {active === 5 && <ProductReviews productId={id}/>}
+        {active === 5 && <ProductReviews product_id={product_id}/>}
         {/*  rating={rating} review={reviewData}  */}
       </div>
     </div>
