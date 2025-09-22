@@ -34,6 +34,7 @@ export async function GET(req: NextRequest) {
       `SELECT user_id, "firstName", "lastName", email FROM users WHERE user_id = $1`,
       [payload.userId]
     );
+    console.log("Session route: DB result:", result.rows);
 
     if (result.rowCount === 0) {
       return NextResponse.json({ user: null }, { status: 200 });

@@ -3,7 +3,7 @@
 "use server";
 
 import { runQuery } from "@/lib/db";
-import storeTokensInCookies from "@/lib/cookies";
+// import storeTokensInCookies from "@/lib/cookies";
 import { handleApiErrorWithoutException } from "@/lib/errorHandler";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";

@@ -13,18 +13,8 @@ interface Token {
     expires: string;
   };
 }
-/* const storeTokensInCookies = async (tokens: Token) => {
-  const cookieStore = await cookies();
 
-  cookieStore.set("access-token", JSON.stringify(tokens), {
-    httpOnly: true,
-    sameSite: "strict",
-    path: "/",
-    secure: process.env.NODE_ENV === "production",
-  });
-}; */
-
-export default function storeTokensInCookies(response: NextResponse, accessToken: string, refreshToken: string) {
+/* export default function storeTokensInCookies(response: NextResponse, accessToken: string, refreshToken: string) {
   response.cookies.set("access-token", accessToken, {
     httpOnly: true,
     maxAge: 3600,
@@ -38,7 +28,7 @@ export default function storeTokensInCookies(response: NextResponse, accessToken
   });
 
   return response;
-}
+} */
 
 export const removeTokensFromCookies = async () => {
   (await cookies()).delete("access-token");

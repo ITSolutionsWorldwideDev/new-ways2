@@ -8,28 +8,6 @@ export interface LoginPayload {
   password: string;
 }
 
-/* export const loginUser = async (data: LoginPayload) => {
-  try {
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!res.ok) {
-      const json = await res.json();
-      return { error: json.error || "Login failed" };
-    }
-
-    const json = await res.json();
-    return { user: json.user };
-  } catch (error: any) {
-    return handleApiErrorWithoutException(error);
-  }
-}; */
-
 type LoginSuccess = {
   user: {
     userId: string;
