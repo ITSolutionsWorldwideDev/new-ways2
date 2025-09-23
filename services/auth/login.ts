@@ -23,7 +23,7 @@ export type LoginResponse = LoginSuccess | LoginFailure;
 
 export const loginUser = async (data: LoginPayload): Promise<LoginResponse> => {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const baseUrl = process.env.DOMAIN_URL || "http://localhost:3000";
 
     const res = await fetch(`${baseUrl}/api/auth/login`, {
       method: "POST",
