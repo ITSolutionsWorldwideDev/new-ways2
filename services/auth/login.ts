@@ -25,7 +25,7 @@ export const loginUser = async (data: LoginPayload): Promise<LoginResponse> => {
   try {
     const baseUrl = process.env.DOMAIN_URL || "http://localhost:3000";
 
-    const res = await fetch(`${baseUrl}/api/auth/login`, {
+    const res = await fetch(`/api/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -63,16 +63,17 @@ export default function LoginSection() {
         password: trimmedPassword,
       });
 
-      // await loginUser({ trimmedEmail, trimmedPassword });
-
-      // console.log('response ===== ',response);
-      // console.log('response ===== ',isActionError(response));
-
-      if ("user" in response) {
+      /* if ("user" in response) {
         // The `loginUser` function will return the user data.
         // Call the context's login function to update the global state.
         login(response.user);
         router.push("/");
+      } */
+
+      if ("user" in response) {
+        login(response.user); // set context state
+        router.replace("/"); // soft navigate
+        router.refresh(); // force reload to update context-dependent components
       }
 
       if (isActionError(response) && response.error) {
@@ -109,7 +110,9 @@ export default function LoginSection() {
         description: "Redirecting to dashboard...",
       });
 
-      router.push("/");
+      // router.push("/");
+      router.replace("/"); // soft navigate
+        router.refresh(); // force reload to update context-dependent components
 
       /* if (response.user.isBankAccountConnected) {
         router.push("/bookkeeping");

@@ -236,12 +236,12 @@ export function Header() {
                   {/* perhaps show user initials or icon */}
                   <User className="h-5 w-5" />
                 </Button>
-                <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                <div className="absolute top-8 right-0 mt-2 w-48 bg-background border rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                   <Link
                     href="/account"
                     className="block px-4 py-2 hover:bg-muted"
-                  >
-                    {`Profile (${user.firstName})`}
+                  >{user.firstName}
+                    {/* {`Profile (${user.firstName})`} */}
                   </Link>
                   <Button
                     onClick={handleLogout}

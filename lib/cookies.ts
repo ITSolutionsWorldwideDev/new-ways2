@@ -40,3 +40,8 @@ export const getTokensFromCookies = (req: NextRequest) => {
   const accessToken = req.cookies.get("access-token")?.value || null;
   return accessToken;
 };
+
+export function getAccessTokenFromRequest(req: NextRequest): string | null {
+  const token = req.cookies.get("access-token")?.value || null;
+  return token;
+}
