@@ -5,6 +5,13 @@ import jwt from "jsonwebtoken";
 const ACCESS_TOKEN_SECRET = process.env.JWT_ACCESS_SECRET!;
 const REFRESH_TOKEN_SECRET = process.env.JWT_REFRESH_SECRET!;
 
+// const ACCESS_TOKEN_SECRET = process.env.JWT_ACCESS_SECRET;
+// const REFRESH_TOKEN_SECRET = process.env.JWT_REFRESH_SECRET;
+
+if (!ACCESS_TOKEN_SECRET || !REFRESH_TOKEN_SECRET) {
+  throw new Error("JWT secrets are not defined. Check your .env file.");
+}
+
 // Type of payload you put in JWT
 export interface JwtPayload {
   userId: number;
@@ -26,11 +33,6 @@ export function verifyAccessToken(token: string): JwtPayload | null {
       throw new Error("Empty or undefined token");
     }
 
-    
-
-console.log('ACCESS_TOKEN_SECRET === ',ACCESS_TOKEN_SECRET);
-console.log('REFRESH_TOKEN_SECRET === ',REFRESH_TOKEN_SECRET);
-
     const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET);
     return decoded as JwtPayload;
   } catch (err) {
@@ -38,7 +40,6 @@ console.log('REFRESH_TOKEN_SECRET === ',REFRESH_TOKEN_SECRET);
     return null;
   }
 }
-
 
 export function verifyRefreshToken(token: string): JwtPayload | null {
   try {

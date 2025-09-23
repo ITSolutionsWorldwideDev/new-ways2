@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Header } from "@/components/layout/header";
 import { ThemeProvider } from "@/components/theme-provider";
 import Footer from "@/components/layout/footer";
+import { UserProvider } from "@/context/userContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -41,10 +42,12 @@ export default function RootLayout({
       <body className={`${inter.className} text-base antialiased`}>
         <ThemeProvider>
           <ReduxProvider>
+            <UserProvider>
             <Header />
             <Toaster />
             {children}
             <Footer />
+            </UserProvider>
           </ReduxProvider>
         </ThemeProvider>
       </body>

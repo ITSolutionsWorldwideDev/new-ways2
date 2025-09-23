@@ -1,3 +1,4 @@
+// components/layout/header.tsx
 "use client";
 import Link from "next/link";
 import Image from "next/image";
@@ -59,14 +60,20 @@ export function Header() {
   const [user, setUser] = useState<UserSession | null>(null);
   const [loadingUser, setLoadingUser] = useState(true);
 
+  /*  
+  const cookieStore = await cookies();
+  const authAccessToken = cookieStore.get("access-token");  
+  console.log('storeTokensInCookies  authAccessToken ===',authAccessToken); */
+
   useEffect(() => {
     async function fetchSession() {
       try {
-        // const res = await fetch("/api/auth/session");
-
         const res = await fetch("/api/auth/session", {
           method: "GET",
-          credentials: "include", // ✅ include cookies!
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // ✅ ensures cookies are sent
         });
 
         if (res.ok) {
@@ -98,6 +105,7 @@ export function Header() {
     try {
       const res = await fetch("/api/auth/logout", {
         method: "POST",
+        credentials: "include",
       });
       if (res.ok) {
         setUser(null);

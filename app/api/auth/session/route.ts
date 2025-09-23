@@ -1,28 +1,29 @@
 // /app/api/auth/session/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { verifyAccessToken, JwtPayload } from "@/lib/token";
 import { runQuery } from "@/lib/db";
+import { getTokensFromCookies } from "@/lib/cookies";
 
 export async function GET(req: NextRequest) {
   try {
-    const cookieStore = await cookies(); // must await
-    console.log("Session route: cookiesStore all:", cookieStore.getAll()); // log all cookies
+    // const token = await getTokensFromCookies();
+    const token = getTokensFromCookies(req);
 
-    const accessCookie = cookieStore.get("access-token");
-    console.log("Session route: accessCookie:", accessCookie);
-
-    if (!accessCookie) {
-      return NextResponse.json({ user: null }, { status: 200 });
+    if (!token) {
+      return NextResponse.json(
+        { user: null, message: "No access token found" },
+        { status: 401 }
+      );
     }
 
-    const token = accessCookie?.value;
-    console.log("Session: token value:", token); // debug
     const payload = verifyAccessToken(token);
 
     if (!payload) {
-      console.log("Session: token invalid or expired"); // debug
-      return NextResponse.json({ user: null }, { status: 200 });
+      // Token is invalid or expired.
+      return NextResponse.json(
+        { user: null, message: "Invalid or expired token" },
+        { status: 401 }
+      );
     }
 
     const result = await runQuery<{
@@ -34,14 +35,12 @@ export async function GET(req: NextRequest) {
       `SELECT user_id, "firstName", "lastName", email FROM users WHERE user_id = $1`,
       [payload.userId]
     );
-    console.log("Session route: DB result:", result.rows);
 
     if (result.rowCount === 0) {
       return NextResponse.json({ user: null }, { status: 200 });
     }
 
     const user = result.rows[0];
-    console.log("Session: user from DB:", user); // debug
 
     return NextResponse.json(
       {

@@ -8,7 +8,7 @@ import { ActionButton } from "@/components/ui/action-button";
 import Link from "next/link";
 import Image from "next/image";
 // import login from "@/services/auth/login";
-import { loginUser } from "@/services/auth/login"; // ✅
+import { loginUser, LoginResponse } from "@/services/auth/login"; // ✅
 
 import { isActionError } from "@/lib/error";
 import { useToast } from "@/hooks/use-toast";
@@ -17,8 +17,12 @@ import { Loader2 } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { setUserInfo } from "@/redux/features/user-info-slice";
 
+import { useUser } from "@/context/userContext";
+
 export default function LoginSection() {
   const { toast } = useToast();
+
+  const { login } = useUser();
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -54,7 +58,7 @@ export default function LoginSection() {
     setLoading(true);
 
     try {
-      const response = await loginUser({
+      const response: LoginResponse = await loginUser({
         email: trimmedEmail,
         password: trimmedPassword,
       });
@@ -63,6 +67,13 @@ export default function LoginSection() {
 
       // console.log('response ===== ',response);
       // console.log('response ===== ',isActionError(response));
+
+      if ("user" in response) {
+        // The `loginUser` function will return the user data.
+        // Call the context's login function to update the global state.
+        login(response.user);
+        router.push("/");
+      }
 
       if (isActionError(response) && response.error) {
         toast({

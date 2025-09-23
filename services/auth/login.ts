@@ -1,8 +1,5 @@
 // /services/auth/login.ts
-
-"use server";
 import { handleApiErrorWithoutException } from "@/lib/errorHandler";
-
 export interface LoginPayload {
   email: string;
   password: string;
@@ -24,17 +21,16 @@ type LoginFailure = {
 
 export type LoginResponse = LoginSuccess | LoginFailure;
 
-// export const loginUser = async (data: LoginPayload) => {
 export const loginUser = async (data: LoginPayload): Promise<LoginResponse> => {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"; // make sure to set this in your env
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
     const res = await fetch(`${baseUrl}/api/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include",  // <-- Add this
+      credentials: "include",
       body: JSON.stringify(data),
     });
 
@@ -44,33 +40,9 @@ export const loginUser = async (data: LoginPayload): Promise<LoginResponse> => {
     }
 
     const json = await res.json();
+
     return { user: json.user };
   } catch (error: any) {
     return handleApiErrorWithoutException(error);
   }
 };
-
-
-
-/* "use server";
-import storeTokensInCookies from "@/lib/cookies";
-import { getServerAxios } from "../axiosInstance";
-import { handleApiErrorWithoutException } from "@/lib/errorHandler";
-
-type loginProps = {
-  email: string;
-  password: string;
-};
-
-export const login = async (data: loginProps) => {
-  const axiosInstance = await getServerAxios();
-  try {
-    const response = await axiosInstance.post(`/auth/login`, data);
-    await storeTokensInCookies(response.data.tokens);
-
-    return response.data;
-  } catch (error: any) {
-    return handleApiErrorWithoutException(error);
-  }
-};
- */

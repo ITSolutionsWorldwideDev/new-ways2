@@ -75,8 +75,8 @@ export default function SignupSection() {
       }
 
       if (!response || "error" in response || !response.user) {
-        // Handle error case
-        console.error("Signup failed:", response?.error);
+        // Handle error case ?.error
+        console.error("Signup failed:", response);
         return;
       }
 

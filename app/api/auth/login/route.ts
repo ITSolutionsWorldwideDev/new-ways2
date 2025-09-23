@@ -5,6 +5,7 @@ import { runQuery } from "@/lib/db";
 import bcrypt from "bcrypt";
 import { signAccessToken, signRefreshToken, JwtPayload } from "@/lib/token";
 import { handleApiErrorWithoutException } from "@/lib/errorHandler";
+import storeTokensInCookies from "@/lib/cookies";
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,23 +13,37 @@ export async function POST(req: NextRequest) {
     const { email, password } = body;
 
     if (!email || !password) {
-      return NextResponse.json({ error: "Missing email or password" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing email or password" },
+        { status: 400 }
+      );
     }
 
-    const result = await runQuery<{ user_id: number; password_hash: string; firstName: string; lastName: string }>(
+    const result = await runQuery<{
+      user_id: number;
+      password_hash: string;
+      firstName: string;
+      lastName: string;
+    }>(
       `SELECT user_id, password_hash, "firstName", "lastName" FROM users WHERE email = $1`,
       [email]
     );
 
     if (result.rowCount === 0) {
-      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+      return NextResponse.json(
+        { error: "Invalid credentials" },
+        { status: 401 }
+      );
     }
 
     const user = result.rows[0];
 
     const valid = await bcrypt.compare(password, user.password_hash);
     if (!valid) {
-      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+      return NextResponse.json(
+        { error: "Invalid credentials" },
+        { status: 401 }
+      );
     }
 
     const payload: JwtPayload = {
@@ -48,8 +63,36 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    // Set cookies
+    // await storeTokensInCookies(response, accessToken, refreshToken);
+    response.cookies.set("access-token", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      maxAge: 60 * 60,
+      path: "/",
+    });
+
+    response.cookies.set("refresh-token", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      maxAge: 7 * 24 * 60 * 60,
+      path: "/",
+    });
+
+    return response;
+  } catch (error: any) {
+    const handled = handleApiErrorWithoutException(error);
+    return NextResponse.json(handled, { status: handled.statusCode || 500 });
+  }
+}
+
+/* 
+ // ✅ must return this response!
+
     // ✅ Set cookies *here*
-    const isProd = process.env.NODE_ENV === "production";
+    /* const isProd = process.env.NODE_ENV === "production";
 
     response.cookies.set("access-token", accessToken, {
       httpOnly: true,
@@ -67,14 +110,7 @@ export async function POST(req: NextRequest) {
       path: "/",
     });
 
-    return response;
-
-  } catch (error: any) {
-    const handled = handleApiErrorWithoutException(error);
-    return NextResponse.json(handled, { status: handled.statusCode || 500 });
-  }
-}
-
+    return response; */
 
 /* import { NextRequest, NextResponse } from "next/server";
 import { runQuery } from "@/lib/db";

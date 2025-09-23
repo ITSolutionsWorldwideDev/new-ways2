@@ -1,7 +1,58 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getTokensFromCookies } from "./lib/cookies";
+// import { getTokensFromCookies } from "./lib/cookies";
+import { verifyAccessToken } from "@/lib/token";
 
-export async function middleware(request: NextRequest) {
+
+// Define an array of protected routes
+const protectedRoutes = ["/dashboard", "/account"];
+
+/* 
+const isPublicPath =
+    path === "/" ||
+    path.startsWith("/login") ||
+    path.startsWith("/signup") ||
+    path.startsWith("/forgot-password") ||
+    path.startsWith("/reset-password") ||
+    path.startsWith("/shop") ||
+    path.startsWith("/account") ||
+    
+    path.startsWith("/product") ||   // ✅ allow product pages
+    path.startsWith("/cart") ||      // ✅ allow cart page
+    path.startsWith("/checkout") ||  // ✅ allow checkout page
+    path.startsWith("/checkout/success") ||  // ✅ allow checkout page
+    path.startsWith("/contact") ||  // ✅ allow checkout page
+    path.startsWith("/faq") ||  // ✅ allow checkout page
+
+    path.startsWith("/terms") ||  // ✅ allow checkout page
+    
+    path.startsWith("/_next") ||
+    path.startsWith("/api") ||
+    path.includes(".") || // skip static files
+    path === "/404"; // let 404 page be handled
+
+*/
+
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+  
+  // Check if the route is protected
+  if (protectedRoutes.includes(pathname)) {
+    const accessToken = req.cookies.get("access-token")?.value;
+    const payload = accessToken ? verifyAccessToken(accessToken) : null;
+
+    if (!payload) {
+      // If no valid token, redirect to login
+      const loginUrl = new URL("/login", req.url);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  // Continue to the next middleware or the page
+  return NextResponse.next();
+}
+
+
+/* export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
   // Define public paths that don't require authentication
@@ -34,29 +85,17 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  /* if (
+  if (
     isAuthenticated &&
     (path.startsWith("/login") ||
       path.startsWith("/signup") ||
       path.startsWith("/forgot-password"))
   ) {
-    return NextResponse.redirect(new URL("/bookkeeping", request.url));
+    return NextResponse.redirect(new URL("/", request.url));
   }
-
-  if (path.startsWith("/bookkeeping") && !isAuthenticated) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  if (path.startsWith("/bookkeeping-setup") && !isAuthenticated) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  if (path.startsWith("/tax-organizer") && !isAuthenticated) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  } */
 
   return NextResponse.next();
-}
+} */
 
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico|public/).*)"],

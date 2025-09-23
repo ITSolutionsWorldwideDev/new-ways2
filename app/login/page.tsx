@@ -1,3 +1,4 @@
+// app/login/page.tsx
 import { AuthLayout } from "@/components/layout/auth-layout"
 import LoginSection from "@/components/sections/auth/login/login-section"
 import ShopBanner from "@/components/shop/ShopBanner"
