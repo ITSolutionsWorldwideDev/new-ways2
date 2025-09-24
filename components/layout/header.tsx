@@ -60,11 +60,6 @@ export function Header() {
   const [user, setUser] = useState<UserSession | null>(null);
   const [loadingUser, setLoadingUser] = useState(true);
 
-  /*  
-  const cookieStore = await cookies();
-  const authAccessToken = cookieStore.get("access-token");  
-  console.log('storeTokensInCookies  authAccessToken ===',authAccessToken); */
-
   useEffect(() => {
     async function fetchSession() {
       try {
@@ -78,9 +73,6 @@ export function Header() {
 
         if (res.ok) {
           const data = await res.json();
-
-          console.log("user data ==== ", data);
-          console.log("user data 2222 ==== ", data?.user);
 
           if (data?.user) {
             setUser(data.user);
@@ -125,7 +117,8 @@ export function Header() {
       <TopBar />
 
       {/* Main Header */}
-      <div className="container mx-auto px-2 sm:px-4 md:px-8">
+      <div className="container mx-auto sm:px-4 md:px-0">
+        {/* px-2  */}
         <div className="flex items-center justify-between h-16 sm:h-20 gap-2 sm:gap-0">
           {/* Mobile/Tablet Menu - Visible on tablet and below */}
           <div className="flex items-center flex-shrink-0 md:hidden">

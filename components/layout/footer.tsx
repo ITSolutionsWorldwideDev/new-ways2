@@ -3,8 +3,8 @@ import { FaInstagram } from "react-icons/fa";
 export default function Footer() {
   return (
     <footer className="w-full bg-black text-gray-300 pt-8 pb-4 px-4 border-t border-gray-800">
-      <div className="max-w-6xl mx-auto flex flex-col gap-8">
-        {/* Top Links */}
+      <div className="container mx-auto flex flex-col gap-8">
+        {/* Top Links  max-w-6xl */}
         <div className="flex flex-col md:flex-row justify-center items-center gap-4 pb-4">
           <nav className="flex flex-wrap justify-center gap-6 text-sm">
             <a href="/contact" className="hover:text-white">

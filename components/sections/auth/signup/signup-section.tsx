@@ -97,8 +97,8 @@ export default function SignupSection() {
         description: "Redirecting to dashboard...",
       });
 
-      // router.push("/");
-      router.replace("/"); // soft navigate
+      router.push("/");
+      // router.replace("/"); // soft navigate
         router.refresh(); // force reload to update context-dependent components
 
       // const hasCompletedSetup = false;

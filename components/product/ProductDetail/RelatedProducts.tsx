@@ -5,6 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
+import Link from "next/link";
 
 
 type ProductRelatedProps = {
@@ -67,6 +68,7 @@ const RelatedProducts = ({ product_id }: ProductRelatedProps) => {
             items.map((product: any) => (
               <SwiperSlide key={product.id}>
                 <div className="border border-border rounded-lg p-4 items-center text-center bg-background shadow justify-center  object-center">
+                  <Link href={`/product/${product.itemid}`}>
                   <img
                     className="w-32 h-32 object-contain mb-2 m-auto"
                     src={product.image ?? "/dummy/img-product.png"}
@@ -78,6 +80,7 @@ const RelatedProducts = ({ product_id }: ProductRelatedProps) => {
                   <div className="font-bold mb-1 text-foreground">
                     ${product.price}
                   </div>
+                  </Link>
                 </div>
               </SwiperSlide>
             ))}

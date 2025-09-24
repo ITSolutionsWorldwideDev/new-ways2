@@ -4,6 +4,7 @@ import type React from "react";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import { ActionButton } from "@/components/ui/action-button";
 import Link from "next/link";
 import Image from "next/image";
@@ -25,6 +26,12 @@ export default function LoginSection() {
   const { login } = useUser();
   const router = useRouter();
   const dispatch = useDispatch();
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -70,12 +77,6 @@ export default function LoginSection() {
         router.push("/");
       } */
 
-      if ("user" in response) {
-        login(response.user); // set context state
-        router.replace("/"); // soft navigate
-        router.refresh(); // force reload to update context-dependent components
-      }
-
       if (isActionError(response) && response.error) {
         toast({
           title: "Login failed",
@@ -111,14 +112,21 @@ export default function LoginSection() {
       });
 
       // router.push("/");
-      router.replace("/"); // soft navigate
-        router.refresh(); // force reload to update context-dependent components
+      // router.replace("/"); // soft navigate
+      // router.refresh(); // force reload to update context-dependent components
+      console.log("response :", response);
+      if ("user" in response) {
+        await login(response.user); // waits for session to refetch
 
-      /* if (response.user.isBankAccountConnected) {
-        router.push("/bookkeeping");
-      } else {
-        router.push("/bookkeeping-setup");
-      } */
+        window.location.href = "/"; // <-- Hard reload
+        return;
+
+        /* setTimeout(() => {
+          // router.replace("/");
+          router.push("/");
+          router.refresh();
+        }, 0); */
+      }
     } catch (error: any) {
       toast({
         title: "An error occurred",
@@ -175,18 +183,25 @@ export default function LoginSection() {
             />
           </div>
 
-          <div>
+          <div className="relative">
             <Label htmlFor="password">Password *</Label>
             <Input
               id="password"
               name="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="••••••"
               value={formData.password}
               onChange={handleInputChange}
               className="mt-1 h-10 sm:h-12 rounded-xl border-gray-200 focus:border-financial-yellow focus:ring-financial-yellow"
               required
             />
+
+            <div
+              className="absolute right-3 top-[50%] translate-y-[-50%] cursor-pointer text-gray-500"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+            </div>
             <div className="flex justify-end mt-1">
               <Link
                 href="/forgot-password"

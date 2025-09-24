@@ -1,5 +1,5 @@
 import { ShopMainCategories } from "@/lib/menuData";
-import { colorsData,brandData, sizesData } from "@/lib/filterData";
+import { colorsData, brandData, sizesData } from "@/lib/filterData";
 import { runSuiteQLQuery } from "@/services/shop/items";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -24,14 +24,13 @@ export async function GET(req: NextRequest) {
   const sort = searchParams.get("sort");
 
   let query: string;
-  let countQuery: string = '';
-  
+  let countQuery: string = "";
+
+  let matchedCategory;
 
   if (itemid) {
     query = `SELECT * FROM products WHERE itemid = '${itemid}'`;
-
   } else {
-
     const whereClauses: string[] = [`i.status = 1`]; // Base condition
 
     // Optional filters
@@ -63,12 +62,15 @@ export async function GET(req: NextRequest) {
       // const keyword = category.split("-").join(" ").toLowerCase();
       const keyword = category.split("-").join("_").toLowerCase();
 
-      const matchedCategory = ShopMainCategories.find((cat) =>
+      matchedCategory = ShopMainCategories.find((cat) =>
         cat.alias?.toLowerCase().includes(keyword)
       );
 
       const category_id = matchedCategory?.id || null;
       whereClauses.push(`i.category_id = '${category_id}'`);
+
+      // const category_name = matchedCategory?.name || null;
+      // const category_desc = matchedCategory?.description || null;
     }
 
     if (brand) {
@@ -99,7 +101,7 @@ export async function GET(req: NextRequest) {
           LOWER(i.matchcode) LIKE '%${keyword}%' OR
           LOWER(i.itemid) LIKE '%${keyword}%' OR
           LOWER(i.description) LIKE '%${keyword}%')`);
-          // LOWER(i.purchasedescription) LIKE '%${keyword}%')`);
+      // LOWER(i.purchasedescription) LIKE '%${keyword}%')`);
     }
 
     const whereClause = whereClauses.length
@@ -109,11 +111,7 @@ export async function GET(req: NextRequest) {
     let sortingOrder = ``;
 
     if (sort) {
-      if (
-        sort == "BestSelling" ||
-        sort == "priceAsc" ||
-        sort == "priceDesc"
-      )
+      if (sort == "BestSelling" || sort == "priceAsc" || sort == "priceDesc")
         sortingOrder = `ORDER BY i.updated_at DESC`;
       else if (sort == "Matchcode") sortingOrder = `ORDER BY i.matchcode ASC`;
       else if (sort == "nameAsc") sortingOrder = `ORDER BY i.displayname ASC`;
@@ -231,7 +229,6 @@ export async function GET(req: NextRequest) {
     // const data = await runSuiteQLQuery(query, { limit: pageSize, offset });
 
     if (itemid) {
-
       const result = await pool.query(query);
 
       const data: any = {};
@@ -243,10 +240,7 @@ export async function GET(req: NextRequest) {
           status: data?.items?.length ? 200 : 404,
         });
       }
-
-    }
-    else{
-
+    } else {
       const [result, countResult] = await Promise.all([
         pool.query(query),
         pool.query(countQuery),
@@ -255,24 +249,19 @@ export async function GET(req: NextRequest) {
       // const data: any = {};
       // data.items = result.rows;
 
-      
       // Prepare response
       const data: any = {};
       data.items = result.rows;
       data.totalResults = parseInt(countResult.rows[0].count, 10);
       data.pageSize = pageSize;
-      data.currentPage = Math.floor(offset / pageSize) + 1;      
+      data.currentPage = Math.floor(offset / pageSize) + 1;
       data.totalPages = Math.ceil(data.totalResults / pageSize);
       // data.totalPages = data.totalResults;
 
+      if (category) data.matchedCategory = matchedCategory;
+
       return NextResponse.json(data);
     }
-
-
-    
-    
-
-    
   } catch (error: any) {
     return NextResponse.json(
       { error: "Failed to fetch items", details: error.message },

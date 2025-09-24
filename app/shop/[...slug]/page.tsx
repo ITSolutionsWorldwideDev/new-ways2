@@ -46,6 +46,7 @@ const ShopPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const [items, setItems] = useState<any[]>([]);
+  const [categoryData, setcategoryData] = useState<any>({});
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -148,7 +149,21 @@ const ShopPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
 
     try {
       const res = await fetch(`/api/items?${params.toString()}`);
-      const data = await res.json();
+      const data = await res.json(); 
+      
+      const breadcrumb = ["Home", "Shop"];
+      breadcrumb.push(data.matchedCategory.name)
+
+
+      let categoryData = {
+        title: data.matchedCategory.name,
+        image: "/default-header.png",
+        breadcrumb: breadcrumb,
+        description: data.matchedCategory.description,
+      };
+      console.log("data.matchedCategory === ", data.matchedCategory);
+
+      setcategoryData(categoryData);
       setItems(data.items);
       setTotalPages(data.totalResults); // or however you're calculating pages
     } catch (err) {
@@ -164,7 +179,9 @@ const ShopPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
 
   return (
     <div>
-      <ShopBanner {...shopData.banner} />
+
+      <ShopBanner {...categoryData} />
+
       <div className="container mx-auto flex flex-col items-center gap-6 py-8">
         <div className="w-full max-w-7xl">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
@@ -201,7 +218,8 @@ const ShopPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
                   type="checkbox"
                   onChange={(e) => handleSelectAll(e.target.checked)}
                   checked={
-                    items && items.length > 0 &&
+                    items &&
+                    items.length > 0 &&
                     items.every((item) => selectedItems[item.itemid])
                   }
                 />

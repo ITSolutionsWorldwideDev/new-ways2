@@ -2,7 +2,7 @@ import { colorsData, brandData,sizesData } from "./filterData";
 
 export const shopData = {
   banner: {
-    title: "Wraps",
+    title: "Shop",
     image: "/default-header.png",
     breadcrumb: ["Home", "Blunt", "Wraps"],
     description:

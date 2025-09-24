@@ -23,7 +23,7 @@ const ShopBanner: React.FC<ShopBannerProps> = ({
     {/* <div className="absolute inset-0 bg-black bg-opacity-50" /> */}
     <div className="relative z-10 text-center text-white">
       <h1 className="text-4xl font-bold mb-8">{title}</h1>
-      <div className="mb-2 text-sm opacity-80">{breadcrumb.join(" - ")}</div>
+      <div className="mb-2 text-sm opacity-80">{breadcrumb?.join(" - ")}</div>
       <p className="max-w-xl mx-auto text-base opacity-90">{description}</p>
     </div>
   </div>
