@@ -19,6 +19,7 @@ import { useDispatch } from "react-redux";
 import { setUserInfo } from "@/redux/features/user-info-slice";
 
 import { useUser } from "@/context/userContext";
+import { useSearchParams } from "next/navigation";
 
 export default function LoginSection() {
   const { toast } = useToast();
@@ -38,6 +39,10 @@ export default function LoginSection() {
     email: "",
     password: "",
   });
+
+  // Inside component
+  const searchParams = useSearchParams();
+  const from = searchParams.get("from") || "/";
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -117,8 +122,9 @@ export default function LoginSection() {
       console.log("response :", response);
       if ("user" in response) {
         await login(response.user); // waits for session to refetch
+        window.location.href = from;
 
-        window.location.href = "/"; // <-- Hard reload
+        // window.location.href = "/"; // <-- Hard reload
         return;
 
         /* setTimeout(() => {

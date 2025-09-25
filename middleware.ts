@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyAccessToken } from "@/lib/token";
 import { getAccessTokenFromRequest } from "@/lib/cookies";
 
-const protectedPaths = ["/account", "/order-history"];
+const protectedPaths = [ "/order-history"]; // "/account",
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -26,12 +26,12 @@ export function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-export const config = {
-  runtime: "nodejs",
-};
 /* export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|public/).*)"],
+  runtime: "nodejs",
 }; */
+export const config = {
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|public/).*)"],
+};
 
 // // ✅ No variable shadowing issues
 // const runtimeConfig = {
