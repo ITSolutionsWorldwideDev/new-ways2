@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useUser } from "@/context/userContext";
 import Loading from "@/components/ui/Loading";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
+import Link from "next/link";
 
 export default function OrderHistory() {
   const [loading, setLoading] = useState(true);
@@ -156,8 +157,7 @@ export default function OrderHistory() {
 
         {/* Selected Order Details */}
         {selectedOrder && (
-          <div className="w-full lg:w-1/2 border border-border rounded-lg p-6 shadow bg-white">
-            <h3 className="text-lg font-semibold mb-4">Order Details</h3>
+          <div className="w-full border border-border rounded-lg p-6 shadow bg-white">
             <div className="mb-2">
               <strong>Order Ref:</strong> {selectedOrder.payment_reference}
             </div>
@@ -169,6 +169,75 @@ export default function OrderHistory() {
             </div>
             <div className="mb-2">
               <strong>Total Amount:</strong> ${selectedOrder.total_amount}
+            </div>
+            <h3 className="text-lg font-semibold my-4">Order Details</h3>
+
+            <div>
+
+                <table className="w-full table-fixed">
+                <thead className="bg-gray-100 sticky top-0 z-10">
+                  <tr className="text-left">
+                    <th className="py-2 px-3 sm:w-[250px] lg:w-[300px]">
+                      Product
+                    </th>
+                    <th className="py-2 pr-8 w-[100px] text-right">Price</th>
+                    <th className="py-2 pr-8 w-[100px] text-right">Quantity</th>
+                    <th className="py-2 pr-8 w-[100px] text-right">Total</th>
+                  </tr>
+                </thead>
+              </table>
+
+              {/* Scrollable Body with Custom Scrollbar */}
+              <ScrollArea.Root
+                type="always"
+                className="w-full h-auto max-h-[400px] overflow-y-auto"
+              >
+                <ScrollArea.Viewport className="w-full">
+                  <table className="w-full table-fixed">
+                    <tbody>
+                      {selectedOrder.items.map((item:any) => (
+                        <tr
+                          key={item.itemid}
+                          className="border-b border-border last:border-none"
+                        >
+                          <td className=" items-center py-4 sm:w-[250px] lg:w-[300px]">
+                            <div className="flex gap-2 ">
+                            <img
+                              src={item.image ?? "/dummy/img-product.png"}
+                              alt={item.title}
+                              className="w-16 h-16 object-contain"
+                            />
+                            <span className="font-medium text-[14px] align-middle">
+                              <Link href={`/product/${item.itemid}`}>
+                                {item.title} - {item.matchcode}
+                              </Link>
+                            </span>
+                            </div>
+                          </td>
+                          <td className="pr-8 w-[100px] text-right">
+                            ${item.price ? item.price : 8}
+                          </td>
+                          <td className="pr-8 w-[100px] text-right">
+                            {item.quantity}
+                          </td>
+                          <td className="pr-8 w-[100px] text-right">
+                            ${(item.price ? item.price : 8) * item.quantity}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </ScrollArea.Viewport>
+
+                {/* Custom Scrollbar */}
+                <ScrollArea.Scrollbar
+                  orientation="vertical"
+                  className="flex select-none touch-none p-0.5 bg-gray-100 rounded w-2"
+                >
+                  <ScrollArea.Thumb className="flex-1 bg-gray-400 rounded-full" />
+                </ScrollArea.Scrollbar>
+                <ScrollArea.Corner />
+              </ScrollArea.Root>
             </div>
             <button
               className="mt-4 text-sm text-blue-600 underline"
