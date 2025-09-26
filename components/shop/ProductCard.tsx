@@ -71,11 +71,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 type="checkbox"
                 checked={isSelected}
                 onChange={(e) => onSelectChange(e.target.checked)}
-                className="w-4 h-4 bg-white focus:ring-green-500 selection:ring-red"
+                className="w-4 h-4 bg-white focus:ring-green-500 accent-white selection:ring-red"
               />
             </label>
           )}
         </div>
+
+        {/* <input id="giftwrap" className="accent-lemon" type="checkbox" /> */}
         <img
           src={image}
           alt={title}

@@ -6,6 +6,7 @@ import { useCartStore } from "@/store/useCartStore";
 import Link from "next/link";
 import React, { useState } from "react";
 import { savePendingOrder } from "@/lib/hooks/usePendingOrder";
+import ShippingBar from "@/components/shop/ShippingBar";
 
 async function startPayment(amount?: number, customerEmail?: string) {
   const res = await fetch("/api/checkout/viva-create-order", {
@@ -443,7 +444,7 @@ export default function CheckoutPage() {
             </div>
             <div className="w-[400px] max-w-full bg-background rounded-lg shadow p-6 h-fit sticky top-8 border border-border text-foreground">
               <h3 className="text-lg font-bold mb-4">Shopping Cart</h3>
-              <div className="mb-4">
+              {/* <div className="mb-4">
                 <div className="text-sm mb-2">
                   Spend $100 more to get
                   <span className="font-semibold text-green-600">
@@ -453,7 +454,7 @@ export default function CheckoutPage() {
                 <div className="relative h-3 bg-muted rounded-full mb-2">
                   <div className="absolute top-0 left-0 h-3 bg-lemon rounded-full w-full transition-[width] duration-300"></div>
                   <div className="absolute top-1/2 left-[calc(100%*0.99)] -translate-y-1/2 -translate-x-1/2 ">
-                    {/* left-[calc(100%-16px)] */}
+                    // left-[calc(100%-16px)]
                     <svg
                       className="h-5 w-5 bg-background rounded-full border border-border p-1"
                       viewBox="0 0 24 24"
@@ -462,7 +463,8 @@ export default function CheckoutPage() {
                     </svg>
                   </div>
                 </div>
-              </div>
+              </div> */}
+              <ShippingBar cartTotal={total}></ShippingBar>
 
               <div className="max-h-96 mb-4 overflow-y-auto">
                 {cart.map((item) => (

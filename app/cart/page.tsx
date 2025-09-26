@@ -17,6 +17,7 @@ import { commonData } from "@/lib/commonData";
 import { useCartStore } from "@/store/useCartStore";
 
 import * as ScrollArea from "@radix-ui/react-scroll-area";
+import ShippingBar from "@/components/shop/ShippingBar";
 
 export default function CartPage() {
   /* const { cart, totalPrice, adjustedTotalPrice } = useAppSelector(
@@ -38,7 +39,7 @@ export default function CartPage() {
       <ShopBanner {...commonData.cartbanner} />
       <div className="container mx-auto py-8 flex flex-col items-center">
         <div className="w-full max-w-6xl">
-          <div className="mb-8">
+          {/* <div className="mb-8">
             <div className="text-center text-lg font-semibold mb-2">
               Spend $100 more to get{" "}
               <span className="text-green-600">Free Shipping</span>
@@ -54,7 +55,8 @@ export default function CartPage() {
                 </svg>
               </div>
             </div>
-          </div>
+          </div> */}
+          <ShippingBar cartTotal={total}></ShippingBar>
           <div className="flex gap-8 items-start">
             <div className="flex-1 bg-background rounded-lg shadow p-6 border border-border">
               <table className="w-full table-fixed">
@@ -288,7 +290,7 @@ export default function CartPage() {
                 </span>
               </div>
             </div>
-            <div className="w-[400px] max-w-full bg-background rounded-lg shadow p-6 border border-border text-foreground h-fit sticky top-8 flex flex-col gap-4">
+            <div className="w-[400px] max-w-full bg-background  p-6text-foreground h-fit sticky top-8 flex flex-col gap-4">
               <label className="font-semibold mb-2">
                 Special instructions for seller
               </label>
@@ -297,81 +299,86 @@ export default function CartPage() {
                 className="w-full border border-border rounded px-3 py-2 text-sm mb-2 bg-background text-foreground"
                 placeholder="Special instructions for seller"
               ></textarea>
-              <div className="flex flex-col gap-2 mb-4">
-                <div className="flex justify-between items-center text-lg font-bold">
-                  <span>Total:</span>
-                  {/* <span>$100.00 USD</span> */}
-                  <span>${total.toFixed(2)}</span>
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  Taxes and shipping calculated at checkout
-                </div>
-                <div className="flex items-center gap-2">
-                  <input
-                    id="agree"
-                    className="accent-lemon"
-                    type="checkbox"
-                    checked={agreed}
-                    onChange={() => setAgreed(!agreed)}
-                  />
-                  <label className="text-xs">
-                    I agree with the{" "}
-                    <a href="/terms" target="_blank" className="underline">
-                      terms and conditions
-                    </a>
-                  </label>
-                </div>
-              </div>
 
-              <Link href="/checkout">
-                <button
-                  disabled={!agreed}
-                  className={`px-4 py-2 border rounded-full ${
-                    agreed
-                      ? "bg-lemon hover:bg-lemon-dark  border-gray-300 text-black"
-                      : "cursor-not-allowed"
-                  }`}
-                >
-                  Check out
-                </button>
-              </Link>
+              <div className="w-[400px] max-w-full bg-background rounded-lg shadow p-6 border border-border text-foreground h-fit sticky top-8 flex flex-col gap-4">
+                <div className="flex flex-col gap-2 mb-4">
+                  <div className="flex justify-between items-center text-lg font-bold">
+                    <span>Total:</span>
+                    {/* <span>$100.00 USD</span> */}
+                    <span>${total.toFixed(2)}</span>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    Taxes and shipping calculated at checkout
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      id="agree"
+                      className="accent-lemon"
+                      type="checkbox"
+                      checked={agreed}
+                      onChange={() => setAgreed(!agreed)}
+                    />
+                    <label className="text-xs">
+                      I agree with the{" "}
+                      <a href="/terms" target="_blank" className="underline">
+                        terms and conditions
+                      </a>
+                    </label>
+                  </div>
+                </div>
 
-              {/* <Link href="/checkout">
+                <Link href="/checkout">
+                  <button
+                    disabled={!agreed}
+                    className={`px-4 py-2 border rounded-full ${
+                      agreed
+                        ? "bg-lemon hover:bg-lemon-dark  border-gray-300 text-black"
+                        : "cursor-not-allowed"
+                    }`}
+                  >
+                    Check out
+                  </button>
+                </Link>
+
+                {/* <Link href="/checkout">
                 <button className="w-full bg-foreground text-background py-2 rounded-full text-base font-semibold">
                   Checkout
                 </button>
               </Link> */}
-              <div className="flex gap-2 justify-center mt-2">
-                <img
-                  alt="Visa"
-                  className="h-6"
-                  src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg"
-                />
-                <img
-                  alt="Mastercard"
-                  className="h-6"
-                  src="https://upload.wikimedia.org/wikipedia/commons/4/41/Mastercard-logo.svg"
-                />
-                <img
-                  alt="PayPal"
-                  className="h-6"
-                  src="https://upload.wikimedia.org/wikipedia/commons/6/6b/PayPal.svg"
-                />
+                <div className="flex gap-2 justify-center mt-2">
+                  <img
+                    alt="Visa"
+                    className="h-6"
+                    src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg"
+                  />
+                  <img
+                    alt="Mastercard"
+                    className="h-6"
+                    src="https://upload.wikimedia.org/wikipedia/commons/4/41/Mastercard-logo.svg"
+                  />
+                  <img
+                    alt="PayPal"
+                    className="h-6"
+                    src="https://upload.wikimedia.org/wikipedia/commons/6/6b/PayPal.svg"
+                  />
+                </div>
+              </div>
+
+              <div className="rounded-lg p-6 max-w-md bg-gradient-to-br from-white to-[#FFF700] dark:from-black dark:to-[#FFF700]">
+                <div className="text-2xl mb-2 dark:text-white">★ ★ ★ ★ ★</div>
+                <div className="text-lg font-semibold mb-2 dark:text-white">
+                  “Stylish, comfortable, and perfect for any occasion! My new
+                  favorite fashion destination.”
+                </div>
+                <div className="text-sm text-gray-900">
+                  <span className="dark:text-white">Viera P.</span>
+                </div>
               </div>
             </div>
           </div>
-          <div className="flex justify-end mt-8">
-            <div className="rounded-lg p-6 max-w-md bg-gradient-to-br from-white to-[#FFF700] dark:from-black dark:to-[#FFF700]">
-              <div className="text-2xl mb-2 dark:text-white">★ ★ ★ ★ ★</div>
-              <div className="text-lg font-semibold mb-2 dark:text-white">
-                “Stylish, comfortable, and perfect for any occasion! My new
-                favorite fashion destination.”
-              </div>
-              <div className="text-sm text-gray-900">
-                <span className="dark:text-white">Viera P.</span>
-              </div>
-            </div>
-          </div>
+          {/* <div className="flex justify-end mt-8">
+            
+          </div> */}
           <div className="mt-12">
             <h3 className="text-2xl font-bold mb-6 text-center">
               You May Also Like

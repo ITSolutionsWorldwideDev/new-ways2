@@ -1,4 +1,103 @@
 "use client";
+import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
+import { ActionButton } from "@/components/ui/action-button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+export default function ResetPasswordPage() {
+  const [loading, setLoading] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const searchParams = useSearchParams();
+  const { toast } = useToast();
+
+  const token = searchParams.get("token");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!token) {
+      toast({
+        title: "Invalid link",
+        description: "No reset token provided.",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (newPassword !== confirm) {
+      toast({
+        title: "Passwords do not match",
+        description: "Please enter matching passwords.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, newPassword }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        throw new Error(json.error || "Failed to reset password");
+      }
+      toast({
+        title: "Password reset successful!",
+        description: "You can now login with your new password.",
+      });
+      // Optionally redirect to login
+      window.location.href = "/login";
+    } catch (err: any) {
+      toast({
+        title: "Error",
+        description: err.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow">
+      <h1 className="text-2xl font-semibold mb-4">Reset Password</h1>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <Label htmlFor="newPassword">New Password</Label>
+          <Input
+            id="newPassword"
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            disabled={loading}
+            required
+          />
+        </div>
+        <div>
+          <Label htmlFor="confirm">Confirm Password</Label>
+          <Input
+            id="confirm"
+            type="password"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+            disabled={loading}
+            required
+          />
+        </div>
+        <div>
+          <ActionButton type="submit" disabled={loading}>
+            {loading ? "Resetting..." : "Reset Password"}
+          </ActionButton>
+        </div>
+      </form>
+    </div>
+  );
+}
+/* "use client";
 
 import type React from "react";
 import { useState, useEffect } from "react";
@@ -223,15 +322,9 @@ export default function ResetPasswordSection() {
   // Reset password form
   return (
     <div className="w-full max-w-4xl bg-white rounded-3xl shadow-lg p-4 sm:p-6 md:p-8 mx-4">
-      {/* Header Section */}
+ 
       <div className="flex flex-col items-center text-center mb-6 sm:mb-8">
-        {/* <Image
-          src={"/person-profile.svg"}
-          alt="Person"
-          width={75}
-          height={71}
-          className="mb-4"
-        /> */}
+
         <h1 className="text-2xl sm:text-3xl font-bold text-heading-dark mb-2 px-2">
           Reset Your Password
         </h1>
@@ -240,7 +333,6 @@ export default function ResetPasswordSection() {
         </p>
       </div>
 
-      {/* Form Card */}
       <div className="bg-white rounded-3xl shadow-lg p-4 sm:p-6 md:p-8 max-w-2xl mx-auto">
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           <div>
@@ -308,4 +400,4 @@ export default function ResetPasswordSection() {
       </div>
     </div>
   );
-}
+} */

@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
+import ShippingBar from "@/components/shop/ShippingBar";
 
 interface CartSidebarProps {
   isOpen: boolean;
@@ -40,13 +41,14 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
             <X className="h-5 w-5" />
           </button>
         </div>
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <div className="text-sm text-center mb-2">
             <span className="font-semibold text-green-600">
               You have Free Shipping!
             </span>
           </div>
-        </div>
+        </div> */}
+        <ShippingBar cartTotal={total}></ShippingBar>
         <div>
           <ScrollArea.Root className="mb-4 h-24 sm:h-24 md:h-24 lg:h-32 2xl:h-64 w-full overflow-hidden">
             <ScrollArea.Viewport className="h-full w-full pr-2">

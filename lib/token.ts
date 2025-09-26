@@ -4,6 +4,9 @@ import jwt from "jsonwebtoken";
 
 const ACCESS_TOKEN_SECRET = process.env.JWT_ACCESS_SECRET!;
 const REFRESH_TOKEN_SECRET = process.env.JWT_REFRESH_SECRET!;
+const RESET_TOKEN_SECRET = process.env.JWT_RESET_SECRET! as string;
+
+const RESET_EXPIRES_IN = process.env.JWT_RESET_EXPIRES_IN! || "1h";
 
 // const ACCESS_TOKEN_SECRET = process.env.JWT_ACCESS_SECRET;
 // const REFRESH_TOKEN_SECRET = process.env.JWT_REFRESH_SECRET;
@@ -16,7 +19,6 @@ if (!ACCESS_TOKEN_SECRET || !REFRESH_TOKEN_SECRET) {
 export interface JwtPayload {
   userId: number;
   email: string;
-  // add more if needed
 }
 
 export function signAccessToken(payload: JwtPayload): string {
@@ -47,6 +49,20 @@ export function verifyRefreshToken(token: string): JwtPayload | null {
     return decoded as JwtPayload;
   } catch (err) {
     console.error("verifyRefreshToken error:", err);
+    return null;
+  }
+}
+
+export function signResetToken(payload: JwtPayload): string {
+  return jwt.sign(payload, RESET_TOKEN_SECRET, { expiresIn: "1h" });
+}
+
+export function verifyResetToken(token: string) {
+  try {
+    const decoded = jwt.verify(token, RESET_EXPIRES_IN);
+    return decoded as { userId: number; email: string };
+  } catch (err) {
+    console.error("Invalid reset token:", err);
     return null;
   }
 }

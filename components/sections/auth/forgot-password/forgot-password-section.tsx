@@ -12,12 +12,21 @@ import { isActionError } from "@/lib/error";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, CheckCircle } from "lucide-react";
 
+
+import { useSearchParams } from "next/navigation";
+
 export default function ForgotPasswordSection() {
   const { toast } = useToast();
 
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [email, setEmail] = useState("");
+
+  const [newPassword, setNewPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const searchParams = useSearchParams();
+
+   const token = searchParams.get("token");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -137,13 +146,7 @@ export default function ForgotPasswordSection() {
     <div className="w-full max-w-4xl bg-white rounded-3xl shadow-lg p-4 sm:p-6 md:p-8 mx-4">
       {/* Header Section */}
       <div className="flex flex-col items-center text-center mb-6 sm:mb-8">
-        {/* <Image
-          src={"/person-profile.svg"}
-          alt="Person"
-          width={75}
-          height={71}
-          className="mb-4"
-        /> */}
+
         <h1 className="text-2xl sm:text-3xl font-bold text-heading-dark mb-2 px-2">
           Forgot Password?
         </h1>
