@@ -1,7 +1,9 @@
 {
   "nav": {
     "home": "Startseite",
-    "shop": "Geschäft"
+    "shop": "Todos los Productos",
+    "customize": "Personalizar un bong",
+    "collections": "Colecciones"
   },
   "footer": {
     "language": "Sprache"

@@ -1,7 +1,9 @@
 {
   "nav": {
     "home": "Home",
-    "shop": "Shop"
+    "shop": "All Products",
+    "customize": "Customize a Bong",
+    "collections": "Collections"
   },
   "footer": {
     "language": "Language"
