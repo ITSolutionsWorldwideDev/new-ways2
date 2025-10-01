@@ -10,6 +10,9 @@ import { savePendingOrder } from "@/lib/hooks/usePendingOrder";
 import ShippingBar from "@/components/shop/ShippingBar";
 import { useToast } from "@/hooks/use-toast";
 
+import { useCurrency } from "@/context/currencyContext";
+import { formatPrice } from "@/lib/formatPrice";
+
 async function startPayment(amount?: number, customerEmail?: string) {
   const res = await fetch("/api/checkout/viva-create-order", {
     method: "POST",
@@ -35,7 +38,6 @@ const countries = [
   { id: "FR", refName: "France" },
   { id: "BE", refName: "Belgium" },
   { id: "UK", refName: "United Kingdom" },
-  // Add more as needed
 ];
 
 const freeShippingThreshold = 100;
@@ -53,6 +55,8 @@ export default function CheckoutPage() {
 
   const [selectedShipping, setSelectedShipping] = useState("free");
   const [useDifferentBilling, setUseDifferentBilling] = useState(false);
+
+  const { currency } = useCurrency();
 
   const total = cart.reduce(
     (sum, item) => sum + (item.price ? item.price : 8) * item.quantity,
@@ -73,8 +77,7 @@ export default function CheckoutPage() {
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
-    country: { id: "NL", refName: "Netherlands" }, // Default to NL
-    // country: "",
+    country: { id: "NL", refName: "Netherlands" },
     address: "",
     city: "",
     zip: "",
@@ -93,7 +96,7 @@ export default function CheckoutPage() {
     cvc: "",
     nameOnCard: "",
     billingSameAsShipping: true,
-    paymentMethod: "viva", // 'card' or 'viva'
+    paymentMethod: "viva",
   });
 
   useEffect(() => {
@@ -114,10 +117,9 @@ export default function CheckoutPage() {
         if (acc) {
           const hasBillingAddress = !!acc.billingfirstname;
 
-          setUseDifferentBilling(hasBillingAddress); // ✅ This will auto-check the box
+          setUseDifferentBilling(hasBillingAddress);
 
           setForm({
-            // Shipping
             firstName: acc.firstName || "",
             lastName: acc.lastName || "",
             email: acc.email || "",
@@ -130,8 +132,6 @@ export default function CheckoutPage() {
               refName:
                 countries.find((c) => c.id === acc.country)?.refName || "",
             },
-
-            // Billing (initially blank — only shown if `useDifferentBilling === true`)
             billingFirstName: acc.billingfirstname || "",
             billingLastName: acc.billinglastname || "",
             billingEmail: acc.billingemail || "",
@@ -150,7 +150,7 @@ export default function CheckoutPage() {
             cvc: "",
             nameOnCard: "",
             billingSameAsShipping: true,
-            paymentMethod: "viva", // 'card' or 'viva'
+            paymentMethod: "viva",
           });
         }
       } catch (err) {
@@ -210,7 +210,6 @@ export default function CheckoutPage() {
     setOrderStatus("");
 
     try {
-      // 1️⃣ Register Customer
       const registerRes = await fetch("/api/register-customer", {
         method: "POST",
         headers: {
@@ -243,7 +242,6 @@ export default function CheckoutPage() {
 
       const customer = await registerRes.json();
 
-      // 2️⃣ Choose Payment Method
       if (form.paymentMethod === "card") {
         const paymentRes = await fetch("/api/process-payment", {
           method: "POST",
@@ -261,16 +259,6 @@ export default function CheckoutPage() {
 
         if (!paymentRes.ok) throw new Error("Payment failed");
       } else if (form.paymentMethod === "viva") {
-        // inside handlePlaceOrder
-        /* localStorage.setItem(
-          "pendingOrder",
-          JSON.stringify({
-            customerId: customer.id, // from register-customer API response
-            items: cart, // your cart array
-            total: total, // total price
-          })
-        ); */
-
         savePendingOrder({
           customerId: customer.id,
           items: cart,
@@ -278,10 +266,6 @@ export default function CheckoutPage() {
         });
 
         startPayment(total, form.email);
-        // For demo purposes only
-        // window.location.href = "/viva-payment-redirect";
-        // return;
-        // setOrderStatus("✅ Order placed successfully!");
       }
     } catch (err) {
       setOrderStatus("❌ Something went wrong. Please try again.");
@@ -334,14 +318,6 @@ export default function CheckoutPage() {
                     )}
                   </div>
                 </div>
-                {/* <input
-              name="country"
-              placeholder="Country"
-              className="border border-border rounded px-4 py-2 w-full bg-background text-foreground"
-              type="text"
-              value={form.country}
-              onChange={handleChange}
-            /> */}
 
                 <label className="block mb-2 text-sm font-medium text-gray-700">
                   Country *
@@ -438,17 +414,6 @@ export default function CheckoutPage() {
                     Use shipping address as billing address
                   </label>
                 </div>
-                {/* <div className="space-y-4 mt-4">
-                    <label className="flex items-center gap-2 mt-2">
-                      <input
-                        name="billingSameAsShipping"
-                        type="checkbox"
-                        checked={form.billingSameAsShipping}
-                        onChange={handleChange}
-                      />
-                      Use shipping address as billing address
-                    </label>
-                  </div> */}
                 {useDifferentBilling && (
                   <div className="mt-6 space-y-4 border-t pt-4">
                     <h4 className="font-semibold">Billing Address</h4>
@@ -545,12 +510,11 @@ export default function CheckoutPage() {
                       checked={selectedShipping === "free"}
                       onChange={() => setSelectedShipping("free")}
                     />
-                    {/* Custom radio circle */}
                     <div className="w-4 h-4 rounded-full border border-border peer-checked:border-red-500 flex items-center justify-center">
                       <div className="w-2 h-2 rounded-full bg-transparent has-[:checked]:border-red-500"></div>
                     </div>
                     Free Shipping (Estimate in 7/10 - 10/10/2025)
-                    <span className="ml-auto">$0.00</span>
+                    <span className="ml-auto">{formatPrice(0.00, currency)}</span>
                   </label>
                   <label className="flex items-center gap-2 border border-border rounded px-4 py-2 bg-background text-foreground peer-checked:border-red-500 has-[:checked]:border-red-500">
                     <input
@@ -561,26 +525,15 @@ export default function CheckoutPage() {
                       checked={selectedShipping === "express"}
                       onChange={() => setSelectedShipping("express")}
                     />
-                    {/* Custom radio circle */}
                     <div className="w-4 h-4 rounded-full border border-border peer-checked:border-red-500  flex items-center justify-center">
                       <div className="w-2 h-2 rounded-full bg-transparent has-[:checked]:border-red-500"></div>
                     </div>
                     Express Shipping (Estimate in 4/10 - 5/10/2025){" "}
-                    <span className="ml-auto">$16.00</span>
+                    <span className="ml-auto">{formatPrice(16.00, currency)}</span>
                   </label>
                 </div>
                 <h3 className="font-semibold mt-6 mb-2">Payment</h3>
                 <div className="space-y-2">
-                  {/* <label className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="card"
-                      checked={form.paymentMethod === "card"}
-                      onChange={handleChange}
-                    />
-                    Credit Card
-                  </label> */}
                   <label className="flex items-center gap-2">
                     <input
                       type="radio"
@@ -644,26 +597,6 @@ export default function CheckoutPage() {
             </div>
             <div className="w-[400px] max-w-full bg-background rounded-lg shadow p-6 h-fit sticky top-8 border border-border text-foreground">
               <h3 className="text-lg font-bold mb-4">Shopping Cart</h3>
-              {/* <div className="mb-4">
-                <div className="text-sm mb-2">
-                  Spend $100 more to get
-                  <span className="font-semibold text-green-600">
-                    Free Shipping
-                  </span>
-                </div>
-                <div className="relative h-3 bg-muted rounded-full mb-2">
-                  <div className="absolute top-0 left-0 h-3 bg-lemon rounded-full w-full transition-[width] duration-300"></div>
-                  <div className="absolute top-1/2 left-[calc(100%*0.99)] -translate-y-1/2 -translate-x-1/2 ">
-                    // left-[calc(100%-16px)]
-                    <svg
-                      className="h-5 w-5 bg-background rounded-full border border-border p-1"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M6 6h15l-1.5 9h-13z" fill="currentColor"></path>
-                    </svg>
-                  </div>
-                </div>
-              </div> */}
               <ShippingBar cartTotal={total}></ShippingBar>
 
               <div className="max-h-96 mb-4 overflow-y-auto">
@@ -684,11 +617,16 @@ export default function CheckoutPage() {
                         </Link>
                       </div>
                       <div className="text-sm">
-                        ${item.price ? item.price : 8} x {item.quantity}
+                        {formatPrice(item.price ? item.price : 8, currency)} x{" "}
+                        {item.quantity}
                       </div>
                       <div className="text-sm font-bold">
                         <span className="text-green-600 font-bold">
-                          ${(item.price ? item.price : 8) * item.quantity}
+                          {formatPrice(
+                            (item.price ? item.price : 8) * item.quantity,
+                            currency
+                          )}{" "}
+                          x {item.quantity}
                         </span>
                       </div>
                     </div>
@@ -702,15 +640,15 @@ export default function CheckoutPage() {
               <div className="flex flex-col gap-2 mb-4">
                 <div className="flex justify-between items-center text-lg font-bold">
                   <span>Subtotal:</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>{formatPrice(total, currency)}</span>
                 </div>
                 <div className="flex justify-between items-center text-lg font-bold">
                   <span>Shipping:</span>
-                  <span>${shippingCost.toFixed(2)}</span>
+                  <span>{formatPrice(shippingCost, currency)}</span>
                 </div>
                 <div className="flex justify-between items-center text-lg font-bold">
                   <span>Total:</span>
-                  <span>${grandTotal.toFixed(2)}</span>
+                  <span>{formatPrice(grandTotal, currency)}</span>
                 </div>
                 <div className="text-xs text-muted-foreground">
                   Taxes and shipping calculated at checkout
@@ -731,9 +669,6 @@ export default function CheckoutPage() {
                   </label>
                 </div>
               </div>
-              {/* <button className="w-full bg-foreground text-background py-2 rounded-full text-base font-semibold">
-            Place Order
-          </button> */}
               <button
                 type="button"
                 onClick={handlePlaceOrder}

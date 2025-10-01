@@ -48,13 +48,23 @@ function handleAuth(req: NextRequest) {
 
   if (isProtected) {
     const token = getAccessTokenFromRequest(req);
-    const payload = token ? verifyAccessToken(token) : null;
-    if (!payload) {
+
+    // ✅ Only check presence of token here
+    if (!token || token === "undefined") {
       const loginUrl = req.nextUrl.clone();
       loginUrl.pathname = `/${locale}/login`;
       loginUrl.searchParams.set("from", pathname);
       return NextResponse.redirect(loginUrl);
     }
+    
+    /* const payload = token ? verifyAccessToken(token) : null;
+    
+    if (!payload) {
+      const loginUrl = req.nextUrl.clone();
+      loginUrl.pathname = `/${locale}/login`;
+      loginUrl.searchParams.set("from", pathname);
+      return NextResponse.redirect(loginUrl);
+    } */
   }
 
   return NextResponse.next();

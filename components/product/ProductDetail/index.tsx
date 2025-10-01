@@ -15,6 +15,9 @@ import {
 import Tabs from "@/components/product/Tabs";
 import RelatedProducts from "@/components/product/ProductDetail/RelatedProducts";
 
+import { useCurrency } from "@/context/currencyContext";
+import { formatPrice } from "@/lib/formatPrice";
+
 const bulkDeals = [
   {
     label: "Buy from 3 to 5 items for 10% OFF",
@@ -86,7 +89,6 @@ const ProductDetail = ({ data }: { data: Product }) => {
       image: data.srcUrl,
       priceRange: calculateFinalPrice(),
       price: calculateFinalPrice(),
-      // priceRange: [calculateFinalPrice(), calculateFinalPrice()],
       quantity,
     });
     setAddedToCart(true);
@@ -106,7 +108,7 @@ const ProductDetail = ({ data }: { data: Product }) => {
       finalPrice = basePrice - data.discount.value;
     }
 
-    return Math.round(finalPrice * 100) / 100; // rounded to 2 decimals
+    return Math.round(finalPrice * 100) / 100;
   };
 
   const handleGrabDeal = () => {
@@ -126,6 +128,13 @@ const ProductDetail = ({ data }: { data: Product }) => {
 
     setAddedToCart(true);
   };
+
+  const { currency } = useCurrency();
+  const mainPrice = formatPrice(data.price, currency);
+  const currencyPrice = formatPrice(calculateFinalPrice(), currency);
+  const discountPrice = data.discount?.value
+    ? formatPrice(data.discount?.value, currency)
+    : data.discount?.value;
 
   return (
     <>
@@ -158,18 +167,18 @@ const ProductDetail = ({ data }: { data: Product }) => {
             </div> */}
             <div className="flex items-center gap-4 mb-2">
               <span className="text-2xl font-bold text-foreground">
-                ${calculateFinalPrice()}
+                {currencyPrice}
               </span>
 
               {data.discount && (
                 <>
                   <span className="line-through text-gray-400 text-lg ml-2">
-                    ${data.price.toFixed(2)}
+                    {mainPrice}
                   </span>
                   <span className="bg-green-500 text-white px-2 py-1 ml-2 rounded text-xs">
                     {data.discount.type === "percentage"
                       ? `${data.discount.value}% OFF`
-                      : `$${data.discount.value} OFF`}
+                      : `${discountPrice} OFF`}
                   </span>
                 </>
               )}
@@ -345,9 +354,7 @@ const ProductDetail = ({ data }: { data: Product }) => {
           reviewData={{}}
         />
 
-        
-
-        <RelatedProducts product_id={data.product_id}/>
+        <RelatedProducts product_id={data.product_id} />
       </div>
     </>
   );

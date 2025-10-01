@@ -7,6 +7,8 @@ import "swiper/css";
 import "swiper/css/pagination";
 import Link from "next/link";
 
+import { useCurrency } from "@/context/currencyContext";
+import { formatPrice } from "@/lib/formatPrice";
 
 type ProductRelatedProps = {
   product_id: number;
@@ -14,6 +16,8 @@ type ProductRelatedProps = {
 
 const RelatedProducts = ({ product_id }: ProductRelatedProps) => {
   const [items, setItems] = useState<any[]>([]);
+
+  const { currency } = useCurrency();
 
   useEffect(() => {
     let ignore = false;
@@ -69,17 +73,18 @@ const RelatedProducts = ({ product_id }: ProductRelatedProps) => {
               <SwiperSlide key={product.id}>
                 <div className="border border-border rounded-lg p-4 items-center text-center bg-background shadow justify-center  object-center">
                   <Link href={`/product/${product.itemid}`}>
-                  <img
-                    className="w-32 h-32 object-contain mb-2 m-auto"
-                    src={product.image ?? "/dummy/img-product.png"}
-                    alt={product.displayname}
-                  />
-                  <div className="font-semibold mb-1 text-foreground">
-                    {product.displayname}
-                  </div>
-                  <div className="font-bold mb-1 text-foreground">
-                    ${product.price}
-                  </div>
+                    <img
+                      className="w-32 h-32 object-contain mb-2 m-auto"
+                      src={product.image ?? "/dummy/img-product.png"}
+                      alt={product.displayname}
+                    />
+                    <div className="font-semibold mb-1 text-foreground">
+                      {product.displayname}
+                    </div>
+                    <div className="font-bold mb-1 text-foreground">
+                      {/* ${product.price} */}
+                      {formatPrice(product.price, currency)}
+                    </div>
                   </Link>
                 </div>
               </SwiperSlide>

@@ -40,7 +40,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const addToCart = useCartStore((state) => state.addToCart);
 
   const { currency } = useCurrency();
-const currencyPrice = formatPrice(price, currency);
+  const currencyPrice = formatPrice(price, currency);
 
   const increaseQty = () => {
     setQuantity((prev) => prev + 1);
@@ -110,10 +110,6 @@ const currencyPrice = formatPrice(price, currency);
             <div className="text-green-600 font-bold mb-1">
               {/* $ {price} */}
               {currencyPrice}
-
-              
-
-
             </div>
           ) : (
             <div className="text-gray-500 mb-1">Price not available</div>

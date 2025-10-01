@@ -39,41 +39,35 @@ export async function generateStaticParams() {
   return languages.map((lang) => ({ locale: lang }));
 }
 
-/* export default async function RootLayout({
-  children,
-  params: { locale },
-}: {
-  children: React.ReactNode;
-  params: { locale: string };
-}) {
- */
-
 export default async function RootLayout(props: {
   children: React.ReactNode;
   params: { locale: string };
 }) {
-
   const { locale } = await Promise.resolve(props.params);
 
   if (!languages.includes(locale as any)) {
     notFound();
   }
 
-  const dictionary = await getDictionary(locale as typeof languages[number]);
+  const dictionary = await getDictionary(locale as (typeof languages)[number]);
 
   return (
-    <html lang={locale} className={`${inter.variable} ${poppins.variable} light`} suppressHydrationWarning>
+    <html
+      lang={locale}
+      className={`${inter.variable} ${poppins.variable} light`}
+      suppressHydrationWarning
+    >
       <body className={`${inter.className} text-base antialiased`}>
         <ThemeProvider>
           <ReduxProvider>
             <CurrencyProvider>
-            <UserProvider>
-              <Header locale={locale} dictionary={dictionary} />
-              <Toaster />
-              {/* {children} */}
-              {props.children}
-              <Footer locale={locale} dictionary={dictionary} />
-            </UserProvider>
+              <UserProvider>
+                <Header locale={locale} dictionary={dictionary} />
+                <Toaster />
+                {/* {children} */}
+                {props.children}
+                <Footer locale={locale} dictionary={dictionary} />
+              </UserProvider>
             </CurrencyProvider>
           </ReduxProvider>
         </ThemeProvider>
@@ -81,65 +75,3 @@ export default async function RootLayout(props: {
     </html>
   );
 }
-
-/* export default function RootLayout({
-  children,
-  params,
-}: Readonly<{
-  children: React.ReactNode;
-  params: { locale: string };
-}>) {
-  const { locale } = params;
-
-  if (!languages.includes(locale)) {
-    notFound(); // Show 404 if invalid locale
-  }
-
-  return (
-    <html
-      lang={locale}
-      suppressHydrationWarning
-      className={`${inter.variable} ${poppins.variable}`}
-    >
-      <body className={`${inter.className} text-base antialiased`}>
-        <ThemeProvider>
-          <ReduxProvider>
-            <UserProvider>
-              <Header />
-              <Toaster />
-              {children}
-              <Footer currentLocale={locale} />
-            </UserProvider>
-          </ReduxProvider>
-        </ThemeProvider>
-      </body>
-    </html>
-  );
-} */
-
-/* export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${inter.variable} ${poppins.variable}`}
-    >
-      <body className={`${inter.className} text-base antialiased`}>
-        <ThemeProvider>
-          <ReduxProvider>
-            <UserProvider>
-            <Header />
-            <Toaster />
-            {children}
-            <Footer />
-            </UserProvider>
-          </ReduxProvider>
-        </ThemeProvider>
-      </body>
-    </html>
-  );
-} */

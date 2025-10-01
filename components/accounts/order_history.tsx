@@ -6,12 +6,17 @@ import Loading from "@/components/ui/Loading";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import Link from "next/link";
 
+import { useCurrency } from "@/context/currencyContext";
+import { formatPrice } from "@/lib/formatPrice";
+
 export default function OrderHistory() {
   const [loading, setLoading] = useState(true);
   const { user } = useUser();
 
   const [orders, setOrders] = useState<any[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
+
+  const { currency } = useCurrency();
 
   useEffect(() => {
     if (!user?.userId) return;
@@ -126,8 +131,10 @@ export default function OrderHistory() {
                                 </span>
                               </td>
                               <td className="pr-8 w-[100px] text-right">
-                                ${order.total_amount || "0.00"}
-                                {/* ?.toFixed(2) */}
+                                {formatPrice(
+                                  order.total_amount || "0.00",
+                                  currency
+                                )}
                               </td>
                               <td className="pr-8 items-center w-[60px] text-right">
                                 <span
@@ -157,7 +164,10 @@ export default function OrderHistory() {
 
         {/* Selected Order Details */}
         {selectedOrder && (
-          <div className="w-full border border-border rounded-lg p-6 shadow bg-white" key={selectedOrder.order_id}>
+          <div
+            className="w-full border border-border rounded-lg p-6 shadow bg-white"
+            key={selectedOrder.order_id}
+          >
             <div className="mb-2">
               <strong>Order Ref:</strong> {selectedOrder.payment_reference}
             </div>
@@ -168,13 +178,13 @@ export default function OrderHistory() {
               <strong>Status:</strong> {selectedOrder.status}
             </div>
             <div className="mb-2">
-              <strong>Total Amount:</strong> ${selectedOrder.total_amount}
+              <strong>Total Amount:</strong>{" "}
+              {formatPrice(selectedOrder.total_amount, currency)}
             </div>
             <h3 className="text-lg font-semibold my-4">Order Details</h3>
 
             <div>
-
-                <table className="w-full table-fixed">
+              <table className="w-full table-fixed">
                 <thead className="bg-gray-100 sticky top-0 z-10">
                   <tr className="text-left">
                     <th className="py-2 px-3 sm:w-[250px] lg:w-[300px]">
@@ -186,8 +196,7 @@ export default function OrderHistory() {
                   </tr>
                 </thead>
               </table>
-
-              {/* Scrollable Body with Custom Scrollbar */}
+              
               <ScrollArea.Root
                 type="always"
                 className="w-full h-auto max-h-[400px] overflow-y-auto"
@@ -195,33 +204,36 @@ export default function OrderHistory() {
                 <ScrollArea.Viewport className="w-full">
                   <table className="w-full table-fixed">
                     <tbody>
-                      {selectedOrder.items.map((item:any) => (
+                      {selectedOrder.items.map((item: any) => (
                         <tr
                           key={item.itemid}
                           className="border-b border-border last:border-none"
                         >
                           <td className=" items-center py-4 sm:w-[250px] lg:w-[300px]">
                             <div className="flex gap-2 ">
-                            <img
-                              src={item.image ?? "/dummy/img-product.png"}
-                              alt={item.title}
-                              className="w-16 h-16 object-contain"
-                            />
-                            <span className="font-medium text-[14px] align-middle">
-                              <Link href={`/product/${item.itemid}`}>
-                                {item.title} - {item.matchcode}
-                              </Link>
-                            </span>
+                              <img
+                                src={item.image ?? "/dummy/img-product.png"}
+                                alt={item.title}
+                                className="w-16 h-16 object-contain"
+                              />
+                              <span className="font-medium text-[14px] align-middle">
+                                <Link href={`/product/${item.itemid}`}>
+                                  {item.title} - {item.matchcode}
+                                </Link>
+                              </span>
                             </div>
                           </td>
                           <td className="pr-8 w-[100px] text-right">
-                            ${item.price ? item.price : 8}
+                            {formatPrice(item.price ? item.price : 8, currency)}
                           </td>
                           <td className="pr-8 w-[100px] text-right">
                             {item.quantity}
                           </td>
                           <td className="pr-8 w-[100px] text-right">
-                            ${(item.price ? item.price : 8) * item.quantity}
+                            {formatPrice(
+                              ((item.price ? item.price : 8) * item.quantity),
+                              currency
+                            )}
                           </td>
                         </tr>
                       ))}
