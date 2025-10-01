@@ -15,6 +15,44 @@ import InstagramSection from "@/components/sections/home/instagram-section";
 import { Product } from "@/types/product.types";
 import { Review } from "@/types/review.types";
 
+
+
+// export default function HomePage() {
+// export default function HomePage({
+//   params: { locale },
+// }: {
+//   params: { locale: string };
+// }) {
+export default async function HomePage(props: { params: { locale: string } }) {
+  const { locale } = await Promise.resolve(props.params);
+  return (
+    <main className="min-h-screen">{/*  pt-[120px] */}
+      <HeroSection />
+      {/* <PartnersSection /> */}
+      <DealSection />
+      <BundleSection />
+      <BundlePromoSection
+        title="G-ROLLZ BLUNTS BUNDLE"
+        description={`Elevate your shop with a curated selection of our best-selling blunts. This convenient box\nfeatures our fastest-moving products from each category. Classic favorites, terpene-infused blunts, and botanical blunts.\nOrder now and enhance your catalog with just one click.\nView full details`}
+        buttonText="EXPLORE CATEGORY"
+        image="/home/blunt-bundle.png"
+      />
+      <BundlePromoSection
+        reverse
+        title="G-ROLLZ PAPERS BUNDLE"
+        description={`Discover our top-selling papers in one exclusive bundle. Includes a variety of sizes and flavors to suit every preference.\nPerfect for shops looking to offer the best selection to their customers.\nOrder now and stock up with ease.\nView full details`}
+        buttonText="EXPLORE CATEGORY"
+        image="/home/blunt-bundle.png"
+      />
+      <AboutStatsSection />
+      <OurCollectionSection />
+      <WholesaleDistributionSection />
+      <InstagramSection />
+      <FAQSection />
+    </main>
+  );
+}
+
 /* export const metadata: Metadata = {
   displayname: "Your Brand - Premium Products",
   description:
@@ -249,32 +287,3 @@ export const reviewsData: Review[] = [
     date: "August 19, 2023",
   },
 ]; */
-
-export default function HomePage() {
-  return (
-    <main className="min-h-screen">{/*  pt-[120px] */}
-      <HeroSection />
-      {/* <PartnersSection /> */}
-      <DealSection />
-      <BundleSection />
-      <BundlePromoSection
-        title="G-ROLLZ BLUNTS BUNDLE"
-        description={`Elevate your shop with a curated selection of our best-selling blunts. This convenient box\nfeatures our fastest-moving products from each category. Classic favorites, terpene-infused blunts, and botanical blunts.\nOrder now and enhance your catalog with just one click.\nView full details`}
-        buttonText="EXPLORE CATEGORY"
-        image="/home/blunt-bundle.png"
-      />
-      <BundlePromoSection
-        reverse
-        title="G-ROLLZ PAPERS BUNDLE"
-        description={`Discover our top-selling papers in one exclusive bundle. Includes a variety of sizes and flavors to suit every preference.\nPerfect for shops looking to offer the best selection to their customers.\nOrder now and stock up with ease.\nView full details`}
-        buttonText="EXPLORE CATEGORY"
-        image="/home/blunt-bundle.png"
-      />
-      <AboutStatsSection />
-      <OurCollectionSection />
-      <WholesaleDistributionSection />
-      <InstagramSection />
-      <FAQSection />
-    </main>
-  );
-}

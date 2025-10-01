@@ -1,3 +1,4 @@
+// components/shop/InteractiveProductList.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -33,21 +34,6 @@ interface Props {
   totalResults: number;
   productsPerPage: number;
 }
-
-// const PRODUCTS_PER_PAGE = 24;
-/* interface Filters {
-  availability?: string;
-  color?: string;
-  size?: string;
-  brand?: string;
-  priceMin?: number | string;
-  priceMax?: number | string;
-  search?: string;
-}
-
-interface Sorting {
-  sortBy?: string;
-} */
 
 const InteractiveProductList: React.FC<Props> = ({
   items,
@@ -100,7 +86,7 @@ const InteractiveProductList: React.FC<Props> = ({
   };
 
   function updateQuery(params: Record<string, string | number | undefined>) {
-    const currentParams = new URLSearchParams(window.location.search);
+    const currentParams = new URLSearchParams(window.location.search);  
 
     Object.entries(params).forEach(([key, value]) => {
       if (value === undefined || value === "") {
@@ -114,7 +100,7 @@ const InteractiveProductList: React.FC<Props> = ({
   }
 
   const handleSortChange = (value: string) => {
-    updateQuery({ sort: value, page: 1 }); // reset to page 1 on sort change
+    updateQuery({ sort: value, page: 1 });
   };
 
   const handlePageChange = (newPage: number) => {
@@ -136,13 +122,12 @@ const InteractiveProductList: React.FC<Props> = ({
     setSelectedItems(updatedSelections);
   };
 
-  if (!items || items.length === 0) {
+  /* if (!items || items.length === 0) {
     return <p>No products found.</p>;
-  }
+  } */
 
   return (
     <>
-      {/* Filters and bulk controls here */}
 
       <div className="container mx-auto flex flex-col items-center gap-6 py-8">
         <div className="w-full max-w-7xl">
@@ -164,7 +149,6 @@ const InteractiveProductList: React.FC<Props> = ({
                 >
                   -
                 </button>
-                {/* <span className="mx-2">01</span> */}
                 <span className="mx-2">
                   {bulkQuantity?.toString().padStart(2, "0")}
                 </span>
@@ -206,8 +190,6 @@ const InteractiveProductList: React.FC<Props> = ({
             <ShopFilters
               filters={shopData.filters}
               onFilterChange={(newFilters) => {
-
-                console.log('newFilters === ',newFilters);
                 // Convert to URL params
                 const urlFilters: Record<string, string | number | undefined> =
                   {};
@@ -216,24 +198,14 @@ const InteractiveProductList: React.FC<Props> = ({
                   if (value !== "" && value !== undefined && value !== null) {
                     urlFilters[key] = value;
                   } else {
-                    urlFilters[key] = undefined; // This will be removed
+                    urlFilters[key] = undefined;
                   }
                 }
 
-                urlFilters.page = 1; // Reset pagination
-
-                console.log('urlFilters === ',urlFilters);
-
+                urlFilters.page = 1;
                 updateQuery(urlFilters);
               }}
             />
-            {/* <ShopFilters
-              filters={shopData.filters}
-              onFilterChange={(newFilters) => {
-                updateQuery({ ...newFilters, page: 1 }); // reset to page 1
-              }}
-              //   onFilterChange={setFilters}
-            /> */}
           </div>
 
 
@@ -262,23 +234,6 @@ const InteractiveProductList: React.FC<Props> = ({
               />
             ))}
           </div>
-
-
-          {/* <div className="mt-20 mb-20">
-            {Array.from(
-              { length: Math.ceil(totalResults / productsPerPage) },
-              (_, i) => i + 1
-            ).map((pageNum) => (
-              <button
-                key={pageNum}
-                onClick={() => handlePageChange(pageNum)}
-                disabled={pageNum === page}
-                style={{ margin: "0 5px" }}
-              >
-                {pageNum}
-              </button>
-            ))}
-          </div> */}
 
           <div className="mt-20 mb-20">
             <Pagination

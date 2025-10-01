@@ -1,12 +1,14 @@
 // /app/checkout/page.tsx
 "use client";
+import React, { useEffect, useState } from "react";
+import { useUser } from "@/context/userContext";
 import ShopBanner from "@/components/shop/ShopBanner";
 import { commonData } from "@/lib/commonData";
 import { useCartStore } from "@/store/useCartStore";
 import Link from "next/link";
-import React, { useState } from "react";
 import { savePendingOrder } from "@/lib/hooks/usePendingOrder";
 import ShippingBar from "@/components/shop/ShippingBar";
+import { useToast } from "@/hooks/use-toast";
 
 async function startPayment(amount?: number, customerEmail?: string) {
   const res = await fetch("/api/checkout/viva-create-order", {
@@ -20,7 +22,6 @@ async function startPayment(amount?: number, customerEmail?: string) {
 
   const order = await res.json();
   if (order.orderCode) {
-
     // Redirect user to Viva Smart Checkout
     window.location.href = `https://demo.vivapayments.com/web2?ref=${order.orderCode}`;
   } else {
@@ -37,9 +38,13 @@ const countries = [
   // Add more as needed
 ];
 
+const freeShippingThreshold = 100;
+
 export default function CheckoutPage() {
+  const { user } = useUser();
   const cart = useCartStore((state) => state.cart);
   const [agreed, setAgreed] = useState(false);
+  const { toast } = useToast();
 
   const [loading, setLoading] = useState(false);
   const [orderStatus, setOrderStatus] = useState("");
@@ -47,11 +52,23 @@ export default function CheckoutPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [selectedShipping, setSelectedShipping] = useState("free");
+  const [useDifferentBilling, setUseDifferentBilling] = useState(false);
 
   const total = cart.reduce(
     (sum, item) => sum + (item.price ? item.price : 8) * item.quantity,
     0
   );
+
+  useEffect(() => {
+    if (total >= freeShippingThreshold) {
+      setSelectedShipping("free");
+    } else {
+      setSelectedShipping("express");
+    }
+  }, [total]);
+
+  const shippingCost = selectedShipping === "express" ? 16 : 0;
+  const grandTotal = total + shippingCost;
 
   const [form, setForm] = useState({
     firstName: "",
@@ -63,6 +80,14 @@ export default function CheckoutPage() {
     zip: "",
     phone: "",
     email: "",
+    billingFirstName: "",
+    billingLastName: "",
+    billingPhone: "",
+    billingEmail: "",
+    billingAddress: "",
+    billingCity: "",
+    billingZip: "",
+    billingCountry: { id: "NL", refName: "Netherlands" },
     cardNumber: "",
     expiry: "",
     cvc: "",
@@ -70,6 +95,76 @@ export default function CheckoutPage() {
     billingSameAsShipping: true,
     paymentMethod: "viva", // 'card' or 'viva'
   });
+
+  useEffect(() => {
+    if (!user?.userId) return;
+
+    let ignore = false;
+
+    async function fetchAccount() {
+      try {
+        setLoading(true);
+        const res = await fetch(`/api/account-details?userId=${user?.userId}`);
+        const text = await res.text();
+        if (!text || ignore) return;
+
+        const data = JSON.parse(text);
+        const acc = data.account?.[0];
+
+        if (acc) {
+          const hasBillingAddress = !!acc.billingfirstname;
+
+          setUseDifferentBilling(hasBillingAddress); // ✅ This will auto-check the box
+
+          setForm({
+            // Shipping
+            firstName: acc.firstName || "",
+            lastName: acc.lastName || "",
+            email: acc.email || "",
+            phone: acc.addrPhone || "",
+            address: acc.addr1 || "",
+            city: acc.city || "",
+            zip: acc.zip || "",
+            country: {
+              id: acc.country || "",
+              refName:
+                countries.find((c) => c.id === acc.country)?.refName || "",
+            },
+
+            // Billing (initially blank — only shown if `useDifferentBilling === true`)
+            billingFirstName: acc.billingfirstname || "",
+            billingLastName: acc.billinglastname || "",
+            billingEmail: acc.billingemail || "",
+            billingPhone: acc.billingphone || "",
+            billingAddress: acc.billingaddress || "",
+            billingCity: acc.billingcity || "",
+            billingZip: acc.billingzip || "",
+            billingCountry: {
+              id: acc.billingcountry || "",
+              refName:
+                countries.find((c) => c.id === acc.billingcountry)?.refName ||
+                "",
+            },
+            cardNumber: "",
+            expiry: "",
+            cvc: "",
+            nameOnCard: "",
+            billingSameAsShipping: true,
+            paymentMethod: "viva", // 'card' or 'viva'
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching account details:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchAccount();
+    return () => {
+      ignore = true;
+    };
+  }, [user?.userId]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -130,6 +225,16 @@ export default function CheckoutPage() {
           city: form.city,
           country: form.country,
           zip: form.zip,
+          ...(useDifferentBilling && {
+            billingFirstName: form.billingFirstName,
+            billingLastName: form.billingLastName,
+            billingPhone: form.billingPhone,
+            billingEmail: form.billingEmail,
+            billingAddress: form.billingAddress,
+            billingCity: form.billingCity,
+            billingZip: form.billingZip,
+            billingCountry: form.billingCountry.id,
+          }),
           cartItems: cart,
         }),
       });
@@ -322,6 +427,113 @@ export default function CheckoutPage() {
                 {errors.email && (
                   <p className="text-red-500 text-sm mt-2">{errors.email}</p>
                 )}
+                <div className="space-y-4 mt-4">
+                  <label className="flex items-center gap-2 mt-4">
+                    <input
+                      type="checkbox"
+                      name="billingSameAsShipping"
+                      checked={!useDifferentBilling}
+                      onChange={() => setUseDifferentBilling((prev) => !prev)}
+                    />
+                    Use shipping address as billing address
+                  </label>
+                </div>
+                {/* <div className="space-y-4 mt-4">
+                    <label className="flex items-center gap-2 mt-2">
+                      <input
+                        name="billingSameAsShipping"
+                        type="checkbox"
+                        checked={form.billingSameAsShipping}
+                        onChange={handleChange}
+                      />
+                      Use shipping address as billing address
+                    </label>
+                  </div> */}
+                {useDifferentBilling && (
+                  <div className="mt-6 space-y-4 border-t pt-4">
+                    <h4 className="font-semibold">Billing Address</h4>
+                    <div className="flex gap-4">
+                      <div className="flex-1">
+                        <input
+                          name="billingFirstName"
+                          placeholder="Billing First Name"
+                          className="border border-border rounded px-4 py-2 w-full bg-background text-foreground"
+                          value={form.billingFirstName}
+                          onChange={handleChange}
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <input
+                          name="billingLastName"
+                          placeholder="Billing Last Name"
+                          className="border border-border rounded px-4 py-2 w-full bg-background text-foreground"
+                          value={form.billingLastName}
+                          onChange={handleChange}
+                        />
+                      </div>
+                    </div>
+                    <input
+                      name="billingEmail"
+                      placeholder="Billing Email"
+                      className="border border-border rounded px-4 py-2 w-full bg-background text-foreground"
+                      value={form.billingEmail}
+                      onChange={handleChange}
+                    />
+                    <input
+                      name="billingAddress"
+                      placeholder="Billing Address"
+                      className="border border-border rounded px-4 py-2 w-full bg-background text-foreground"
+                      value={form.billingAddress}
+                      onChange={handleChange}
+                    />
+                    <select
+                      name="billingCountry"
+                      value={form.billingCountry?.id || ""}
+                      onChange={(e) => {
+                        const selected = countries.find(
+                          (c) => c.id === e.target.value
+                        );
+                        if (selected) {
+                          setForm((prev) => ({
+                            ...prev,
+                            billingCountry: selected,
+                          }));
+                        }
+                      }}
+                      className="w-full border border-border rounded px-3 py-2 bg-background text-foreground"
+                    >
+                      {countries.map((country) => (
+                        <option key={country.id} value={country.id}>
+                          {country.refName}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="flex gap-4">
+                      <input
+                        name="billingCity"
+                        placeholder="Billing City"
+                        className="w-1/3 border border-border rounded px-4 py-2 bg-background text-foreground"
+                        value={form.billingCity}
+                        onChange={handleChange}
+                      />
+                      <input
+                        name="billingZip"
+                        placeholder="Billing ZIP"
+                        className="w-1/3 border border-border rounded px-4 py-2 bg-background text-foreground"
+                        value={form.billingZip}
+                        onChange={handleChange}
+                      />
+                      <input
+                        name="billingPhone"
+                        placeholder="Billing Phone"
+                        className="w-1/3 border border-border rounded px-4 py-2 bg-background text-foreground"
+                        value={form.billingPhone}
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </div>
+                )}
+
                 <h3 className="font-semibold mt-6 mb-2">Shipping Method</h3>
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 border border-border rounded px-4 py-2 bg-background text-foreground peer-checked:border-red-500 has-[:checked]:border-red-500">
@@ -418,18 +630,6 @@ export default function CheckoutPage() {
                       />
                     </div>
                   )}
-
-                  <div className="space-y-4 mt-4">
-                    <label className="flex items-center gap-2 mt-2">
-                      <input
-                        name="billingSameAsShipping"
-                        type="checkbox"
-                        checked={form.billingSameAsShipping}
-                        onChange={handleChange}
-                      />
-                      Use shipping address as billing address
-                    </label>
-                  </div>
                 </div>
                 <div className="text-xs text-muted-foreground mt-4">
                   Your personal data will be used to process your order, support
@@ -501,8 +701,16 @@ export default function CheckoutPage() {
               ></textarea>
               <div className="flex flex-col gap-2 mb-4">
                 <div className="flex justify-between items-center text-lg font-bold">
-                  <span>Total:</span>
+                  <span>Subtotal:</span>
                   <span>${total.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between items-center text-lg font-bold">
+                  <span>Shipping:</span>
+                  <span>${shippingCost.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between items-center text-lg font-bold">
+                  <span>Total:</span>
+                  <span>${grandTotal.toFixed(2)}</span>
                 </div>
                 <div className="text-xs text-muted-foreground">
                   Taxes and shipping calculated at checkout

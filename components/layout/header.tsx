@@ -13,7 +13,7 @@ import {
   ChevronDown,
   LogOut,
 } from "lucide-react";
-import { TopBar } from "./top-bar";
+// import { TopBar } from "./top-bar";
 import { Logo } from "../logo";
 import { ShopMainCategories } from "@/lib/menuData";
 import { useCartStore } from "@/store/useCartStore"; // Adjust path as needed
@@ -21,6 +21,7 @@ import { useState, useEffect } from "react";
 import CartSidebar from "@/components/cart/CartSidebar";
 
 import { usePathname, useRouter } from "next/navigation";
+import TopBar from "./top-bar";
 
 /* const categories = [
   "Papers/Tips",
@@ -39,7 +40,13 @@ interface UserSession {
   // other fields you store
 }
 
-export function Header() {
+type HeaderProps = {
+  locale: string;
+  dictionary: any;
+};
+
+// export function Header() {
+export function Header({ locale, dictionary }: HeaderProps) {
   const cart = useCartStore((state) => state.cart);
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
@@ -114,7 +121,7 @@ export function Header() {
   return (
     <header className="sticky top-0 left-0 right-0 z-50 bg-background border-b border-border">
       {/* Top Bar */}
-      <TopBar />
+      <TopBar locale={locale} dictionary={dictionary}/>
 
       {/* Main Header */}
       <div className="container mx-auto sm:px-4 md:px-0">
@@ -158,7 +165,8 @@ export function Header() {
                 variant="ghost"
                 className="text-base font-medium px-2 lg:px-4"
               >
-                Home
+                {/* Home */}
+                {dictionary.nav.home}
               </Button>
             </Link>
 
@@ -168,7 +176,8 @@ export function Header() {
                 variant="ghost"
                 className="text-base font-medium px-2 lg:px-4"
               >
-                All Products
+                {/* All Products */}
+                {dictionary.nav.shop}
               </Button>
             </Link>
             {/* Categories Dropdown */}

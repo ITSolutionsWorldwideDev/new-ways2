@@ -1,23 +1,57 @@
 // middleware.ts
+
+// middleware.ts
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAccessToken } from "@/lib/token";
 import { getAccessTokenFromRequest } from "@/lib/cookies";
+import { languages, defaultLocale } from "./lib/i18n-config";
 
-const protectedPaths = [ "/order-history"]; // "/account",
+const protectedPaths = ["/account", "/order-history"];
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  const isProtected = protectedPaths.some((path) =>
-    pathname === path || pathname.startsWith(`${path}/`)
+  // Exclusions: static files, next internals, API
+  if (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/api") ||
+    pathname.includes(".")
+  ) {
+    return NextResponse.next();
+  }
+
+  // Check if path already has locale prefix
+  for (const locale of languages) {
+    if (pathname === `/${locale}` || pathname.startsWith(`/${locale}/`)) {
+      // It's locale-prefixed, continue to auth check below
+      return handleAuth(req);
+    }
+  }
+
+  // If no locale prefix, redirect to default locale
+  const url = req.nextUrl.clone();
+  url.pathname = `/${defaultLocale}${pathname}`;
+  return NextResponse.redirect(url);
+}
+
+function handleAuth(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+  // The path includes /<locale>/... => segments[1] is locale, segments[2] is the actual route
+  const segments = pathname.split("/");
+  const locale = segments[1];
+  const subpath = `/${segments.slice(2).join("/")}`; // e.g. "/account" or "/order-history" etc.
+
+  // Check if this subpath is protected
+  const isProtected = protectedPaths.some(
+    (path) => subpath === path || subpath.startsWith(`${path}/`)
   );
 
   if (isProtected) {
     const token = getAccessTokenFromRequest(req);
     const payload = token ? verifyAccessToken(token) : null;
-
     if (!payload) {
-      const loginUrl = new URL("/login", req.url);
+      const loginUrl = req.nextUrl.clone();
+      loginUrl.pathname = `/${locale}/login`;
       loginUrl.searchParams.set("from", pathname);
       return NextResponse.redirect(loginUrl);
     }
@@ -26,14 +60,78 @@ export function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-/* export const config = {
-  runtime: "nodejs",
-}; */
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|public/).*)"],
+  matcher: ["/((?!_next|api|.*\\..*).*)"],
 };
 
-// // ✅ No variable shadowing issues
+/* import { NextRequest, NextResponse } from "next/server";
+import { verifyAccessToken } from "@/lib/token";
+import { getAccessTokenFromRequest } from "@/lib/cookies";
+
+import { languages, defaultLocale } from './lib/i18n-config';
+
+const protectedPaths = [ "/account","/order-history"]; // 
+
+export function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  console.log("MIDDLEWARE RUNNING. Pathname:", pathname); 
+  
+
+  // Locale redirect: If no locale in URL, redirect to defaultLocale
+  const pathnameIsMissingLocale = languages.every(
+    (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
+  );
+
+  if (pathnameIsMissingLocale) {
+    const localeRedirectUrl = req.nextUrl.clone();
+    localeRedirectUrl.pathname = `/${defaultLocale}${pathname}`;
+    return NextResponse.redirect(localeRedirectUrl);
+  }
+
+  // Auth protection for locale-prefixed paths (e.g., /en/account)
+  const segments = pathname.split("/"); // e.g. ['', 'en', 'account']
+  const currentLocale = segments[1];
+  const basePath = `/${segments[2] || ""}`; // e.g., "/account"
+
+  const isProtected = protectedPaths.some(
+    (path) => basePath === path || basePath.startsWith(`${path}/`)
+  );
+
+  // const isProtected = protectedPaths.some((path) =>
+  //   pathname === path || pathname.startsWith(`${path}/`)
+  // );
+
+  // if (isProtected) {
+  //   const token = getAccessTokenFromRequest(req);
+  //   const payload = token ? verifyAccessToken(token) : null;
+
+  //   if (!payload) {
+  //     const loginUrl = new URL("/login", req.url);
+  //     loginUrl.searchParams.set("from", pathname);
+  //     return NextResponse.redirect(loginUrl);
+  //   }
+  // }
+
+  if (isProtected) {
+    const token = getAccessTokenFromRequest(req);
+    const payload = token ? verifyAccessToken(token) : null;
+
+    if (!payload) {
+      const loginUrl = req.nextUrl.clone();
+      loginUrl.pathname = `/${currentLocale}/login`;
+      loginUrl.searchParams.set("from", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  return NextResponse.next();
+}
+export const config = {
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|public/).*)"],
+}; */
+
+
 // const runtimeConfig = {
 //   runtime: "nodejs",
 // };

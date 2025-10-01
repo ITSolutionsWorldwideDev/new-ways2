@@ -10,6 +10,9 @@ import {
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
 import React from "react";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import CurrencySwitcher from "@/components/CurrencySwitcher";
+
 
 const announcements = [
   "Return extended to 60 days",
@@ -17,7 +20,13 @@ const announcements = [
   "Limited-Time Offer",
 ];
 
-export function TopBar() {
+type TopBarProps = {
+  locale: string;
+  dictionary: any;
+};
+
+// export function TopBar() {
+export default function TopBar({ locale, dictionary }: TopBarProps) {
   return (
     <div className="bg-background text-foreground border-b border-border text-sm">
       <div className="container mx-auto px-2 sm:px-4">
@@ -63,7 +72,7 @@ export function TopBar() {
             <ThemeToggle />
 
             {/* Language Selector */}
-            <Select defaultValue="en">
+            {/* <Select defaultValue="en">
               <SelectTrigger className="w-[90px] sm:w-[100px] border-none">
                 <SelectValue placeholder="Language" />
               </SelectTrigger>
@@ -72,10 +81,14 @@ export function TopBar() {
                 <SelectItem value="es">Español</SelectItem>
                 <SelectItem value="fr">Français</SelectItem>
               </SelectContent>
-            </Select>
+            </Select> */}
+            <div className="flex flex-col gap-2">
+              <LanguageSwitcher currentLocale={locale} />
+            </div>
+            <CurrencySwitcher ></CurrencySwitcher>
 
             {/* Currency Selector */}
-            <Select defaultValue="usd">
+            {/* <Select defaultValue="usd">
               <SelectTrigger className="w-[100px] sm:w-[140px] border-none">
                 <SelectValue placeholder="Currency" />
               </SelectTrigger>
@@ -84,7 +97,7 @@ export function TopBar() {
                 <SelectItem value="eur">EUR (€)</SelectItem>
                 <SelectItem value="gbp">GBP (£)</SelectItem>
               </SelectContent>
-            </Select>
+            </Select> */}
           </div>
         </div>
       </div>

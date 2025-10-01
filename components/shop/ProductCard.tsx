@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useCartStore } from "@/store/useCartStore";
+import { useCurrency } from "@/context/currencyContext";
+import { formatPrice } from "@/lib/formatPrice";
 
 interface ProductCardProps {
   id: string;
@@ -36,6 +38,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const [addedToCart, setAddedToCart] = useState<boolean>(false);
 
   const addToCart = useCartStore((state) => state.addToCart);
+
+  const { currency } = useCurrency();
+const currencyPrice = formatPrice(price, currency);
 
   const increaseQty = () => {
     setQuantity((prev) => prev + 1);
@@ -103,7 +108,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <div className="flex justify-between bottom-0 ">
           {price !== 0 ? (
             <div className="text-green-600 font-bold mb-1">
-              $ {price}
+              {/* $ {price} */}
+              {currencyPrice}
+
+              
+
+
             </div>
           ) : (
             <div className="text-gray-500 mb-1">Price not available</div>

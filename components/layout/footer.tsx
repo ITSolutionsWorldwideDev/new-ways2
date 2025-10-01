@@ -1,6 +1,14 @@
 import { FaInstagram } from "react-icons/fa";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
-export default function Footer() {
+type FooterProps = {
+  locale: string;
+  dictionary: any;
+};
+
+// export default function Footer() {
+// export default function Footer({ currentLocale }: { currentLocale: string }) {
+export default function Footer({ locale, dictionary }: FooterProps) {
   return (
     <footer className="w-full bg-black text-gray-300 pt-8 pb-4 px-4 border-t border-gray-800">
       <div className="container mx-auto flex flex-col gap-8">
@@ -53,13 +61,18 @@ export default function Footer() {
         </div>
         {/* Language */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 pb-4">
-          <div className="flex flex-col gap-2">
+          {/* <div className="flex flex-col gap-2">
             <span className="text-xs text-gray-400">Language</span>
             <select className="bg-black border border-gray-600 rounded px-3 py-1 text-white text-sm">
               <option>English</option>
               <option>Deutsch</option>
               <option>Español</option>
             </select>
+          </div> */}
+          <div className="flex flex-col gap-2">
+            <span className="text-xs text-gray-400">Language</span>
+
+            <LanguageSwitcher currentLocale={locale} />
           </div>
           <div className="flex flex-col gap-2">
             <div className="text-sm">© 2025, G-Rollz</div>

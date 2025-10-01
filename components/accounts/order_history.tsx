@@ -157,7 +157,7 @@ export default function OrderHistory() {
 
         {/* Selected Order Details */}
         {selectedOrder && (
-          <div className="w-full border border-border rounded-lg p-6 shadow bg-white">
+          <div className="w-full border border-border rounded-lg p-6 shadow bg-white" key={selectedOrder.order_id}>
             <div className="mb-2">
               <strong>Order Ref:</strong> {selectedOrder.payment_reference}
             </div>

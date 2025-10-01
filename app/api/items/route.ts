@@ -111,8 +111,9 @@ export async function GET(req: NextRequest) {
     let sortingOrder = ``;
 
     if (sort) {
-      if (sort == "BestSelling" || sort == "priceAsc" || sort == "priceDesc")
-        sortingOrder = `ORDER BY i.updated_at DESC`;
+      if (sort == "BestSelling") sortingOrder = `ORDER BY i.updated_at DESC`; //  || sort == "priceAsc" || sort == "priceDesc"
+      else if (sort == "priceAsc") sortingOrder = `ORDER BY i.price ASC`;
+      else if (sort == "priceDesc") sortingOrder = `ORDER BY i.price DESC`;
       else if (sort == "Matchcode") sortingOrder = `ORDER BY i.matchcode ASC`;
       else if (sort == "nameAsc") sortingOrder = `ORDER BY i.displayname ASC`;
       else if (sort == "nameDesc") sortingOrder = `ORDER BY i.displayname DESC`;
@@ -123,6 +124,8 @@ export async function GET(req: NextRequest) {
     // limit: pageSize, offset
 
     query = `SELECT i.*, i.stock_quantity AS stockunit FROM products AS i ${whereClause} ${sortingOrder} LIMIT ${pageSize} OFFSET ${offset}`;
+    
+    // console.log('query === ',query);
 
     countQuery = `SELECT COUNT(i.itemid) FROM products AS i ${whereClause}`;
   }
