@@ -1,7 +1,8 @@
 // components/accounts/accounts_detail.tsx
 "use client";
 import React, { useEffect, useState } from "react";
-import { useUser } from "@/context/userContext";
+// import { useUser } from "@/context/userContext";
+import { useSessionStore } from "@/store/useSessionStore";
 import Loading from "@/components/ui/Loading";
 import { useToast } from "@/hooks/use-toast";
 
@@ -14,11 +15,16 @@ const countries = [
 ];
 
 export default function AccountsDetails() {
-  const { user } = useUser();
-  const [loading, setLoading] = useState(true);
+  // const { user } = useUser();
+  const { user, loading } = useSessionStore();
+  // const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
+  // const [loadingLocal, setLoadingLocal] = useState(true);
   const [useDifferentBilling, setUseDifferentBilling] = useState(false);
+  const [loadingAccount, setLoadingAccount] = useState(true); // Local loading for API
+
+  
 
   const [form, setForm] = useState({
     firstName: "",
@@ -40,6 +46,78 @@ export default function AccountsDetails() {
     billingPhone: "",
     billingEmail: "",
   });
+
+
+  useEffect(() => {
+    if (!user?.userId) return;
+
+    let ignore = false;
+
+    async function fetchAccount() {
+      try {
+        setLoadingAccount(true);
+
+        const res = await fetch(`/api/account-details?userId=${user?.userId}`);
+        const text = await res.text();
+
+        if (!text || ignore) return;
+
+        const data = JSON.parse(text);
+        const acc = data.account?.[0];
+
+        if (acc) {
+          const hasBillingAddress = !!acc.billingfirstname;
+          setUseDifferentBilling(hasBillingAddress);
+
+          setForm({
+            // Shipping
+            firstName: acc.firstName || "",
+            lastName: acc.lastName || "",
+            email: acc.email || "",
+            phone: acc.addrPhone || "",
+            address: acc.addr1 || "",
+            city: acc.city || "",
+            zip: acc.zip || "",
+            country: {
+              id: acc.country || "",
+              refName:
+                countries.find((c) => c.id === acc.country)?.refName || "",
+            },
+
+            // Billing (only shown if `useDifferentBilling` is true)
+            billingFirstName: acc.billingfirstname || "",
+            billingLastName: acc.billinglastname || "",
+            billingEmail: acc.billingemail || "",
+            billingPhone: acc.billingphone || "",
+            billingAddress: acc.billingaddress || "",
+            billingCity: acc.billingcity || "",
+            billingZip: acc.billingzip || "",
+            billingCountry: {
+              id: acc.billingcountry || "",
+              refName:
+                countries.find((c) => c.id === acc.billingcountry)?.refName ||
+                "",
+            },
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching account details:", err);
+        toast({
+          title: "Error",
+          description: "Failed to load account details.",
+          variant: "destructive",
+        });
+      } finally {
+        setLoadingAccount(false);
+      }
+    }
+
+    fetchAccount();
+
+    return () => {
+      ignore = true;
+    };
+  }, [user?.userId]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const validate = () => {
@@ -67,70 +145,6 @@ export default function AccountsDetails() {
 
     return errs;
   };
-
-  useEffect(() => {
-    if (!user?.userId) return;
-
-    let ignore = false;
-
-    async function fetchAccount() {
-      try {
-        setLoading(true);
-        const res = await fetch(`/api/account-details?userId=${user?.userId}`);
-        const text = await res.text();
-        if (!text || ignore) return;
-
-        const data = JSON.parse(text);
-        const acc = data.account?.[0];
-
-        if (acc) {
-          const hasBillingAddress = !!acc.billingfirstname;
-
-          setUseDifferentBilling(hasBillingAddress); // ✅ This will auto-check the box
-
-          setForm({
-            // Shipping
-            firstName: acc.firstName || "",
-            lastName: acc.lastName || "",
-            email: acc.email || "",
-            phone: acc.addrPhone || "",
-            address: acc.addr1 || "",
-            city: acc.city || "",
-            zip: acc.zip || "",
-            country: {
-              id: acc.country || "",
-              refName:
-                countries.find((c) => c.id === acc.country)?.refName || "",
-            },
-
-            // Billing (initially blank — only shown if `useDifferentBilling === true`)
-            billingFirstName: acc.billingfirstname || "",
-            billingLastName: acc.billinglastname || "",
-            billingEmail: acc.billingemail || "",
-            billingPhone: acc.billingphone || "",
-            billingAddress: acc.billingaddress || "",
-            billingCity: acc.billingcity || "",
-            billingZip: acc.billingzip || "",
-            billingCountry: {
-              id: acc.billingcountry || "",
-              refName:
-                countries.find((c) => c.id === acc.billingcountry)?.refName ||
-                "",
-            },
-          });
-        }
-      } catch (err) {
-        console.error("Error fetching account details:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchAccount();
-    return () => {
-      ignore = true;
-    };
-  }, [user?.userId]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -197,6 +211,8 @@ export default function AccountsDetails() {
       alert("An error occurred while saving your details.");
     }
   };
+
+  if (loading || loadingAccount) return <Loading />;
 
   return (
     <div className="">
@@ -462,3 +478,79 @@ export default function AccountsDetails() {
     </div>
   );
 }
+
+  /* useEffect(() => {
+    if (!user?.userId) return;
+
+    let ignore = false;
+
+    async function fetchAccount() {
+      try {
+        setLoading(true);
+        const res = await fetch(`/api/account-details?userId=${user?.userId}`);
+        const text = await res.text();
+        if (!text || ignore) return;
+
+        const data = JSON.parse(text);
+        const acc = data.account?.[0];
+
+        if (acc) {
+          const hasBillingAddress = !!acc.billingfirstname;
+
+          setUseDifferentBilling(hasBillingAddress); // ✅ This will auto-check the box
+
+          setForm({
+            // Shipping
+            firstName: acc.firstName || "",
+            lastName: acc.lastName || "",
+            email: acc.email || "",
+            phone: acc.addrPhone || "",
+            address: acc.addr1 || "",
+            city: acc.city || "",
+            zip: acc.zip || "",
+            country: {
+              id: acc.country || "",
+              refName:
+                countries.find((c) => c.id === acc.country)?.refName || "",
+            },
+
+            // Billing (initially blank — only shown if `useDifferentBilling === true`)
+            billingFirstName: acc.billingfirstname || "",
+            billingLastName: acc.billinglastname || "",
+            billingEmail: acc.billingemail || "",
+            billingPhone: acc.billingphone || "",
+            billingAddress: acc.billingaddress || "",
+            billingCity: acc.billingcity || "",
+            billingZip: acc.billingzip || "",
+            billingCountry: {
+              id: acc.billingcountry || "",
+              refName:
+                countries.find((c) => c.id === acc.billingcountry)?.refName ||
+                "",
+            },
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching account details:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchAccount();
+    return () => {
+      ignore = true;
+    };
+  }, [user?.userId]); */
+
+  
+  /* useEffect(() => {
+    // Simulating some loading here
+    setTimeout(() => {
+      setLoadingLocal(false);
+    }, 300);
+  }, []);
+
+  if (loading || loadingLocal) return <Loading />; */
+
+  

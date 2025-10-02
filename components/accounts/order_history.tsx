@@ -1,7 +1,7 @@
 // components/accounts/order_history.tsx
 "use client";
 import React, { useEffect, useState } from "react";
-import { useUser } from "@/context/userContext";
+// import { useUser } from "@/context/userContext";
 import Loading from "@/components/ui/Loading";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import Link from "next/link";
@@ -9,9 +9,12 @@ import Link from "next/link";
 import { useCurrency } from "@/context/currencyContext";
 import { formatPrice } from "@/lib/formatPrice";
 
+import { useSessionStore } from "@/store/useSessionStore";
+
 export default function OrderHistory() {
   const [loading, setLoading] = useState(true);
-  const { user } = useUser();
+  // const { user } = useUser();
+  const { user } = useSessionStore();
 
   const [orders, setOrders] = useState<any[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
@@ -206,7 +209,7 @@ export default function OrderHistory() {
                     <tbody>
                       {selectedOrder.items.map((item: any) => (
                         <tr
-                          key={item.itemid}
+                          key={item.order_item_id}
                           className="border-b border-border last:border-none"
                         >
                           <td className=" items-center py-4 sm:w-[250px] lg:w-[300px]">

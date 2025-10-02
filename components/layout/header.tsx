@@ -1,7 +1,9 @@
 // components/layout/header.tsx
 "use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -16,18 +18,20 @@ import {
 
 import { Logo } from "../logo";
 import { ShopMainCategories } from "@/lib/menuData";
+
 import { useCartStore } from "@/store/useCartStore";
-import { useState, useEffect } from "react";
+import { useSessionStore } from "@/store/useSessionStore";
+import { useB2BStore } from "@/store/useB2BStore";
+
 import CartSidebar from "@/components/cart/CartSidebar";
 
-import { usePathname, useRouter } from "next/navigation";
 import TopBar from "./top-bar";
 
-interface UserSession {
+/* interface UserSession {
   firstName: string;
   lastName: string;
   email: string;
-}
+} */
 
 type HeaderProps = {
   locale: string;
@@ -36,7 +40,10 @@ type HeaderProps = {
 
 export function Header({ locale, dictionary }: HeaderProps) {
   const cart = useCartStore((state) => state.cart);
-  const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+  // const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+
+  const { user, fetchSession, loading, setUser } = useSessionStore();
+  const { setB2BMode } = useB2BStore();
 
   const [cartOpen, setCartOpen] = useState(false);
 
@@ -50,10 +57,14 @@ export function Header({ locale, dictionary }: HeaderProps) {
     closeCart();
   }, [pathname]);
 
-  const [user, setUser] = useState<UserSession | null>(null);
-  const [loadingUser, setLoadingUser] = useState(true);
+  // const [user, setUser] = useState<UserSession | null>(null);
+  // const [loadingUser, setLoadingUser] = useState(true);
 
   useEffect(() => {
+    fetchSession();
+  }, []);
+
+  /* useEffect(() => {
     async function fetchSession() {
       try {
         const res = await fetch("/api/auth/session", {
@@ -84,7 +95,7 @@ export function Header({ locale, dictionary }: HeaderProps) {
     }
 
     fetchSession();
-  }, []);
+  }, []); */
 
   const handleLogout = async () => {
     try {
@@ -93,7 +104,13 @@ export function Header({ locale, dictionary }: HeaderProps) {
         credentials: "include",
       });
       if (res.ok) {
-        setUser(null);
+        // useSessionStore.setState({ user: null });
+        setUser(null); // Clear session
+
+        // Reset any other global states
+        setB2BMode(false);
+
+        // setUser(null);
         router.push("/login");
       } else {
         console.error("Logout failed");
@@ -195,7 +212,37 @@ export function Header({ locale, dictionary }: HeaderProps) {
               <Search className="h-5 w-5" />
             </Button> */}
 
-            {!loadingUser && !user && (
+            {!loading && !user && (
+  <Link href="/login">
+    <Button variant="ghost" size="icon" aria-label="Login">
+      <User className="h-5 w-5" />
+    </Button>
+  </Link>
+)}
+
+{!loading && user && (
+  <div className="relative group inline-flex">
+    <Button variant="ghost" size="icon" aria-label="Account">
+      <User className="h-5 w-5" />
+    </Button>
+    <div className="absolute top-8 right-0 mt-2 w-48 bg-background border rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+      <Link
+        href="/account"
+        className="block px-4 py-2 hover:bg-muted"
+      >
+        {user.firstName}
+      </Link>
+      <Button
+        onClick={handleLogout}
+        className="w-full text-left px-4 py-2 hover:bg-muted flex items-center"
+      >
+        <LogOut className="mr-2 h-4 w-4" /> Logout
+      </Button>
+    </div>
+  </div>
+)}
+
+            {/* {!loadingUser && !user && (
               <>
                 <Link href="/login">
                   <Button variant="ghost" size="icon" aria-label="Login">
@@ -225,7 +272,7 @@ export function Header({ locale, dictionary }: HeaderProps) {
                   </Button>
                 </div>
               </div>
-            )}
+            )} */}
 
             <Button
               variant="ghost"

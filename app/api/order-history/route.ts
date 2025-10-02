@@ -19,6 +19,7 @@ export async function GET(req: NextRequest) {
         o.total_amount,
         json_agg(
             json_build_object(
+            'order_item_id', oi.order_item_id,
             'item_id', oi.itemid,
             'matchcode', i.matchcode,
             'image', i.image_url,

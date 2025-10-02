@@ -1,7 +1,8 @@
 // /app/checkout/page.tsx
 "use client";
 import React, { useEffect, useState } from "react";
-import { useUser } from "@/context/userContext";
+// import { useUser } from "@/context/userContext";
+import { useSessionStore } from "@/store/useSessionStore";
 import ShopBanner from "@/components/shop/ShopBanner";
 import { commonData } from "@/lib/commonData";
 import { useCartStore } from "@/store/useCartStore";
@@ -43,7 +44,8 @@ const countries = [
 const freeShippingThreshold = 100;
 
 export default function CheckoutPage() {
-  const { user } = useUser();
+  // const { user } = useUser();
+  const { user } = useSessionStore();
   const cart = useCartStore((state) => state.cart);
   const [agreed, setAgreed] = useState(false);
   const { toast } = useToast();

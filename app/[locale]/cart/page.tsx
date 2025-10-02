@@ -11,6 +11,7 @@ import ShippingBar from "@/components/shop/ShippingBar";
 
 import { useCurrency } from "@/context/currencyContext";
 import { formatPrice } from "@/lib/formatPrice";
+import RandomProducts from "@/components/product/ProductDetail/RandomProducts";
 
 export default function CartPage() {
   const cart = useCartStore((state) => state.cart);
@@ -250,12 +251,12 @@ export default function CartPage() {
                   <img
                     alt="Mastercard"
                     className="h-6"
-                    src="https://upload.wikimedia.org/wikipedia/commons/4/41/Mastercard-logo.svg"
+                    src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg"
                   />
                   <img
                     alt="PayPal"
                     className="h-6"
-                    src="https://upload.wikimedia.org/wikipedia/commons/6/6b/PayPal.svg"
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/PayPal.svg/2560px-PayPal.svg.png"
                   />
                 </div>
               </div>
@@ -276,52 +277,7 @@ export default function CartPage() {
             <h3 className="text-2xl font-bold mb-6 text-center">
               You May Also Like
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-              <div className="bg-background rounded-lg shadow p-4 flex flex-col items-center border border-border">
-                <img
-                  alt="Product"
-                  className="w-32 h-32 object-contain mb-2"
-                  src="/dummy/img-product.png"
-                />
-                <div className="font-semibold mb-1">
-                  'Rap' Organic Green Hemp - 3 KS Cones
-                </div>
-                <div className="text-green-600 font-bold mb-1">$55.00</div>
-              </div>
-              <div className="bg-background rounded-lg shadow p-4 flex flex-col items-center border border-border">
-                <img
-                  alt="Product"
-                  className="w-32 h-32 object-contain mb-2"
-                  src="/dummy/img-product.png"
-                />
-                <div className="font-semibold mb-1">
-                  'Rap' Organic Green Hemp - 3 KS Cones
-                </div>
-                <div className="text-green-600 font-bold mb-1">$115.00</div>
-              </div>
-              <div className="bg-background rounded-lg shadow p-4 flex flex-col items-center border border-border">
-                <img
-                  alt="Product"
-                  className="w-32 h-32 object-contain mb-2"
-                  src="/dummy/img-product.png"
-                />
-                <div className="font-semibold mb-1">
-                  'Rap' Organic Green Hemp - 3 KS Cones
-                </div>
-                <div className="text-green-600 font-bold mb-1">$85.00</div>
-              </div>
-              <div className="bg-background rounded-lg shadow p-4 flex flex-col items-center border border-border">
-                <img
-                  alt="Product"
-                  className="w-32 h-32 object-contain mb-2"
-                  src="/dummy/img-product.png"
-                />
-                <div className="font-semibold mb-1">
-                  'Rap' Organic Green Hemp - 3 KS Cones
-                </div>
-                <div className="text-green-600 font-bold mb-1">$85.00</div>
-              </div>
-            </div>
+            <RandomProducts></RandomProducts>
           </div>
         </div>
       </div>

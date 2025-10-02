@@ -1,3 +1,4 @@
+// components/product/ProductDetail/RandomProducts.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -10,11 +11,7 @@ import Link from "next/link";
 import { useCurrency } from "@/context/currencyContext";
 import { formatPrice } from "@/lib/formatPrice";
 
-type ProductRelatedProps = {
-  product_id: number;
-};
-
-export default function RelatedProducts({ product_id }: ProductRelatedProps) {
+export default function RandomProducts() {
   const [items, setItems] = useState<any[]>([]);
 
   const { currency } = useCurrency();
@@ -22,12 +19,12 @@ export default function RelatedProducts({ product_id }: ProductRelatedProps) {
   useEffect(() => {
     let ignore = false;
     async function fetchReviews() {
-      const res = await fetch(`/api/related-products?product_id=${product_id}`);
+      const res = await fetch(`/api/random-products`);
 
       // Check for empty body
       const text = await res.text();
       if (!text) {
-        console.warn("Empty response from related-products API");
+        console.warn("Empty response from random-products API");
         return;
       }
 
@@ -41,14 +38,11 @@ export default function RelatedProducts({ product_id }: ProductRelatedProps) {
     return () => {
       ignore = true; // cleanup flag
     };
-  }, [product_id]);
+  }, []); 
 
   return (
     <>
       <div className="mt-12">
-        <div className="font-semibold text-xl mb-4 text-foreground">
-          Related Products
-        </div>
 
         <Swiper
           modules={[Autoplay]}
@@ -59,9 +53,6 @@ export default function RelatedProducts({ product_id }: ProductRelatedProps) {
             delay: 3000,
             disableOnInteraction: false,
           }}
-          // pagination={{
-          //   clickable: true, // 👈 Allows user to click dots
-          // }}
           breakpoints={{
             640: { slidesPerView: 2 },
             768: { slidesPerView: 4 },
@@ -82,7 +73,6 @@ export default function RelatedProducts({ product_id }: ProductRelatedProps) {
                       {product.displayname}
                     </div>
                     <div className="font-bold mb-1 text-foreground">
-                      {/* ${product.price} */}
                       {formatPrice(product.price, currency)}
                     </div>
                   </Link>

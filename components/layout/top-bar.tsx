@@ -12,7 +12,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import React from "react";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
-
+import { useB2BStore } from "@/store/useB2BStore";
 
 const announcements = [
   "Return extended to 60 days",
@@ -27,17 +27,22 @@ type TopBarProps = {
 
 // export function TopBar() {
 export default function TopBar({ locale, dictionary }: TopBarProps) {
+  const { isB2BMode, setB2BMode } = useB2BStore();
+
   return (
     <div className="bg-background text-foreground border-b border-border text-sm">
       <div className="container mx-auto px-2 sm:px-4">
         <div className="flex items-center h-10 gap-2 flex-nowrap md:gap-0">
           {/* Mobile Wholesale Button - Visible on small screens */}
-          {/* <Button
+          <Button
             variant="link"
-            className="text-foreground md:hidden flex-shrink-0"
+            className={`text-foreground md:hidden flex-shrink-0 ${
+              isB2BMode ? "font-bold underline" : ""
+            }`}
+            onClick={() => setB2BMode(!isB2BMode)}
           >
-            Wholesale(B2B)
-          </Button> */}
+            Wholesale (B2B)
+          </Button>
 
           {/* Announcements - Sliding/Marquee effect, always visible, fixed width */}
           <div className="flex-1 flex justify-center min-w-0">
@@ -61,12 +66,16 @@ export default function TopBar({ locale, dictionary }: TopBarProps) {
           {/* Right Side Actions */}
           <div className="flex items-center space-x-2 flex-shrink-0">
             {/* Wholesale - Hidden on mobile */}
-            {/* <Button
+
+            <Button
               variant="link"
-              className="text-foreground hidden md:inline-flex"
+              className={`text-foreground hidden md:inline-flex ${
+                isB2BMode ? "font-bold underline" : ""
+              }`}
+              onClick={() => setB2BMode(!isB2BMode)}
             >
-              Wholesale(B2B)
-            </Button> */}
+              Wholesale (B2B)
+            </Button>
 
             {/* Theme Toggle */}
             <ThemeToggle />
@@ -85,7 +94,7 @@ export default function TopBar({ locale, dictionary }: TopBarProps) {
             <div className="flex flex-col gap-2">
               <LanguageSwitcher currentLocale={locale} />
             </div>
-            <CurrencySwitcher ></CurrencySwitcher>
+            <CurrencySwitcher></CurrencySwitcher>
 
             {/* Currency Selector */}
             {/* <Select defaultValue="usd">

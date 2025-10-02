@@ -1,9 +1,13 @@
+// components/accounts/Tabs.tsx
 "use client";
 
 import { cn } from "@/lib/utils";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUser } from "@/context/userContext";
+// import { useUser } from "@/context/userContext";
+
+import { useSessionStore } from "@/store/useSessionStore"; // ✅ Zustand
+import { useB2BStore } from "@/store/useB2BStore"; // Optional, if B2B needs resetting
 
 import AccountsDashboard from "./dashboard";
 import AccountsDetails from "./accounts_detail";
@@ -24,7 +28,10 @@ const tabBtnData: TabBtn[] = [
 const Tabs = () => {
   const [active, setActive] = useState<number>(1);
   const router = useRouter();
-  const { logout } = useUser(); // from context
+  // const { logout } = useUser(); // from context
+
+  const { setUser } = useSessionStore(); // ✅ Zustand
+  const { setB2BMode } = useB2BStore(); // Optional
 
   const handleTabClick = async (tab: TabBtn) => {
     if (tab.label === "Logout") {
@@ -34,7 +41,9 @@ const Tabs = () => {
           credentials: "include",
         });
 
-        logout();
+        // logout();
+        setUser(null); // ✅ Clear session
+        setB2BMode(false); // ✅ Optional reset of B2B toggle
         router.push("/login");
       } catch (error) {
         console.error("Logout failed:", error);

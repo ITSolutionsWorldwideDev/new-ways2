@@ -2,7 +2,7 @@
 "use client";
 
 import { createContext, useState, useContext, useEffect, ReactNode } from "react";
-import { User } from "@/lib/types"; // Define your user type
+// import { User } from "@/lib/types";
 
 
 interface UserContextType {
@@ -10,6 +10,15 @@ interface UserContextType {
   loadingUser: boolean;
   login: (user: User) => void;
   logout: () => void;
+}
+
+export interface User {
+  userId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  // If your login API returns a phone number, add it here
+  phoneNumber?: string;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);

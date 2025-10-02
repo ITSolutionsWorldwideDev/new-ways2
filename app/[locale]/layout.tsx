@@ -1,3 +1,4 @@
+// app/[locale]/layout.tsx
 import type React from "react";
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
@@ -7,7 +8,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Header } from "@/components/layout/header";
 import { ThemeProvider } from "@/components/theme-provider";
 import Footer from "@/components/layout/footer";
-import { UserProvider } from "@/context/userContext";
+// import { UserProvider } from "@/context/userContext";
 import { CurrencyProvider } from "@/context/currencyContext";
 
 import { notFound } from "next/navigation";
@@ -61,13 +62,13 @@ export default async function RootLayout(props: {
         <ThemeProvider>
           <ReduxProvider>
             <CurrencyProvider>
-              <UserProvider>
+              {/* <UserProvider> */}
                 <Header locale={locale} dictionary={dictionary} />
                 <Toaster />
                 {/* {children} */}
                 {props.children}
                 <Footer locale={locale} dictionary={dictionary} />
-              </UserProvider>
+              {/* </UserProvider> */}
             </CurrencyProvider>
           </ReduxProvider>
         </ThemeProvider>
