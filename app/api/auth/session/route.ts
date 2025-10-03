@@ -31,6 +31,9 @@ export async function GET(req: NextRequest) {
       firstName: string;
       lastName: string;
       email: string;
+      role: string;
+      companyName: string;
+      taxId: string;
     }>(
       `SELECT user_id, "firstName", "lastName", email, role, "companyName", "taxId" FROM users WHERE user_id = $1`,
       [payload.userId]
@@ -49,6 +52,9 @@ export async function GET(req: NextRequest) {
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
+          role: user.role,
+          companyName: user.companyName ?? "",
+          taxId: user.taxId ?? "",
         },
       },
       { status: 200 }

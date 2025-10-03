@@ -91,7 +91,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </label>
           )}
         </div>
-
         {/* <input id="giftwrap" className="accent-lemon" type="checkbox" /> */}
         <img
           src={image}

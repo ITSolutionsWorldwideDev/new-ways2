@@ -24,6 +24,8 @@ export default function AccountsDetails() {
   const [useDifferentBilling, setUseDifferentBilling] = useState(false);
   const [loadingAccount, setLoadingAccount] = useState(true); // Local loading for API
 
+  const [wantsWholesaler, setWantsWholesaler] = useState(false);
+
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -67,6 +69,10 @@ export default function AccountsDetails() {
         if (acc) {
           const hasBillingAddress = !!acc.billingfirstname;
           setUseDifferentBilling(hasBillingAddress);
+
+          if (user?.role === "b2b") {
+            setWantsWholesaler(true); // always true for wholesaler
+          }
 
           setForm({
             // Shipping
@@ -144,6 +150,16 @@ export default function AccountsDetails() {
       errs.phone = "Phone must be at least 7 digits";
     }
 
+    const isWholesaler = user?.role === "b2b" || wantsWholesaler;
+    if (isWholesaler) {
+      if (!form.companyName.trim()) {
+        errs.companyName = "Company name is required for wholesaler accounts";
+      }
+      if (!form.taxId.trim()) {
+        errs.taxId = "Tax ID is required for wholesaler accounts";
+      }
+    }
+
     return errs;
   };
 
@@ -169,6 +185,10 @@ export default function AccountsDetails() {
       userId: user?.userId,
       firstName: form.firstName,
       lastName: form.lastName,
+      ...(user?.role === "customer" &&
+        wantsWholesaler && {
+          upgradeToWholesaler: true,
+        }),
       companyName: form.companyName,
       taxId: form.taxId,
       addrPhone: form.phone,
@@ -207,6 +227,11 @@ export default function AccountsDetails() {
         title: "Record Saved!",
         description: "Account Updated successfully",
       });
+
+      if (payload.upgradeToWholesaler) {
+        await fetch("/api/auth/session"); // or refetch session logic
+        window.location.reload();
+      }
     } catch (err) {
       console.error(err);
       alert("An error occurred while saving your details.");
@@ -255,33 +280,47 @@ export default function AccountsDetails() {
                 </div>
               </div>
 
+              {user?.role === "customer" && (
+                <label className="flex items-center gap-2 mb-4">
+                  <input
+                    type="checkbox"
+                    checked={wantsWholesaler}
+                    onChange={(e) => setWantsWholesaler(e.target.checked)}
+                  />
+                  Upgrade to wholesaler account
+                </label>
+              )}
 
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <input
-                    name="companyName"
-                    placeholder="First name"
-                    value={form.companyName}
-                    onChange={handleChange}
-                    className="flex-1 border border-border rounded px-4 py-2 bg-background text-foreground w-full"
-                  />
-                  {errors.companyName && (
-                    <p className="text-red-500 text-sm">{errors.companyName}</p>
-                  )}
+              {(user?.role === "b2b" || wantsWholesaler) && (
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <input
+                      name="companyName"
+                      placeholder="Company"
+                      value={form.companyName}
+                      onChange={handleChange}
+                      className="flex-1 border border-border rounded px-4 py-2 bg-background text-foreground w-full"
+                    />
+                    {errors.companyName && (
+                      <p className="text-red-500 text-sm">
+                        {errors.companyName}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <input
+                      name="taxId"
+                      placeholder="Tax Id"
+                      value={form.taxId}
+                      onChange={handleChange}
+                      className="flex-1 border border-border rounded px-4 py-2 bg-background text-foreground w-full"
+                    />
+                    {errors.taxId && (
+                      <p className="text-red-500 text-sm">{errors.taxId}</p>
+                    )}
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <input
-                    name="taxId"
-                    placeholder="Tax Id"
-                    value={form.taxId}
-                    onChange={handleChange}
-                    className="flex-1 border border-border rounded px-4 py-2 bg-background text-foreground w-full"
-                  />
-                  {errors.taxId && (
-                    <p className="text-red-500 text-sm">{errors.taxId}</p>
-                  )}
-                </div>
-              </div>
+              )}
 
               {/* Address */}
               <input

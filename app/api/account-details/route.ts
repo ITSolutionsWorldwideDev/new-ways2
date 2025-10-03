@@ -63,7 +63,7 @@ export async function PUT(req: NextRequest) {
   );
 
   // 2. Upsert billing address
-  // Assuming user_id is UNIQUE in billing_addresses
+
   await runQuery(
     `INSERT INTO billing_addresses (
         user_id, "billingfirstname", "billinglastname", billingaddress, billingcity, billingzip, country, billingphone, billingemail, updated_at
@@ -92,6 +92,12 @@ export async function PUT(req: NextRequest) {
       billingEmail,
     ]
   );
+
+  if (body.upgradeToWholesaler) {
+    await runQuery(`UPDATE users SET role = 'b2b' WHERE user_id = $1`, [
+      userId,
+    ]);
+  }
 
   return NextResponse.json({ success: true });
 }
