@@ -4,15 +4,15 @@ import { setUserInfo } from "@/redux/features/user-info-slice";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { useToast } from "./use-toast";
-import {
-  setAccessToken,
-  setIsPaymentInitiation,
-  setItemAccess,
-  setItemId,
-  setLinkSuccess,
-  setLinkToken,
-  setProducts,
-} from "@/redux/features/plaid-slice";
+// import {
+//   setAccessToken,
+//   setIsPaymentInitiation,
+//   setItemAccess,
+//   setItemId,
+//   setLinkSuccess,
+//   setLinkToken,
+//   setProducts,
+// } from "@/redux/features/plaid-slice";
 
 interface LogoutProps {
   sidebar?: boolean;
@@ -26,15 +26,15 @@ export function useLogout(props?: LogoutProps) {
 
   return async () => {
     try {
-      await removeTokensFromCookies();
-      dispatch(setUserInfo(null));
-      dispatch(setLinkToken(null));
-      dispatch(setLinkSuccess(false));
-      dispatch(setAccessToken(null));
-      dispatch(setItemId(null));
-      dispatch(setItemAccess(true));
-      dispatch(setIsPaymentInitiation(false));
-      dispatch(setProducts(["transactions"]));
+      // await removeTokensFromCookies();
+      // dispatch(setUserInfo(null));
+      // dispatch(setLinkToken(null));
+      // dispatch(setLinkSuccess(false));
+      // dispatch(setAccessToken(null));
+      // dispatch(setItemId(null));
+      // dispatch(setItemAccess(true));
+      // dispatch(setIsPaymentInitiation(false));
+      // dispatch(setProducts(["transactions"]));
       localStorage.removeItem("selectedService");
 
       router.push("/login");

@@ -11,7 +11,15 @@ import Link from "next/link";
 import { useCurrency } from "@/context/currencyContext";
 import { formatPrice } from "@/lib/formatPrice";
 
+import { useB2BStore } from "@/store/useB2BStore";
+import { useSessionStore } from "@/store/useSessionStore";
+
 export default function RandomProducts() {
+  const { isB2BMode } = useB2BStore();
+  const { user } = useSessionStore();
+
+  // const showPrice = !isB2BMode || (isB2BMode && user);
+  const showPrice = !isB2BMode || (isB2BMode && user && user.role === "b2b");
   const [items, setItems] = useState<any[]>([]);
 
   const { currency } = useCurrency();
@@ -38,12 +46,11 @@ export default function RandomProducts() {
     return () => {
       ignore = true; // cleanup flag
     };
-  }, []); 
+  }, []);
 
   return (
     <>
       <div className="mt-12">
-
         <Swiper
           modules={[Autoplay]}
           spaceBetween={20}
@@ -73,7 +80,15 @@ export default function RandomProducts() {
                       {product.displayname}
                     </div>
                     <div className="font-bold mb-1 text-foreground">
-                      {formatPrice(product.price, currency)}
+                      {showPrice ? (
+                        <div className="text-green-600 font-bold mb-1">
+                          {formatPrice(product.price, currency)}
+                        </div>
+                      ) : (
+                        <div className="text-lime-500 mb-1 text-sm">
+                          Login for price
+                        </div>
+                      )}
                     </div>
                   </Link>
                 </div>

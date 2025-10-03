@@ -1,4 +1,4 @@
-// import { AuthLayout } from "@/components/layout/auth-layout";
+// app/[locale]/signup/page.tsx
 import SignupSection from "@/components/sections/auth/signup/signup-section";
 
 export default function SignupPage() {
@@ -17,10 +17,4 @@ export default function SignupPage() {
       </main>
     </div>
   );
-}
-
-{
-  /* <AuthLayout>
-          <SignupSection />
-        </AuthLayout> */
 }

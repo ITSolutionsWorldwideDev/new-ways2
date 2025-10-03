@@ -1,15 +1,16 @@
 // components/cart/CartSidebar.tsx
 "use client";
-
-import { useCartStore } from "@/store/useCartStore";
-import { X } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import React, { useState } from "react";
+import { X } from "lucide-react";
+
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import ShippingBar from "@/components/shop/ShippingBar";
 
 import { useCurrency } from "@/context/currencyContext";
 import { formatPrice } from "@/lib/formatPrice";
+
+import { useCartStore } from "@/store/useCartStore";
 
 interface CartSidebarProps {
   isOpen: boolean;
@@ -17,6 +18,7 @@ interface CartSidebarProps {
 }
 
 const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
+
   const { cart, removeFromCart, updateQuantity } = useCartStore();
 
   const [agreed, setAgreed] = useState(false);
@@ -68,7 +70,10 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose }) => {
                       </div>
                       <div className="flex gap-2 items-center font-medium text-[14px] align-middle">
                         <span className="text-green-600 font-bold">
-                          {formatPrice((item.price ? item.price : 8 * item.quantity), currency)}
+                          {formatPrice(
+                            item.price ? item.price : 8 * item.quantity,
+                            currency
+                          )}
                         </span>
                       </div>
                       <button

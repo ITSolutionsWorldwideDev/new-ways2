@@ -1,21 +1,38 @@
 // /app/cart/page.tsx
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
-import ShopBanner from "@/components/shop/ShopBanner";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { formatPrice } from "@/lib/formatPrice";
 import { commonData } from "@/lib/commonData";
-import { useCartStore } from "@/store/useCartStore";
 
 import * as ScrollArea from "@radix-ui/react-scroll-area";
-import ShippingBar from "@/components/shop/ShippingBar";
 
+import ShippingBar from "@/components/shop/ShippingBar";
+import ShopBanner from "@/components/shop/ShopBanner";
 import { useCurrency } from "@/context/currencyContext";
-import { formatPrice } from "@/lib/formatPrice";
 import RandomProducts from "@/components/product/ProductDetail/RandomProducts";
 
+import { useCartStore } from "@/store/useCartStore";
+import { useSessionStore } from "@/store/useSessionStore";
+import { useB2BStore } from "@/store/useB2BStore";
+
 export default function CartPage() {
+  const { user, loading } = useSessionStore();
+  const router = useRouter();
+  const { isB2BMode } = useB2BStore();
+
   const cart = useCartStore((state) => state.cart);
   const [agreed, setAgreed] = useState(false);
+
+  useEffect(() => {
+    if (!loading && isB2BMode) {
+      if (!user || user.role !== "b2b") {
+        router.replace(`/login?from=/cart`);
+      }
+    }
+  }, [loading, isB2BMode, user]);
 
   const { currency } = useCurrency();
 

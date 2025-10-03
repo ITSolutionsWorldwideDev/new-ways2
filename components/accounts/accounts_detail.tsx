@@ -24,11 +24,11 @@ export default function AccountsDetails() {
   const [useDifferentBilling, setUseDifferentBilling] = useState(false);
   const [loadingAccount, setLoadingAccount] = useState(true); // Local loading for API
 
-  
-
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
+    companyName: "",
+    taxId: "",
     country: { id: "NL", refName: "Netherlands" },
     address: "",
     city: "",
@@ -46,7 +46,6 @@ export default function AccountsDetails() {
     billingPhone: "",
     billingEmail: "",
   });
-
 
   useEffect(() => {
     if (!user?.userId) return;
@@ -73,6 +72,8 @@ export default function AccountsDetails() {
             // Shipping
             firstName: acc.firstName || "",
             lastName: acc.lastName || "",
+            companyName: acc.companyName || "",
+            taxId: acc.taxId || "",
             email: acc.email || "",
             phone: acc.addrPhone || "",
             address: acc.addr1 || "",
@@ -168,6 +169,8 @@ export default function AccountsDetails() {
       userId: user?.userId,
       firstName: form.firstName,
       lastName: form.lastName,
+      companyName: form.companyName,
+      taxId: form.taxId,
       addrPhone: form.phone,
       // shipping...
       addr1: form.address,
@@ -199,8 +202,6 @@ export default function AccountsDetails() {
       if (!res.ok) {
         throw new Error("Failed to update account details");
       }
-
-      
 
       toast({
         title: "Record Saved!",
@@ -250,6 +251,34 @@ export default function AccountsDetails() {
                   />
                   {errors.lastName && (
                     <p className="text-red-500 text-sm">{errors.lastName}</p>
+                  )}
+                </div>
+              </div>
+
+
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <input
+                    name="companyName"
+                    placeholder="First name"
+                    value={form.companyName}
+                    onChange={handleChange}
+                    className="flex-1 border border-border rounded px-4 py-2 bg-background text-foreground w-full"
+                  />
+                  {errors.companyName && (
+                    <p className="text-red-500 text-sm">{errors.companyName}</p>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <input
+                    name="taxId"
+                    placeholder="Tax Id"
+                    value={form.taxId}
+                    onChange={handleChange}
+                    className="flex-1 border border-border rounded px-4 py-2 bg-background text-foreground w-full"
+                  />
+                  {errors.taxId && (
+                    <p className="text-red-500 text-sm">{errors.taxId}</p>
                   )}
                 </div>
               </div>
@@ -346,26 +375,6 @@ export default function AccountsDetails() {
               {/* Billing address options */}
               <h3 className="font-semibold mt-6">Billing Address</h3>
               <div className="space-y-2">
-                {/* <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="billingOption"
-                    value="same"
-                    checked={!useDifferentBilling}
-                    onChange={() => setUseDifferentBilling(false)}
-                  />
-                  Use shipping address as billing address
-                </label> */}
-                {/* <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="billingOption"
-                    value="different"
-                    checked={useDifferentBilling}
-                    onChange={() => setUseDifferentBilling(true)}
-                  />
-                  Use a different billing address
-                </label> */}
                 <label className="flex items-center gap-2 mt-2">
                   <input
                     name="billingSameAsShipping"
@@ -479,7 +488,7 @@ export default function AccountsDetails() {
   );
 }
 
-  /* useEffect(() => {
+/* useEffect(() => {
     if (!user?.userId) return;
 
     let ignore = false;
@@ -543,8 +552,7 @@ export default function AccountsDetails() {
     };
   }, [user?.userId]); */
 
-  
-  /* useEffect(() => {
+/* useEffect(() => {
     // Simulating some loading here
     setTimeout(() => {
       setLoadingLocal(false);
@@ -552,5 +560,3 @@ export default function AccountsDetails() {
   }, []);
 
   if (loading || loadingLocal) return <Loading />; */
-
-  

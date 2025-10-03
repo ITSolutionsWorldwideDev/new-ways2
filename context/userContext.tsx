@@ -19,6 +19,7 @@ export interface User {
   email: string;
   // If your login API returns a phone number, add it here
   phoneNumber?: string;
+  role?: "customer" | "b2b";
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);

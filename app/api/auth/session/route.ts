@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
       lastName: string;
       email: string;
     }>(
-      `SELECT user_id, "firstName", "lastName", email FROM users WHERE user_id = $1`,
+      `SELECT user_id, "firstName", "lastName", email, role, "companyName", "taxId" FROM users WHERE user_id = $1`,
       [payload.userId]
     );
 

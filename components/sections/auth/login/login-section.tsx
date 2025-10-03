@@ -15,10 +15,10 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { setUserInfo } from "@/redux/features/user-info-slice";
+// import { setUserInfo } from "@/redux/features/user-info-slice";
 
 // import { useUser } from "@/context/userContext";
-import { useSessionStore } from "@/store/useSessionStore";
+import { useSessionStore, syncModeWithRole } from "@/store/useSessionStore";
 import { useSearchParams } from "next/navigation";
 
 export default function LoginSection() {
@@ -27,7 +27,7 @@ export default function LoginSection() {
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
 
-  const { setUser, fetchSession } = useSessionStore(); // ✅ Zustand login logic
+  const { setUser, fetchSession } = useSessionStore();
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -94,29 +94,32 @@ export default function LoginSection() {
       }
 
       if ("user" in response) {
-        // Set Zustand user store
-        setUser(response.user); // ✅ Set Zustand user
+        // 1. Set user in Zustand store
+        setUser(response.user);
 
-        // Optional: Fetch session again if you want full consistency
+        // 2. Immediately sync mode based on role
+        syncModeWithRole(response.user);
+
+        // 3. Optionally re-fetch full session data
         await fetchSession();
 
-        // Update Redux if still needed
-        dispatch(
-          setUserInfo({
-            id: response.user.userId,
-            firstName: response.user.firstName,
-            lastName: response.user.lastName,
-            email: response.user.email,
-            phone: response.user.phoneNumber,
-          })
-        );
+        // 4. Update Redux if you're still using it
+        // dispatch(
+        //   setUserInfo({
+        //     id: response.user.userId,
+        //     firstName: response.user.firstName,
+        //     lastName: response.user.lastName,
+        //     email: response.user.email,
+        //     phone: response.user.phoneNumber,
+        //   })
+        // );
 
         toast({
           title: "Login successful!",
-          description: "Redirecting to your account...",
+          description: "Redirecting…",
         });
 
-        // Redirect
+        // 5. Redirect the user
         router.push(from);
         return;
       }

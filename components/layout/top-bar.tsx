@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -25,7 +25,6 @@ type TopBarProps = {
   dictionary: any;
 };
 
-// export function TopBar() {
 export default function TopBar({ locale, dictionary }: TopBarProps) {
   const { isB2BMode, setB2BMode } = useB2BStore();
 
@@ -34,14 +33,23 @@ export default function TopBar({ locale, dictionary }: TopBarProps) {
       <div className="container mx-auto px-2 sm:px-4">
         <div className="flex items-center h-10 gap-2 flex-nowrap md:gap-0">
           {/* Mobile Wholesale Button - Visible on small screens */}
+
           <Button
             variant="link"
-            className={`text-foreground md:hidden flex-shrink-0 ${
-              isB2BMode ? "font-bold underline" : ""
-            }`}
+            className="text-foreground md:hidden flex-shrink-0"
             onClick={() => setB2BMode(!isB2BMode)}
           >
-            Wholesale (B2B)
+            {isB2BMode ? (
+              <>
+                <span>Client shop</span>
+                <ChevronLeftIcon className="ml-1 h-4 w-4 inline" />
+              </>
+            ) : (
+              <>
+                <span>Wholesale (B2B)</span>
+                <ChevronRightIcon className="ml-1 h-4 w-4 inline" />
+              </>
+            )}
           </Button>
 
           {/* Announcements - Sliding/Marquee effect, always visible, fixed width */}
@@ -69,12 +77,20 @@ export default function TopBar({ locale, dictionary }: TopBarProps) {
 
             <Button
               variant="link"
-              className={`text-foreground hidden md:inline-flex ${
-                isB2BMode ? "font-bold underline" : ""
-              }`}
+              className="text-foreground hidden md:inline-flex"
               onClick={() => setB2BMode(!isB2BMode)}
             >
-              Wholesale (B2B)
+              {isB2BMode ? (
+                <>
+                  <span>Client shop</span>
+                  <ChevronLeftIcon className="ml-1 h-4 w-4 inline" />
+                </>
+              ) : (
+                <>
+                  <span>Wholesale (B2B)</span>
+                  <ChevronRightIcon className="ml-1 h-4 w-4 inline" />
+                </>
+              )}
             </Button>
 
             {/* Theme Toggle */}

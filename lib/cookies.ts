@@ -45,3 +45,12 @@ export function getAccessTokenFromRequest(req: NextRequest): string | null {
   const token = req.cookies.get("access-token")?.value || null;
   return token;
 }
+
+export function getRoleFromRequest(req: NextRequest): string | null {
+  return req.cookies.get("userRole")?.value ?? null;
+}
+
+export function getB2BModeFromRequest(req: NextRequest): boolean {
+  const val = req.cookies.get("b2bMode")?.value;
+  return val === "true";
+}

@@ -27,23 +27,15 @@ import CartSidebar from "@/components/cart/CartSidebar";
 
 import TopBar from "./top-bar";
 
-/* interface UserSession {
-  firstName: string;
-  lastName: string;
-  email: string;
-} */
-
 type HeaderProps = {
   locale: string;
   dictionary: any;
 };
 
 export function Header({ locale, dictionary }: HeaderProps) {
-  const cart = useCartStore((state) => state.cart);
-  // const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   const { user, fetchSession, loading, setUser } = useSessionStore();
-  const { setB2BMode } = useB2BStore();
+  const { isB2BMode, setB2BMode } = useB2BStore();
 
   const [cartOpen, setCartOpen] = useState(false);
 
@@ -57,45 +49,14 @@ export function Header({ locale, dictionary }: HeaderProps) {
     closeCart();
   }, [pathname]);
 
-  // const [user, setUser] = useState<UserSession | null>(null);
-  // const [loadingUser, setLoadingUser] = useState(true);
+  useEffect(() => {
+    useB2BStore.getState().initB2B();
+  }, []);
 
   useEffect(() => {
     fetchSession();
   }, []);
 
-  /* useEffect(() => {
-    async function fetchSession() {
-      try {
-        const res = await fetch("/api/auth/session", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-
-          if (data?.user) {
-            setUser(data.user);
-          } else {
-            setUser(null);
-          }
-        } else {
-          setUser(null);
-        }
-      } catch (err) {
-        console.error("Failed fetching session:", err);
-        setUser(null);
-      } finally {
-        setLoadingUser(false);
-      }
-    }
-
-    fetchSession();
-  }, []); */
 
   const handleLogout = async () => {
     try {
@@ -104,13 +65,8 @@ export function Header({ locale, dictionary }: HeaderProps) {
         credentials: "include",
       });
       if (res.ok) {
-        // useSessionStore.setState({ user: null });
-        setUser(null); // Clear session
-
-        // Reset any other global states
+        setUser(null);
         setB2BMode(false);
-
-        // setUser(null);
         router.push("/login");
       } else {
         console.error("Logout failed");
@@ -213,46 +169,14 @@ export function Header({ locale, dictionary }: HeaderProps) {
             </Button> */}
 
             {!loading && !user && (
-  <Link href="/login">
-    <Button variant="ghost" size="icon" aria-label="Login">
-      <User className="h-5 w-5" />
-    </Button>
-  </Link>
-)}
-
-{!loading && user && (
-  <div className="relative group inline-flex">
-    <Button variant="ghost" size="icon" aria-label="Account">
-      <User className="h-5 w-5" />
-    </Button>
-    <div className="absolute top-8 right-0 mt-2 w-48 bg-background border rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-      <Link
-        href="/account"
-        className="block px-4 py-2 hover:bg-muted"
-      >
-        {user.firstName}
-      </Link>
-      <Button
-        onClick={handleLogout}
-        className="w-full text-left px-4 py-2 hover:bg-muted flex items-center"
-      >
-        <LogOut className="mr-2 h-4 w-4" /> Logout
-      </Button>
-    </div>
-  </div>
-)}
-
-            {/* {!loadingUser && !user && (
-              <>
-                <Link href="/login">
-                  <Button variant="ghost" size="icon" aria-label="Login">
-                    <User className="h-5 w-5" />
-                  </Button>
-                </Link>
-              </>
+              <Link href="/login">
+                <Button variant="ghost" size="icon" aria-label="Login">
+                  <User className="h-5 w-5" />
+                </Button>
+              </Link>
             )}
 
-            {!loadingUser && user && (
+            {!loading && user && (
               <div className="relative group inline-flex">
                 <Button variant="ghost" size="icon" aria-label="Account">
                   <User className="h-5 w-5" />
@@ -272,19 +196,21 @@ export function Header({ locale, dictionary }: HeaderProps) {
                   </Button>
                 </div>
               </div>
-            )} */}
+            )}
 
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative"
-              onClick={() => setCartOpen(true)}
-            >
-              <ShoppingCart className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 bg-lemon text-black text-xs w-4 h-4 rounded-full flex items-center justify-center">
-                {useCartStore.getState().cart.length}
-              </span>
-            </Button>
+            {(!isB2BMode || (isB2BMode && user)) && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative"
+                onClick={() => setCartOpen(true)}
+              >
+                <ShoppingCart className="h-5 w-5" />
+                <span className="absolute -top-1 -right-1 bg-lemon text-black text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                  {useCartStore.getState().cart.length}
+                </span>
+              </Button>
+            )}
 
             <CartSidebar isOpen={cartOpen} onClose={closeCart} />
           </div>

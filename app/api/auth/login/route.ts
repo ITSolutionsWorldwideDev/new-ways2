@@ -23,8 +23,11 @@ export async function POST(req: NextRequest) {
       password_hash: string;
       firstName: string;
       lastName: string;
+      role: string;
+      companyName: string;
+      taxId: string;
     }>(
-      `SELECT user_id, password_hash, "firstName", "lastName" FROM users WHERE email = $1`,
+      `SELECT user_id, password_hash, "firstName", "lastName", role, "companyName", "taxId" FROM users WHERE email = $1`,
       [email]
     );
 
@@ -55,28 +58,33 @@ export async function POST(req: NextRequest) {
 
     const response = NextResponse.json({
       user: {
-        userId: user.user_id,
+        userId: user.user_id.toString(),
         firstName: user.firstName,
         lastName: user.lastName,
         email,
+        role: user.role,
+        companyName: user.companyName ?? "",
+        taxId: user.taxId ?? "",
       },
     });
 
-    // Set cookies
-    response.cookies.set("access-token", accessToken, {
+    // Set secure HttpOnly cookies
+    const isProd = process.env.NODE_ENV === "production";
+    const commonCookieOptions = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-      maxAge: 60 * 60,
+      secure: isProd,
+      sameSite: isProd ? "strict" : "lax" as "strict" | "lax",
       path: "/",
+    };
+
+    response.cookies.set("access-token", accessToken, {
+      ...commonCookieOptions,
+      maxAge: 60 * 60, // 1 hour
     });
 
     response.cookies.set("refresh-token", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-      maxAge: 7 * 24 * 60 * 60,
-      path: "/",
+      ...commonCookieOptions,
+      maxAge: 7 * 24 * 60 * 60, // 7 days
     });
 
     return response;

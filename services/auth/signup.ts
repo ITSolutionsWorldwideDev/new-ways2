@@ -14,6 +14,12 @@ export type RegisterPayloadType = {
   email: string;
   password: string;
   phoneNumber: string;
+  role?: "customer" | "b2b";
+  companyName?: string;
+  taxId?: string;
+  city?: string;
+  zip?: string;
+  country?: string;
 };
 
 // const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || "your_access_secret";
@@ -28,7 +34,19 @@ if (!JWT_ACCESS_SECRET || !JWT_REFRESH_SECRET) {
 
 export const registerUser = async (data: RegisterPayloadType) => {
   try {
-    const { firstName, lastName, email, password, phoneNumber } = data;
+    const {
+      firstName,
+      lastName = "",
+      email,
+      password,
+      phoneNumber,
+      role = "customer",
+      companyName = "",
+      taxId = "",
+      city = "",
+      zip = "",
+      country = "",
+    } = data;
 
     // Check if user already exists
     const existingUser: any = await runQuery(
@@ -50,11 +68,30 @@ export const registerUser = async (data: RegisterPayloadType) => {
     const username = email.split('@')[0];
 
     // Insert new user
+
     const result = await runQuery(
-      `INSERT INTO users ("firstName", "lastName", "email","username", "password_hash", "addrPhone", "created_at")
-       VALUES ($1, $2, $3, $4, $5, $6, NOW())
-       RETURNING user_id, "firstName", "lastName", "email", "username"`,
-      [firstName, lastName || "", email, username, hashedPassword, phoneNumber]
+      `INSERT INTO users 
+        ("firstName", "lastName", "email", "username", "password_hash", "addrPhone", "role",
+         "companyName", "taxId", "city", "zip", "country", "created_at")
+       VALUES 
+        ($1, $2, $3, $4, $5, $6, $7,
+         $8, $9, $10, $11, $12, NOW())
+       RETURNING user_id, "firstName", "lastName", "email", "username", "role", 
+                 "companyName", "taxId", "city", "zip", "country"`,
+      [
+        firstName,
+        lastName,
+        email,
+        username,
+        hashedPassword,
+        phoneNumber,
+        role,
+        role === "b2b" ? companyName : null,
+        role === "b2b" ? taxId : null,
+        role === "b2b" ? city : null,
+        role === "b2b" ? zip : null,
+        role === "b2b" ? country : null,
+      ]
     );
 
     const user = result.rows[0];
@@ -89,6 +126,12 @@ export const registerUser = async (data: RegisterPayloadType) => {
       },
       message: "User registered successfully",
     };
+  } catch (error: any) {
+    return handleApiErrorWithoutException(error);
+  }
+};
+
+
 
     /* const tokens = {
       access: {
@@ -109,12 +152,6 @@ export const registerUser = async (data: RegisterPayloadType) => {
       tokens,
       message: "User registered successfully",
     }; */
-  } catch (error: any) {
-    return handleApiErrorWithoutException(error);
-  }
-};
-
-
 /* // services\auth\signup.ts
 "use server";
 import storeTokensInCookies from "@/lib/cookies";

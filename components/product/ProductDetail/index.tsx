@@ -18,6 +18,9 @@ import RelatedProducts from "@/components/product/ProductDetail/RelatedProducts"
 import { useCurrency } from "@/context/currencyContext";
 import { formatPrice } from "@/lib/formatPrice";
 
+import { useB2BStore } from "@/store/useB2BStore";
+import { useSessionStore } from "@/store/useSessionStore";
+
 const bulkDeals = [
   {
     label: "Buy from 3 to 5 items for 10% OFF",
@@ -49,6 +52,11 @@ const bulkDeals = [
 ];
 
 const ProductDetail = ({ data }: { data: Product }) => {
+  const { isB2BMode } = useB2BStore();
+  const { user } = useSessionStore();
+
+  // const showPrice = !isB2BMode || (isB2BMode && user);
+  const showPrice = !isB2BMode || (isB2BMode && user && user.role === "b2b");
   const [quantity, setQuantity] = useState<number>(1);
   const [addedToCart, setAddedToCart] = useState<boolean>(false);
 
@@ -166,11 +174,17 @@ const ProductDetail = ({ data }: { data: Product }) => {
               </span>
             </div> */}
             <div className="flex items-center gap-4 mb-2">
-              <span className="text-2xl font-bold text-foreground">
-                {currencyPrice}
-              </span>
+              {showPrice ? (
+                <span className="text-2xl font-bold text-foreground">
+                  {currencyPrice}
+                </span>
+              ) : (
+                <span className="text-lime-500 mb-1 text-sm">
+                  Login for price
+                </span>
+              )}
 
-              {data.discount && (
+              {showPrice && data.discount && (
                 <>
                   <span className="line-through text-gray-400 text-lg ml-2">
                     {mainPrice}
@@ -191,32 +205,39 @@ const ProductDetail = ({ data }: { data: Product }) => {
                 3 sold in last 24 hours
               </span>
             </div>
-            <div className="flex items-center gap-2 mb-4">
-              <button
-                onClick={decreaseQty}
-                className="border border-border px-2 py-1 rounded bg-background text-foreground"
-              >
-                -
-              </button>
-              <span>{quantity}</span>
-              <button
-                onClick={increaseQty}
-                className="border border-border px-2 py-1 rounded bg-background text-foreground"
-              >
-                +
-              </button>
-            </div>
-            <div className="flex gap-4 mb-4">
-              <button
-                onClick={handleAddToCart}
-                className="bg-muted text-foreground px-4 py-2 rounded-[99px] border border-border w-1/2"
-              >
-                {addedToCart ? "Added!" : "Add to Cart"}
-              </button>
-              <button className="bg-foreground text-background px-4 py-2 rounded-[99px] w-1/2">
-                Buy it now
-              </button>
-            </div>
+
+            {showPrice ? (
+              <>
+                <div className="flex items-center gap-2 mb-4">
+                  <button
+                    onClick={decreaseQty}
+                    className="border border-border px-2 py-1 rounded bg-background text-foreground"
+                  >
+                    -
+                  </button>
+                  <span>{quantity}</span>
+                  <button
+                    onClick={increaseQty}
+                    className="border border-border px-2 py-1 rounded bg-background text-foreground"
+                  >
+                    +
+                  </button>
+                </div>
+                <div className="flex gap-4 mb-4">
+                  <button
+                    onClick={handleAddToCart}
+                    className="bg-muted text-foreground px-4 py-2 rounded-[99px] border border-border w-1/2"
+                  >
+                    {addedToCart ? "Added!" : "Add to Cart"}
+                  </button>
+                  <button className="bg-foreground text-background px-4 py-2 rounded-[99px] w-1/2">
+                    Buy it now
+                  </button>
+                </div>
+              </>
+            ) : (
+              <></>
+            )}
 
             <div className="flex gap-4 text-sm mb-4">
               <button className="inline-flex text-muted-foreground">
@@ -230,122 +251,129 @@ const ProductDetail = ({ data }: { data: Product }) => {
             </div>
           </div>
         </div>
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="border border-border rounded-lg p-6 bg-background">
-            <div className="mb-6 text-foreground text-center font-medium text-[24px] align-middle">
-              Frequently Bought Together
-            </div>
-            <div className="grid grid-flow-col justify-items-center gap-4 items-center mb-4">
-              <div className="flex flex-row align-middle content-center">
-                <img
-                  className="w-40 h-40 object-contain hover:scale-110 transition-all duration-500"
-                  src="/dummy/img-product.png"
-                />
-                <span className="text-2xl font-bold text-foreground align-middle content-center">
-                  +
-                </span>
-              </div>
-              <div className="flex flex-row align-middle content-center">
-                <img
-                  className="w-40 h-40 object-contain hover:scale-110 transition-all duration-500"
-                  src="/dummy/img-product.png"
-                />
-                <span className="text-2xl font-bold text-foreground align-middle content-center">
-                  +
-                </span>
-              </div>
-              <div className="flex flex-row align-middle content-center">
-                <img
-                  className="w-40 h-40 object-contain hover:scale-110 transition-all duration-500"
-                  src="/dummy/img-product.png"
-                />
-              </div>
-            </div>
-            <ul className="mb-4">
-              <li className="text-foreground">
-                Single Breasted Blazer{" "}
-                <span className="float-right">$130.00</span>
-              </li>
-              <li className="text-foreground">
-                Single Breasted Blazer{" "}
-                <span className="float-right">$130.00</span>
-              </li>
-              <li className="text-foreground">
-                Single Breasted Blazer{" "}
-                <span className="float-right">$130.00</span>
-              </li>
-            </ul>
-            <div className="font-bold mb-4 text-foreground">
-              Total Price: $240.00
-            </div>
-            <button className="w-full bg-foreground text-background py-2 rounded-[99px]">
-              Add selected to Cart
-            </button>
-          </div>
-          <div className="border border-border rounded-lg p-6 bg-background">
-            <div className="mb-4 bg-background">
-              <div className="mb-6 text-foreground text-center font-medium text-[24px] align-middle">
-                Buy more, Save more!
-              </div>
 
-              <div className="flex flex-col gap-2">
-                {bulkDeals.map((deal, index) => (
-                  <div
-                    key={index}
-                    className="border border-border rounded-lg p-4 mb-4 bg-background"
-                  >
-                    <label className="flex items-center gap-2 text-foreground">
-                      <input
-                        type="radio"
-                        name="bulk"
-                        checked={selectedDealIndex === index}
-                        onChange={() => setSelectedDealIndex(index)}
-                      />
-
-                      <span>
-                        {deal.label}
-                        <br />
-                        <span className="font-normal text-[12px] align-middle ">
-                          You save ${deal.savings}
-                        </span>
-                      </span>
-                      <span className="border border-green-400 text-green-400  px-2 py-1 rounded text-xs">
-                        FREE SHIPPING
-                      </span>
-
-                      <span className="text-xs text-muted-foreground">
-                        ${calculateFinalPrice().toFixed(2)}
-                      </span>
-                      <span className="line-through text-muted-foreground text-xs">
-                        ${data.price}
-                      </span>
-
-                      {deal.Popularlabel && deal.icon && (
-                        <span className="inline-flex bg-foreground text-background px-2 py-1 text-xs rotate-[5.97deg] opacity-100 rounded-[4px]">
-                          <Flame size={16} color="currentColor" />
-                          {deal.Popularlabel}
-                        </span>
-                      )}
-
-                      {deal.Popularlabel && !deal.icon && (
-                        <span className="bg-muted text-foreground px-2 py-1 text-xs rotate-[5.97deg] opacity-100 rounded-[4px]">
-                          {deal.Popularlabel}
-                        </span>
-                      )}
-                    </label>
+        {showPrice ? (
+          <>
+            <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="border border-border rounded-lg p-6 bg-background">
+                <div className="mb-6 text-foreground text-center font-medium text-[24px] align-middle">
+                  Frequently Bought Together
+                </div>
+                <div className="grid grid-flow-col justify-items-center gap-4 items-center mb-4">
+                  <div className="flex flex-row align-middle content-center">
+                    <img
+                      className="w-40 h-40 object-contain hover:scale-110 transition-all duration-500"
+                      src="/dummy/img-product.png"
+                    />
+                    <span className="text-2xl font-bold text-foreground align-middle content-center">
+                      +
+                    </span>
                   </div>
-                ))}
-
-                <button
-                  onClick={handleGrabDeal}
-                  className="mt-4 w-full bg-foreground text-background py-2 rounded-[99px]"
-                >
-                  Grab this deal {data.product_id}
+                  <div className="flex flex-row align-middle content-center">
+                    <img
+                      className="w-40 h-40 object-contain hover:scale-110 transition-all duration-500"
+                      src="/dummy/img-product.png"
+                    />
+                    <span className="text-2xl font-bold text-foreground align-middle content-center">
+                      +
+                    </span>
+                  </div>
+                  <div className="flex flex-row align-middle content-center">
+                    <img
+                      className="w-40 h-40 object-contain hover:scale-110 transition-all duration-500"
+                      src="/dummy/img-product.png"
+                    />
+                  </div>
+                </div>
+                <ul className="mb-4">
+                  <li className="text-foreground">
+                    Single Breasted Blazer{" "}
+                    <span className="float-right">$130.00</span>
+                  </li>
+                  <li className="text-foreground">
+                    Single Breasted Blazer{" "}
+                    <span className="float-right">$130.00</span>
+                  </li>
+                  <li className="text-foreground">
+                    Single Breasted Blazer{" "}
+                    <span className="float-right">$130.00</span>
+                  </li>
+                </ul>
+                <div className="font-bold mb-4 text-foreground">
+                  Total Price: $240.00
+                </div>
+                <button className="w-full bg-foreground text-background py-2 rounded-[99px]">
+                  Add selected to Cart
                 </button>
               </div>
+              <div className="border border-border rounded-lg p-6 bg-background">
+                <div className="mb-4 bg-background">
+                  <div className="mb-6 text-foreground text-center font-medium text-[24px] align-middle">
+                    Buy more, Save more!
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    {bulkDeals.map((deal, index) => (
+                      <div
+                        key={index}
+                        className="border border-border rounded-lg p-4 mb-4 bg-background"
+                      >
+                        <label className="flex items-center gap-2 text-foreground">
+                          <input
+                            type="radio"
+                            name="bulk"
+                            checked={selectedDealIndex === index}
+                            onChange={() => setSelectedDealIndex(index)}
+                          />
+
+                          <span>
+                            {deal.label}
+                            <br />
+                            <span className="font-normal text-[12px] align-middle ">
+                              You save ${deal.savings}
+                            </span>
+                          </span>
+                          <span className="border border-green-400 text-green-400  px-2 py-1 rounded text-xs">
+                            FREE SHIPPING
+                          </span>
+
+                          <span className="text-xs text-muted-foreground">
+                            ${calculateFinalPrice().toFixed(2)}
+                          </span>
+                          <span className="line-through text-muted-foreground text-xs">
+                            ${data.price}
+                          </span>
+
+                          {deal.Popularlabel && deal.icon && (
+                            <span className="inline-flex bg-foreground text-background px-2 py-1 text-xs rotate-[5.97deg] opacity-100 rounded-[4px]">
+                              <Flame size={16} color="currentColor" />
+                              {deal.Popularlabel}
+                            </span>
+                          )}
+
+                          {deal.Popularlabel && !deal.icon && (
+                            <span className="bg-muted text-foreground px-2 py-1 text-xs rotate-[5.97deg] opacity-100 rounded-[4px]">
+                              {deal.Popularlabel}
+                            </span>
+                          )}
+                        </label>
+                      </div>
+                    ))}
+
+                    <button
+                      onClick={handleGrabDeal}
+                      className="mt-4 w-full bg-foreground text-background py-2 rounded-[99px]"
+                    >
+                      Grab this deal
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </>
+        ) : (
+          <></>
+        )}
 
         <Tabs
           product_id={data.product_id}

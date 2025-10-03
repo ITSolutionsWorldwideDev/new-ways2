@@ -1,11 +1,10 @@
 // /app/checkout/page.tsx
 "use client";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 // import { useUser } from "@/context/userContext";
-import { useSessionStore } from "@/store/useSessionStore";
 import ShopBanner from "@/components/shop/ShopBanner";
 import { commonData } from "@/lib/commonData";
-import { useCartStore } from "@/store/useCartStore";
 import Link from "next/link";
 import { savePendingOrder } from "@/lib/hooks/usePendingOrder";
 import ShippingBar from "@/components/shop/ShippingBar";
@@ -13,6 +12,10 @@ import { useToast } from "@/hooks/use-toast";
 
 import { useCurrency } from "@/context/currencyContext";
 import { formatPrice } from "@/lib/formatPrice";
+
+import { useCartStore } from "@/store/useCartStore";
+import { useSessionStore } from "@/store/useSessionStore";
+import { useB2BStore } from "@/store/useB2BStore";
 
 async function startPayment(amount?: number, customerEmail?: string) {
   const res = await fetch("/api/checkout/viva-create-order", {
@@ -46,12 +49,23 @@ const freeShippingThreshold = 100;
 export default function CheckoutPage() {
   // const { user } = useUser();
   const { user } = useSessionStore();
+  const router = useRouter();
+  const { isB2BMode } = useB2BStore();
+
   const cart = useCartStore((state) => state.cart);
   const [agreed, setAgreed] = useState(false);
   const { toast } = useToast();
 
   const [loading, setLoading] = useState(false);
   const [orderStatus, setOrderStatus] = useState("");
+
+  useEffect(() => {
+    if (!loading && isB2BMode) {
+      if (!user || user.role !== "b2b") {
+        router.replace(`/login?from=/checkout`);
+      }
+    }
+  }, [loading, isB2BMode, user]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -516,7 +530,9 @@ export default function CheckoutPage() {
                       <div className="w-2 h-2 rounded-full bg-transparent has-[:checked]:border-red-500"></div>
                     </div>
                     Free Shipping (Estimate in 7/10 - 10/10/2025)
-                    <span className="ml-auto">{formatPrice(0.00, currency)}</span>
+                    <span className="ml-auto">
+                      {formatPrice(0.0, currency)}
+                    </span>
                   </label>
                   <label className="flex items-center gap-2 border border-border rounded px-4 py-2 bg-background text-foreground peer-checked:border-red-500 has-[:checked]:border-red-500">
                     <input
@@ -531,7 +547,9 @@ export default function CheckoutPage() {
                       <div className="w-2 h-2 rounded-full bg-transparent has-[:checked]:border-red-500"></div>
                     </div>
                     Express Shipping (Estimate in 4/10 - 5/10/2025){" "}
-                    <span className="ml-auto">{formatPrice(16.00, currency)}</span>
+                    <span className="ml-auto">
+                      {formatPrice(16.0, currency)}
+                    </span>
                   </label>
                 </div>
                 <h3 className="font-semibold mt-6 mb-2">Payment</h3>

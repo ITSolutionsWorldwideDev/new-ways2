@@ -1,9 +1,15 @@
 // middleware.ts
 import { NextRequest, NextResponse } from "next/server";
-import { getAccessTokenFromRequest } from "@/lib/cookies";
+import {
+  getAccessTokenFromRequest,
+  getRoleFromRequest,
+  getB2BModeFromRequest,
+} from "@/lib/cookies";
 import { languages, defaultLocale } from "./lib/i18n-config";
 
 const protectedPaths = ["/account", "/order-history"];
+// const protectedPaths = ["/account", "/order-history", "/checkout", "/cart"];
+const b2bPaths = ["/b2b", "/wholesale" /* other B2B-only paths */];
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -28,6 +34,7 @@ export function middleware(req: NextRequest) {
 }
 
 function handleAuth(req: NextRequest) {
+  const url = req.nextUrl.clone();
   const { pathname } = req.nextUrl;
 
   const segments = pathname.split("/");
@@ -38,14 +45,34 @@ function handleAuth(req: NextRequest) {
     (path) => subpath === path || subpath.startsWith(`${path}/`)
   );
 
-  if (isProtected) {
+  const isB2bOnly = b2bPaths.some(
+    (path) => subpath === path || subpath.startsWith(`${path}/`)
+  );
+
+  if (isProtected || isB2bOnly) {
     const token = getAccessTokenFromRequest(req);
 
-    if (!token || token === "undefined") {
+    /* if (!token || token === "undefined") {
       const loginUrl = req.nextUrl.clone();
       loginUrl.pathname = `/${locale}/login`;
       loginUrl.searchParams.set("from", pathname);
       return NextResponse.redirect(loginUrl);
+    } */
+
+    if (!token) {
+      url.pathname = `/${locale}/login`;
+      url.searchParams.set("from", pathname);
+      return NextResponse.redirect(url);
+    }
+
+    const role = getRoleFromRequest(req);  // e.g. "customer" | "b2b" or null
+    const isB2bMode = getB2BModeFromRequest(req);  // boolean from cookie
+
+    // If B2B mode is active, allow only B2B users
+    if (isB2bMode && role !== "b2b") {
+      // redirect or block
+      url.pathname = `/${locale}/not-authorized`;
+      return NextResponse.redirect(url);
     }
 
     /* const payload = token ? verifyAccessToken(token) : null;

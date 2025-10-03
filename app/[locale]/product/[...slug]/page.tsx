@@ -8,7 +8,7 @@ async function getProduct(itemid: string) {
     const res = await fetch(
       `${process.env.DOMAIN_URL}/api/items?id=${itemid}`,
       {
-        cache: "no-cache", // or "force-cache" or ISR config
+        cache: "no-cache",
       }
     );
 
@@ -23,22 +23,13 @@ async function getProduct(itemid: string) {
   }
 }
 
-/* export default async function ProductPage({
-  params,
-}: {
-  params: { slug: any[] }
+export default async function ProductPage(props: {
+  params: Promise<{ slug: string[] }>;
 }) {
-  const [itemid] = params.slug; */
-
-export default async function ProductPage(props: { params: Promise<{ slug: string[] }> }) {
   const { slug } = await props.params;
   const [itemid] = slug;
 
-  // console.log("params is Promise:", typeof (params as any).then === "function");
-
   const product = await getProduct(itemid);
-
-  // console.log("product :", product);
 
   if (!product) return <Loading />;
 
@@ -60,8 +51,3 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
     </div>
   );
 }
-
-/* 
-  import { notFound } from "next/navigation";
-  if (!product) return notFound();
-  */

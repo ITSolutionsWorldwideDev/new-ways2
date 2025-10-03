@@ -1,9 +1,13 @@
+// components/shop/ProductCard.tsx
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
 import { useCartStore } from "@/store/useCartStore";
 import { useCurrency } from "@/context/currencyContext";
 import { formatPrice } from "@/lib/formatPrice";
+
+import { useB2BStore } from "@/store/useB2BStore";
+import { useSessionStore } from "@/store/useSessionStore";
 
 interface ProductCardProps {
   id: string;
@@ -34,6 +38,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
   isSelected = false,
   onSelectChange = () => {},
 }) => {
+  const { isB2BMode } = useB2BStore();
+  const { user } = useSessionStore();
+
+  // const showPrice = !isB2BMode || (isB2BMode && user);
+  const showPrice = !isB2BMode || (isB2BMode && user && user.role === "b2b");
+
   const [quantity, setQuantity] = useState<number>(1);
   const [addedToCart, setAddedToCart] = useState<boolean>(false);
 
@@ -89,13 +99,17 @@ const ProductCard: React.FC<ProductCardProps> = ({
           className="w-64 h-64 object-contain mb-2 items-center mx-auto hover:scale-110 transition-all duration-500"
         />
 
-        <button
-          onClick={handleAddToCart}
-          disabled={!inStock}
-          className="add-to-cart-btn w-fit text-left border-black bg-black text-white ml-2 mb-4 rounded text-sm py-1 px-3 font-medium text-[12px]"
-        >
-          {inStock ? "Add to Cart" : "Out of Stock"}
-        </button>
+        {showPrice ? (
+          <button
+            onClick={handleAddToCart}
+            disabled={!inStock}
+            className="add-to-cart-btn w-fit text-left border-black bg-black text-white ml-2 mb-4 rounded text-sm py-1 px-3 font-medium text-[12px]"
+          >
+            {inStock ? "Add to Cart" : "Out of Stock"}
+          </button>
+        ) : (
+          <></>
+        )}
       </div>
 
       <div className="bg-white w-full px-2 py-4 relative">
@@ -106,20 +120,19 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </Link>
 
         <div className="flex justify-between bottom-0 ">
-          {price !== 0 ? (
-            <div className="text-green-600 font-bold mb-1">
-              {/* $ {price} */}
-              {currencyPrice}
-            </div>
+          {/* {price !== 0 ? ( */}
+
+          {showPrice ? (
+            <div className="text-green-600 font-bold mb-1">{currencyPrice}</div>
           ) : (
-            <div className="text-gray-500 mb-1">Price not available</div>
+            <div className="text-lime-500 mb-1 text-sm">Login for price</div>
           )}
 
-          {/* <div className="cart-actions"> */}
+          {/* // ) : (wholesale
+          //   <div className="text-gray-500 mb-1">Price not available</div>
+          // )} */}
 
-          {/* addedToCart &&  */}
-
-          {inStock && (
+          {showPrice && inStock && (
             <div className="quantity-control flex items-center gap-2 justify-center rounded-full px-2 py-1 bg-[#F1F1F1]">
               <button
                 className="rounded-full w-7 h-7 flex items-center justify-center  text-base"
@@ -128,7 +141,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 -
               </button>
               <span className="w-7 text-center font-semibold text-[12px]">
-                {/* {String(quantity).padStart(2, "0")} */}
                 {quantity}
               </span>
               <button
@@ -139,7 +151,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
               </button>
             </div>
           )}
-          {/* </div> */}
         </div>
       </div>
     </div>
@@ -147,44 +158,3 @@ const ProductCard: React.FC<ProductCardProps> = ({
 };
 
 export default ProductCard;
-/* 
-
-
-     <div className="cart-actions">
-        <button
-          className="  bg-black text-white px-5 py-1 rounded-full font-semibold text-sm mt-1 disabled:opacity-50"
-          disabled={!inStock}
-        >
-          {inStock ? "Add to Cart" : "Out of Stock"}
-        </button>
-
-        // inStock && 
-
-        {addedToCart && (
-          <div className="quantity-control">
-            <button onClick={decreaseQty}>-</button>
-            <span>{String(quantity).padStart(2, "0")}</span>
-            <button onClick={increaseQty}>+</button>
-          </div>
-        )}
-      </div>
-bg-black text-white px-4 py-1 rounded w-full disabled:opacity-50  
-
-
-<div className="text-green-600 font-bold mb-1">
-      $ {priceRange[0].toFixed(2)} – $ {priceRange[1].toFixed(2)}
-    </div>
-    <select className="border rounded px-2 py-1 mb-2 w-full">
-      {variants.map((v) => (
-        <option key={v.value}>{v.label}</option>
-      ))}
-    </select>
-*/
-
-/* {variants.length > 0 && (
-      <select className="border rounded px-2 py-1 mb-2 w-full">
-        {variants.map((v) => (
-          <option key={v.value}>{v.label}</option>
-        ))}
-      </select>
-    )} */
