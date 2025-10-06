@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCartStore } from "@/store/useCartStore";
 import { useCurrency } from "@/context/currencyContext";
 import { formatPrice } from "@/lib/formatPrice";
+import { getProductPrice } from "@/lib/getProductPrice";
 
 import { useB2BStore } from "@/store/useB2BStore";
 import { useSessionStore } from "@/store/useSessionStore";
@@ -50,7 +51,19 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const addToCart = useCartStore((state) => state.addToCart);
 
   const { currency } = useCurrency();
-  const currencyPrice = formatPrice(price, currency);
+
+  const isB2B = isB2BMode && user?.role === "b2b";
+
+  const dynamicPrice = getProductPrice({
+    product: { price, price_1: 8.5, price_4: 8, price_9: 7, usd_price: 10, usd_price_4: 9 },
+    quantity,
+    isB2B,
+    currency,
+  });
+
+  const currencyPrice = formatPrice(dynamicPrice, currency);
+
+  // const currencyPrice = formatPrice(price, currency);
 
   const increaseQty = () => {
     setQuantity((prev) => prev + 1);
@@ -67,7 +80,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
       title,
       image,
       priceRange,
-      price,
+      price: dynamicPrice,
+      // price,
       quantity,
     });
     setAddedToCart(true);

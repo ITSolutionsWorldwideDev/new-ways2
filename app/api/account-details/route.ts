@@ -42,6 +42,9 @@ export async function PUT(req: NextRequest) {
     billingCity,
     billingZip,
     billingCountry,
+    wantsToBeWholesaler,
+    companyName,
+    taxId,
   } = body;
 
   if (!userId) {
@@ -93,11 +96,24 @@ export async function PUT(req: NextRequest) {
     ]
   );
 
-  if (body.upgradeToWholesaler) {
-    await runQuery(`UPDATE users SET role = 'b2b' WHERE user_id = $1`, [
-      userId,
-    ]);
+  // 3️⃣ Handle wholesaler request
+  if (wantsToBeWholesaler) {
+    await runQuery(
+      `UPDATE users
+       SET wholesaler_request_status = 'pending',
+           wholesaler_requested_at = NOW(),
+           companyName = $1,
+           taxId = $2
+       WHERE user_id = $3`,
+      [companyName, taxId, userId]
+    );
   }
+
+  // if (body.upgradeToWholesaler) {
+  //   await runQuery(`UPDATE users SET role = 'b2b' WHERE user_id = $1`, [
+  //     userId,
+  //   ]);
+  // }
 
   return NextResponse.json({ success: true });
 }

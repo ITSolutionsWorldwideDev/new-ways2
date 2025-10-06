@@ -181,7 +181,7 @@ export default function AccountsDetails() {
 
     setErrors({});
 
-    const payload = {
+    /* const payload = {
       userId: user?.userId,
       firstName: form.firstName,
       lastName: form.lastName,
@@ -198,6 +198,32 @@ export default function AccountsDetails() {
       zip: form.zip,
       country: form.country.id,
       // billing...
+      ...(useDifferentBilling && {
+        billingFirstName: form.billingFirstName,
+        billingLastName: form.billingLastName,
+        billingPhone: form.billingPhone,
+        billingEmail: form.billingEmail,
+        billingAddress: form.billingAddress,
+        billingCity: form.billingCity,
+        billingZip: form.billingZip,
+        billingCountry: form.billingCountry?.id || "",
+      }),
+    }; */
+
+    const payload = {
+      userId: user?.userId,
+      firstName: form.firstName,
+      lastName: form.lastName,
+      addrPhone: form.phone,
+      addr1: form.address,
+      city: form.city,
+      zip: form.zip,
+      country: form.country.id,
+      ...(wantsWholesaler && {
+        wantsToBeWholesaler: true,
+        companyName: form.companyName,
+        taxId: form.taxId,
+      }),
       ...(useDifferentBilling && {
         billingFirstName: form.billingFirstName,
         billingLastName: form.billingLastName,
@@ -228,10 +254,15 @@ export default function AccountsDetails() {
         description: "Account Updated successfully",
       });
 
-      if (payload.upgradeToWholesaler) {
+      if (payload.wantsToBeWholesaler) {
         await fetch("/api/auth/session"); // or refetch session logic
         window.location.reload();
       }
+
+      /* if (payload.upgradeToWholesaler) {
+        await fetch("/api/auth/session"); // or refetch session logic
+        window.location.reload();
+      } */
     } catch (err) {
       console.error(err);
       alert("An error occurred while saving your details.");
