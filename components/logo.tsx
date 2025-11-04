@@ -5,7 +5,9 @@ import Link from "next/link";
 import { useTheme } from "next-themes";
 
 export function Logo() {
-  const { theme } = useTheme();
+  // const { theme } = useTheme();
+
+  const theme = "light"
 
   return (
     <Link href="/" className="flex flex-shrink-0 items-center gap-2">
