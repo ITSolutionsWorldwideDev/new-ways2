@@ -90,7 +90,6 @@ export default function AccountsDetails() {
               refName:
                 countries.find((c) => c.id === acc.country)?.refName || "",
             },
-
             // Billing (only shown if `useDifferentBilling` is true)
             billingFirstName: acc.billingfirstname || "",
             billingLastName: acc.billinglastname || "",
